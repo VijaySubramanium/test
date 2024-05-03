@@ -1,0 +1,1396 @@
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}">
+</p-toast>
+
+
+<!-- Editstudentprofessional Modal -->
+<div class="modal fade" id="edit_user_stu_details" tabindex="-1" aria-labelledby="edit_user_stu_details"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+
+        <form #editStuForm="ngForm" name="form" (ngSubmit)="editStuForm">
+          <div class="row">
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">First Name</label><span class="required"> *</span>
+              <input pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" type="text"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                class="form-control" name="edit_stu_first" [(ngModel)]="editStuDetails.firstName"
+                #editstufirst="ngModel" required>
+              <div style="display: block;" class="invalid-feedback">
+                <div *ngIf="(editStuForm.submitted && editstufirst.untouched) ||  editstufirst.touched "
+                  style="font-size: 13px; margin-top: 2pt; color:red;">
+                  <div *ngIf="editstufirst.errors?.['required']">First name is required</div>
+                </div>
+                <div *ngIf="editstufirst.touched && editstufirst.invalid"
+                  style="font-size: 13px; margin-top: 2pt; color:red;">
+                  <div *ngIf="editstufirst.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Last Name</label>
+              <!-- <span class="required"> *</span> -->
+              <!-- required pattern="^[a-zA-Z.]+$" maxlength="15" -->
+              <!-- oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()" -->
+              <input type="text" class="form-control" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$"
+                name="edit_stu_last" [(ngModel)]="editStuDetails.lastName" #editstulast="ngModel">
+              <div *ngIf="editStuDetails.lastName != null">
+                <div style="height: 4px; display: block;" class="invalid-feedback">
+                  <div *ngIf="editstulast.touched && editstulast.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="editstulast.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Gender</label><span class="required"> *</span>
+              <select required class="form-select" [(ngModel)]="editStuDetails.gender" name="edit_stu_gender"
+                #editstugendervalue="ngModel">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Lesbian">Lesbian</option>
+                <option value="Gay">Gay</option>
+                <option value="Bisexual">Bisexual</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Queer">Queer</option>
+                <option value="Other">Other</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstugendervalue.untouched) || editstugendervalue.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstugendervalue.errors?.['required']">Select the above(Gender) field
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Date of Birth</label><span class="required"> *</span>
+              <p-calendar [(ngModel)]="editStuDetails.dob" [required]="true" type="date" [maxDate]="dateTime"
+                name="edit_stu_dob" class="date-input" dateFormat="yy-mm-dd" #editstubirthdate="ngModel">
+              </p-calendar>
+              <div *ngIf="(editStuForm.submitted && editstubirthdate.untouched) || editstubirthdate.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstubirthdate.errors?.['required']">Date of Birth is required </div>
+              </div>
+              <div *ngIf="editstubirthdate.touched && editstubirthdate.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstubirthdate.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Email</label><span class="required"> *</span>
+              <input required pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$"
+                maxlength="320" type="text" class="form-control" name="edit_stu_email"
+                [(ngModel)]="editStuDetails.email" #editstuemail="ngModel">
+              <div *ngIf="(editStuForm.submitted && editstuemail.untouched) || editstuemail.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuemail.errors?.['required']">Email Id is required</div>
+              </div>
+              <div *ngIf="editstuemail.touched && editstuemail.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuemail.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Aadhaar Number</label><span class="required"> *</span>
+              <input required type="text" class="form-control" pattern="[0-9]{12}" name="edut_stu_aadhar"
+                [(ngModel)]="editStuDetails.aadharNumber" #editstuaadhar="ngModel">
+              <div *ngIf="(editStuForm.submitted && editstuaadhar.untouched) || editstuaadhar.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuaadhar.errors?.['required']">Aadhaar Number is required</div>
+              </div>
+              <div *ngIf="editstuaadhar.touched && editstuaadhar.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuaadhar.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Mobile Number</label><span class="required"> *</span>
+              <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="edit_stu_mobile"
+                [(ngModel)]="editStuDetails.mobile" #editstumobile="ngModel">
+              <div *ngIf="(editStuForm.submitted && editstumobile.untouched)  || editstumobile.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstumobile.errors?.['required']">Mobile Number is required</div>
+              </div>
+              <div *ngIf="editstumobile.touched && editstumobile.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstumobile.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Watsapp Number</label><span class="required"> *</span>
+              <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="edit_stu_whatsapp"
+                [(ngModel)]="editStuDetails.whatsappNumber" #editstuwhatsapp="ngModel">
+              <div *ngIf="(editStuForm.submitted && editstuwhatsapp.untouched)  || editstuwhatsapp.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuwhatsapp.errors?.['required']">Whatsapp Number is required</div>
+              </div>
+              <div *ngIf="editstuwhatsapp.touched && editstuwhatsapp.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuwhatsapp.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Password</label><span class="required"> *</span>
+              <div class="input-group">
+                <input required class="form-control"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="show_button ? 'text' : 'password'" name="edit_stu_pswd" [(ngModel)]="editStuDetails.password"
+                  #editstupasswordcontrol="ngModel" id="password">
+                <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+                  id="eye"></i>
+              </div>
+
+              <div *ngIf="(editStuForm.submitted && editstupasswordcontrol.untouched) || editstupasswordcontrol.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstupasswordcontrol.errors?.['required']">Password is required</div>
+              </div>
+              <div *ngIf="editstupasswordcontrol.touched && editstupasswordcontrol.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div class="alert alert-danger" *ngIf="editstupasswordcontrol.errors?.['pattern']">
+                  Password must contain atleast 8 characters, 1 upper case letter, 1 lower case
+                  letter, 1 number
+                  and 1 special character</div>
+              </div>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Confirm Password</label><span class="required"> *</span>
+              <div class="input-group">
+                <input required
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="confirm_show_button ? 'text' : 'password'" class="form-control" name="edit_stu_cpswd"
+                  [(ngModel)]="editStuDetails.confirmPassword" #editstupasswordconfirm="ngModel" id="password">
+                <i [class]="confirm_show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                  (click)="confirmShowPassword()" id="eye"></i>
+              </div>
+
+              <div *ngIf="(editStuForm.submitted && editstupasswordconfirm.untouched) || editstupasswordconfirm.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstupasswordconfirm.errors?.['required']"> Confirm Password is required
+                </div>
+              </div>
+
+              <div class="help-block"
+                *ngIf="(editstupasswordconfirm.dirty && (editstupasswordconfirm.value !== editstupasswordcontrol.value)) || (editstupasswordcontrol.touched && (editstupasswordconfirm.value !== editstupasswordcontrol.value))"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                Both the Password are not same
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Current State</label><span class="required"> *</span>
+              <select required type="text" class="form-select" (change)="FilterCity($any($event.target).value)"
+                [(ngModel)]="editStuDetails.stateId" name="edu_stu_state" #editstustate="ngModel">
+                <option *ngFor="let x of stateDetails" value="{{ x.stateid }}_{{ x.state }}">{{x.state}}
+                </option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstustate.untouched) || editstustate.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editstustate.errors?.['required']">Select the above(State) field</div>
+              </div>
+            </div>
+
+
+            <!-- {{ filterCityNameList | json}} -->
+            <div class="col-md-6 mb-4 grad" *ngIf="editStuDetails.stateId !== ''">
+              <label class="mb-2">Current Location</label><span class="required"> *</span>
+              <select required type="text" class="form-select" [(ngModel)]="editStuDetails.currentLocation"
+                name="edit_stu_location" #editstulocation="ngModel" id="currentloc_stu">
+                <option value="" disabled selected hidden>
+                  Select current location
+                </option>
+                <option *ngFor="let x of filterCityNameList" value="{{ x.cityid }}_{{ x.cityname }}">
+                  {{x.cityname}}</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstulocation.untouched) || editstulocation.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editstulocation.errors?.['required']">Select the above(Current Location)
+                  field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Graduated/Pursuing</label><span class="required"> *</span>
+              <select required class="form-select graduated" [(ngModel)]="editStuDetails.isGraduated"
+                name="edit_stu_graduated" #editstugraduate="ngModel">
+                <!-- <option value="" disabled selected hidden>Graduated *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstugraduate.untouched) || editstugraduate.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstugraduate.errors?.['required']">Select the above(Graduated) field
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editStuDetails.isGraduated === 'Yes'">
+              <label class="mb-1">Academic Institution</label><span class="required"> *</span>
+              <p-dropdown [options]="collegeDetails" [required]="true" [(ngModel)]="editStuDetails.collegeName"
+                name="edit_stu_collegename" optionLabel="academic_institution_name" [filter]="true"
+                #collegename="ngModel" filterBy="academic_institution_name" [showClear]="true"
+                placeholder="Select a College">
+                <ng-template pTemplate="selectedItem">
+                  <div class="college-item college-item-value" *ngIf="editStuDetails.collegeName">
+                    <div>{{ editStuDetails.collegeName['academic_institution_name'] }}</div>
+                  </div>
+                </ng-template>
+                <ng-template let-college pTemplate="item">
+                  <div>{{college.academic_institution_name}}</div>
+                </ng-template>
+              </p-dropdown>
+              <div style="display: block" class="invalid-feedback">
+                <div *ngIf="(editStuForm.submitted && !editStuDetails.collegeName)" class="error">
+                  <div *ngIf="collegename.errors?.['required']">
+                    Select the above(Academic Institution) field
+                  </div>
+                </div>
+              </div>
+              <!-- <select type="search" required list="college-name" class="form-select webkit-none"
+                [(ngModel)]="editStuDetails.collegeName" name="edit_stu_collegename" #editstucollege="ngModel">
+                <option *ngFor="let x of collegeDetails">{{x.academic_institution_name}}</option>
+              </select>
+
+              <div *ngIf="(editStuForm.submitted && editstucollege.untouched) || editstucollege.touched "
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstucollege.errors?.['required']">Select the above(Academic Institution)
+                  field </div>
+              </div> -->
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editStuDetails.isGraduated === 'Yes'">
+              <label class="mb-1">College City</label><span class="required"> *</span>
+              <select required type="text" class="form-select" [(ngModel)]="editStuDetails.collegeCity"
+                name="edit_stu_collegecity" #editcollegecity="ngModel">
+                <option value="" disabled selected hidden> Select City</option>
+                <option *ngFor="let x of cityDetails" value="{{ x.cityid }}_{{ x.cityname }}">
+                  {{x.cityname}}</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editcollegecity.untouched) || editcollegecity.touched "
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editcollegecity.errors?.['required']">Select the above(College City) field
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editStuDetails.isGraduated == 'Yes'">
+              <label class="mb-1">Current Educational Qualification</label><span class="required">
+                *</span>
+              <input required pattern="^[a-zA-Z .]*$" class="form-control" name="edit_stu_qualification"
+                [(ngModel)]="editStuDetails.educationalQualification" #editstueducate="ngModel">
+              <span style="font-size:12px;">Ex: FY B.E, SY B.Sc, TY B.Com</span>
+              <div *ngIf="(editStuForm.submitted && editstueducate.untouched) || editstueducate.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstueducate.errors?.['required']">Current Educational Qualification is
+                  required</div>
+              </div>
+              <div *ngIf="editstueducate.touched && editstueducate.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstueducate.errors?.['pattern']">Enter valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editStuDetails.isGraduated == 'Yes'">
+              <label class="mb-1">Graduation Passing Year</label>
+              <input type="number" min="1950" max="{{currentYear}}" class="form-control" name="edit_stu_year"
+                [(ngModel)]="editStuDetails.graduationPassingYear" #editstupassing="ngModel">
+              <!-- <div *ngIf="(editStuForm.submitted && editstupassing.untouched) || editstupassing.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstupassing.errors?.['required']">Graduation Passing Year is required
+                </div>
+              </div> -->
+              <div *ngIf="editstupassing.touched && editstupassing.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstupassing.errors?.['max'] || editstupassing.errors?.['min']">Enter a
+                  valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editStuDetails.isGraduated == 'Yes'">
+              <label class="mb-1">Subject/Stream</label><span class="required"> *</span>
+              <input required pattern="^[a-zA-z]+([\s][a-zA-Z]+)*$" class="form-control" name="edit_stu_sub"
+                [(ngModel)]="editStuDetails.subject" #edustustream="ngModel">
+              <div *ngIf="(editStuForm.submitted && edustustream.untouched) || edustustream.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="edustustream.errors?.['required']">Subject/Stream is required</div>
+              </div>
+              <div *ngIf="edustustream.touched && edustustream.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="edustustream.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 " *ngIf="editStuDetails.isGraduated == 'No'">
+              <label class="mb-1">Profession</label><span class="required"> *</span>
+              <input required pattern="^[a-zA-z]+([\s][a-zA-Z]+)*$" class="form-control" name="edit_stu_profession"
+                [(ngModel)]="editStuDetails.profession" #editstuprofess="ngModel">
+              <div *ngIf="(editStuForm.submitted && editstuprofess.untouched) || editstuprofess.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuprofess.errors?.['required']">Profession is required</div>
+              </div>
+              <div *ngIf="editstuprofess.touched && editstuprofess.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuprofess.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Are you placed in any organization?</label><span class="required">
+                *</span>
+              <select required class="form-select graduated" [(ngModel)]="editStuDetails.isPlaced"
+                (change)="isPlaced($any($event.target).value, 'student')" name="edit_stu_placedorganization"
+                #editstuplacedorg="ngModel">
+                <!-- <option value="" disabled selected hidden>Are you placed in any organization? *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstuplacedorg.untouched) || editstuplacedorg.touched "
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuplacedorg.errors?.['required']">Select the above field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editStuDetails.isPlaced == 'Yes'">
+              <label class="mb-2">Current Organization Placed With</label><span class="required">
+                *</span>
+              <select required type="text" id="editNameOfPlacedOrg" class="form-select"
+                (change)="getSectorName($any($event.target).value)" [(ngModel)]="editStuDetails.placedOrganization"
+                name="edit_stu_org" #edit_stu_org="ngModel">
+                <option *ngFor="let x of organizationNameList"
+                  value="{{ x.placementemployer_id }}_{{ x.placement_employer_name }}">
+                  {{x.placement_employer_name}}</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && edit_stu_org.untouched) || edit_stu_org.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="edit_stu_org.errors?.['required']">Select the above(Current Organization)
+                  field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editStuDetails.isPlaced == 'Yes'">
+              <label class="mb-2">Sector</label><span class="required">*</span>
+              <input required type="text" readonly class="form-control" id="" [(ngModel)]="editStuDetails.sector"
+                #sector="ngModel" name="sector" />
+              <div *ngIf="(editStuForm.submitted && sector.untouched) || sector.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="sector.errors?.['required']">Sector field is required
+                  field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editStuDetails.isPlaced == 'Yes'">
+              <label class="mb-1">Designation</label>
+              <input type="text" class="form-control" pattern="^[a-z0-9A-Z._\s^%&$#!/~@,-]+$"
+                name="edit_stu_designation" [(ngModel)]="editStuDetails.designation" #editstudesign="ngModel">
+              <div *ngIf="editstudesign.touched && editstudesign.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editstudesign.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editStuDetails.isPlaced == 'Yes'">
+              <label class="mb-1">Month joining the organization?</label>
+              <select type="text" class="form-select" name="edit_stu_month" #editstujoiningmonth="ngModel"
+                [(ngModel)]="editStuDetails.joiningMonth">
+                <!-- <option value="" disabled selected hidden>Month joining the organization?</option> -->
+                <option>JAN</option>
+                <option>FEB</option>
+                <option>MAR</option>
+                <option>APR</option>
+                <option>MAY</option>
+                <option>JUN</option>
+                <option>JUL</option>
+                <option>AUG</option>
+                <option>SEP</option>
+                <option>OCT</option>
+                <option>NOV</option>
+                <option>DEC</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Caste</label>
+              <input pattern="[a-zA-Z][a-zA-Z\s]+" class="form-control" name="edit_stu_caste"
+                [(ngModel)]="editStuDetails.caste" #editstucastetype="ngModel">
+              <div *ngIf="editstucastetype.touched && editstucastetype.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editstucastetype.errors?.['pattern']">
+                  Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Vaccination Status</label><span class="required"> *</span>
+              <select required class="form-select" name="edit_stu_vaccination"
+                [(ngModel)]="editStuDetails.vaccinationStatus" #editstuvaccine="ngModel"
+                (change)="changeVaccinationStatus($any($event.target).value, 'stu')">
+                <!-- <option value="" disabled selected hidden>Vaccination Status *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstuvaccine.untouched) || editstuvaccine.touched "
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstuvaccine.errors?.['required']">Select the above(Vaccination Status)
+                  field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Status <span class="text-danger">*</span></label>
+              <select required class="form-select" [(ngModel)]="editStuDetails.status" name="edit_stu_status"
+                #editstustatus="ngModel">
+                <!--<option value="" disabled selected hidden>Gender *</option>-->
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <div *ngIf="(editStuForm.submitted && editstustatus.untouched) || editstustatus.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editstustatus.errors?.['required']">Select the status field</div>
+              </div>
+            </div>
+
+            <div [formGroup]="myGroup" class="col-md-12 mb-2" *ngIf="editStuDetails.vaccinationStatus=='Yes'">
+              <label for="file" class=" mb-1">Vaccinationss certificate</label>
+              <div class="input-group file-group" *ngIf="stuUploadOption == true">
+                <input type="text" class="form-control" name="upload"
+                  [value]="editStuDetails.uploadVaccinationCertificate" disabled>
+                <button class="btn" type="button" (click)="stuUploadCerticate(false)"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+
+              <div class="input-group file-group" *ngIf="stuUploadOption == false">
+                <input formControlName="file" id="file" type="file" class="form-control" name="upload"
+                  (change)="onFileChange($event)">
+                <button class="btn" type="button" (click)="stuUploadCerticate(true)"
+                  [disabled]="editStuDetails.vaccinationStatus =='Yes' && stuUploadOption == false"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+
+
+              <div style="font-size: 10.5pt; margin-top: 2pt; color:#6b6969;">
+                <div>(Max file size should not exceed 2MB & file format should be Excel, CSV, PDF and JPG )
+                </div>
+              </div>
+              <!-- <div
+                *ngIf="(editStuForm.submitted && myGroup.untouched && editStuDetails.uploadVaccinationCertificate == null) || (editStuForm.submitted && myGroup.untouched && editStuDetails.uploadVaccinationCertificate == '') || ((editStuForm.submitted && stuUploadOption == false && message == ''))"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Vaccination Certificate is required</div>
+              </div> -->
+              <div style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                {{message}}
+              </div>
+
+            </div>
+
+            <div class="col-md-12 mb-1">
+              <div class="form-check">
+                <input required class="form-check-input" type="checkbox" value="" name="edit_stu_agree"
+                  [(ngModel)]="editStuDetails.termsAndConditions" #editstucheckbox="ngModel">
+                <label class="form-check-label" for="agree">
+                  I agree to <a href="{{ terms_and_conditions_url }}" target="_blank" class="none_underline"
+                    [ngStyle]="{'pointer-events': (terms_and_conditions_url == null) ? 'none' : 'inherit'}"> Terms and
+                    Conditions </a>
+                </label>
+                <div *ngIf="editStuForm.submitted && editstucheckbox.invalid"
+                  style="font-size: 13px; margin-top: 2pt; color:red;">
+                  <div *ngIf="editstucheckbox.errors?.['required']">Check this box before submission
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer ps-0 pe-0">
+            <button type="submit" class="btn btn-blue" (click)="onSubmitUpdateUser(editStuForm.form)">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editprofessional Modal -->
+<div class="modal fade" id="edit_user_pro_details" tabindex="-1" aria-labelledby="edit_user_pro_details"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Professional</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+
+        <form #editProForm="ngForm" name="form" (ngSubmit)="onSubmitUpdateUserProfession(editProForm.form)">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">First Name</label><span class="required"> *</span>
+              <input pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" type="text"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                class="form-control" name="edit_pro_first" [(ngModel)]="editProDetails.firstName"
+                #editprofirst="ngModel" required>
+              <div style="display: block;" class="invalid-feedback">
+                <div *ngIf="(editProForm.submitted && editprofirst.untouched) ||  editprofirst.touched "
+                  style="font-size: 13px; margin-top: 2pt; color:red;">
+                  <div *ngIf="editprofirst.errors?.['required']">First name is required</div>
+                </div>
+                <div *ngIf="editprofirst.touched && editprofirst.invalid"
+                  style="font-size: 13px; margin-top: 2pt; color:red;">
+                  <div *ngIf="editprofirst.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Last Name</label>
+              <!-- <span class="required"> *</span> -->
+              <!-- pattern="^[a-zA-Z.]+$" maxlength="15" type="text"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()" -->
+              <input type="text" class="form-control" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$"
+                name="edit_pro_last" [(ngModel)]="editProDetails.lastName" #editprolast="ngModel">
+              <div *ngIf="editProDetails.lastName != null">
+                <div style="height: 4px; display: block;" class="invalid-feedback">
+                  <div *ngIf="editprolast.touched && editprolast.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="editprolast.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Gender</label><span class="required"> *</span>
+              <select required class="form-select" [(ngModel)]="editProDetails.gender" name="edit_pro_gender"
+                #editprogendervalue="ngModel">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Lesbian">Lesbian</option>
+                <option value="Gay">Gay</option>
+                <option value="Bisexual">Bisexual</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Queer">Queer</option>
+                <option value="Other">Other</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editprogendervalue.untouched) || editprogendervalue.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprogendervalue.errors?.['required']">Select the above(Gender) field
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Date of Birth</label><span class="required"> *</span>
+              <p-calendar [(ngModel)]="editProDetails.dob" [required]="true" type="date" [maxDate]="dateTime"
+                name="edit_pro_dob" class="date-input" dateFormat="yy-mm-dd" #editprobirthdate="ngModel">
+              </p-calendar>
+              <div *ngIf="(editProForm.submitted && editprobirthdate.untouched) || editprobirthdate.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprobirthdate.errors?.['required']">Date of Birth is required </div>
+              </div>
+              <div *ngIf="editprobirthdate.touched && editprobirthdate.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprobirthdate.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Email</label><span class="required"> *</span>
+              <input required readonly onfocus="this.removeAttribute('readonly');"
+                pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" maxlength="320"
+                type="text" class="form-control" name="edit_pro_email" [(ngModel)]="editProDetails.email"
+                #editproemail="ngModel">
+              <div *ngIf="(editProForm.submitted && editproemail.untouched) || editproemail.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editproemail.errors?.['required']">Email Id is required</div>
+              </div>
+              <div *ngIf="editproemail.touched && editproemail.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editproemail.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Aadhaar Number</label><span class="required"> *</span>
+              <input required type="text" class="form-control" pattern="[0-9]{12}" name="edit_pro_aadhar"
+                [(ngModel)]="editProDetails.aadharNumber" #editproaadhar="ngModel">
+              <div *ngIf="(editProForm.submitted && editproaadhar.untouched) || editproaadhar.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editproaadhar.errors?.['required']">Aadhaar Number is required</div>
+              </div>
+              <div *ngIf="editproaadhar.touched && editproaadhar.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editproaadhar.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Mobile Number</label><span class="required"> *</span>
+              <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="edit_pro_mobile"
+                [(ngModel)]="editProDetails.mobile" #editpromobile="ngModel">
+              <div *ngIf="(editProForm.submitted && editpromobile.untouched)  || editpromobile.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editpromobile.errors?.['required']">Mobile Number is required</div>
+              </div>
+              <div *ngIf="editpromobile.touched && editpromobile.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editpromobile.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Watsapp Number</label><span class="required"> *</span>
+              <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="edit_pro_whatsapp"
+                [(ngModel)]="editProDetails.whatsappNumber" #editprowhatsapp="ngModel">
+              <div *ngIf="(editProForm.submitted && editprowhatsapp.untouched)  || editprowhatsapp.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprowhatsapp.errors?.['required']">Whatsapp Number is required</div>
+              </div>
+              <div *ngIf="editprowhatsapp.touched && editprowhatsapp.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprowhatsapp.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Password</label><span class="required"> *</span>
+              <div class="input-group">
+                <input required class="form-control"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="show_button ? 'text' : 'password'" name="edit_pro_pswd" [(ngModel)]="editProDetails.password"
+                  #editpropasswordcontrol="ngModel" id="password">
+                <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+                  id="eye"></i>
+              </div>
+
+              <div *ngIf="(editProForm.submitted && editpropasswordcontrol.untouched) || editpropasswordcontrol.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropasswordcontrol.errors?.['required']">Password is required</div>
+              </div>
+              <div *ngIf="editpropasswordcontrol.touched && editpropasswordcontrol.invalid"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div class="alert alert-danger" *ngIf="editpropasswordcontrol.errors?.['pattern']">
+                  Password must contain atleast 8 characters, 1 upper case letter, 1 lower case
+                  letter, 1 number
+                  and 1 special character</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Confirm Password</label><span class="required"> *</span>
+              <div class="input-group">
+                <input required
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="confirm_show_button ? 'text' : 'password'" class="form-control" name="edit_pro_cpswd"
+                  [(ngModel)]="editProDetails.confirmPassword" #editpropasswordconfirm="ngModel" id="password">
+                <i [class]="confirm_show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                  (click)="confirmShowPassword()" id="eye"></i>
+              </div>
+
+              <div *ngIf="(editProForm.submitted && editpropasswordconfirm.untouched) || editpropasswordconfirm.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropasswordconfirm.errors?.['required']"> Confirm Password is required
+                </div>
+              </div>
+
+              <div class="help-block"
+                *ngIf="(editpropasswordconfirm.dirty && (editpropasswordconfirm.value !== editpropasswordcontrol.value)) || (editpropasswordcontrol.touched && (editpropasswordconfirm.value !== editpropasswordcontrol.value))"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                Both the Password are not same
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">State</label><span class="required"> *</span>
+              <select required type="text" class="form-select" (change)="FilterCity($any($event.target).value)"
+                [(ngModel)]="editProDetails.stateId" name="edu_pro_state" #editprostate="ngModel">
+                <option *ngFor="let x of stateDetails" value="{{ x.stateid }}_{{ x.state }}">{{x.state}}
+                </option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editprostate.untouched) || editprostate.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editprostate.errors?.['required']">Select the above(State) field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Current Location</label><span class="required"> *</span>
+              <select required type="text" class="form-select" name="edit_pro_location" id="currentloc_pro"
+                [(ngModel)]="editProDetails.currentLocation" #editprolocation="ngModel">
+                <option value="" disabled selected hidden> -- Select City --</option>
+                <option *ngFor="let x of filterCityNameList" value="{{ x.cityid }}_{{ x.cityname }}">
+                  {{x.cityname}}</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editprolocation.untouched) || editprolocation.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprolocation.errors?.['required']">Select the above(Current Location)
+                  field </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Graduated?</label><span class="required"> *</span>
+              <select required class="form-select graduated" [(ngModel)]="editProDetails.isGraduated"
+                name="edit_pro_graduated" #editprograduate="ngModel">
+                <!-- <option value="" disabled selected hidden>Graduated *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editprograduate.untouched) || editprograduate.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editprograduate.errors?.['required']">Select the above(Graduated) field
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.isGraduated === 'Yes'">
+              <label class="mb-1">Academic Institution</label><span class="required"> *</span>
+              <p-dropdown [options]="collegeDetails" [required]="true"
+                [(ngModel)]="editProDetails.academiciInstitutionName" name="edit_pro_collegename"
+                optionLabel="academic_institution_name" [filter]="true" #editprocollege="ngModel"
+                filterBy="academic_institution_name" [showClear]="true" placeholder="Select a College">
+                <ng-template pTemplate="selectedItem">
+                  <div class="college-item college-item-value" *ngIf="editProDetails.academiciInstitutionName">
+                    <div>{{ editProDetails.academiciInstitutionName['academic_institution_name'] }}</div>
+                  </div>
+                </ng-template>
+                <ng-template let-college pTemplate="item">
+                  <div>{{college.academic_institution_name}}</div>
+                </ng-template>
+              </p-dropdown>
+              <div style="display: block" class="invalid-feedback">
+                <div *ngIf="(editProForm.submitted && !editProDetails.academiciInstitutionName)" class="error">
+                  <div *ngIf="editprocollege.errors?.['required']">
+                    Select the above(Academic Institution) field
+                  </div>
+                </div>
+              </div>
+              <!-- <select type="search" required list="college-name" class="form-select webkit-none"
+                (change)="getCollegeCity($any($event.target).value)"
+                [(ngModel)]="editProDetails.academiciInstitutionName" name="edit_pro_collegename"
+                #editprocollege="ngModel">
+
+                <option *ngFor="let x of collegeDetails" value="{{x.academic_institution_name | lowercase}}">
+                  {{x.academic_institution_name}}</option>]
+
+              </select>
+
+              <div *ngIf="(editProForm.submitted && editprocollege.untouched) || editprocollege.touched"
+                class="required">
+                <div *ngIf="editprocollege.errors?.['required']">Select the above (Academic Institution)
+                  field </div>
+              </div> -->
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isGraduated == 'Yes'">
+              <label class="mb-1">College City</label><span class="required"> *</span>
+              <select required type="text" class="form-select" [(ngModel)]="editProDetails.academicInstitutionCity"
+                name="edit_pro_collegecity" #editprocollegeCityControl="ngModel">
+                <!--<option value="" disabled selected hidden> Select City </option> -->
+                <option *ngFor="let x of cityDetails" value="{{x.cityid}}_{{ x.cityname }}">
+                  {{x.cityname}}</option>
+              </select>
+              <div
+                *ngIf="(editProForm.submitted && editprocollegeCityControl.untouched) || editprocollegeCityControl.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editprocollegeCityControl.errors?.['required']">Select the above (College
+                  City) field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.isGraduated == 'Yes'">
+              <label class="mb-1">Current Educational Qualification</label><span class="required">
+                *</span>
+              <input required pattern="^[a-zA-Z .]*$" class="form-control" name="edit_pro_qualification"
+                [(ngModel)]="editProDetails.educationalQualification" #editproeducate="ngModel">
+              <div *ngIf="(editProForm.submitted && editproeducate.untouched) || editproeducate.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproeducate.errors?.['required']">Current Educational Qualification is
+                  required</div>
+              </div>
+              <div *ngIf="editproeducate.touched && editproeducate.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproeducate.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.isGraduated == 'Yes'">
+              <label class="mb-1">Graduation Passing Year</label><span class="required"> *</span>
+              <input required type="number" min="1950" max="{{currentYear}}" class="form-control"
+                name="edit_pro_graguate_pass_year" [(ngModel)]="editProDetails.graduationPassingYear"
+                #editpropassing="ngModel">
+              <div *ngIf="(editProForm.submitted && editpropassing.untouched) || editpropassing.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropassing.errors?.['required']">Graduation Passing Year is required
+                </div>
+              </div>
+              <div *ngIf="editpropassing.touched && editpropassing.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropassing.errors?.['max'] || editpropassing.errors?.['min']">Enter a
+                  valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.isGraduated == 'Yes'">
+              <label class="mb-1">Subject/Stream</label><span class="required"> *</span>
+              <input required pattern="^[a-zA-z]+([\s][a-zA-Z]+)*$" class="form-control" name="edit_pro_subject"
+                [(ngModel)]="editProDetails.subject" #editprostream="ngModel">
+              <div *ngIf="(editProForm.submitted && editprostream.untouched) || editprostream.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editprostream.errors?.['required']">Subject/Stream is required</div>
+              </div>
+              <div *ngIf="editprostream.touched && editprostream.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editprostream.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced=='Yes'">
+              <label class="mb-1">Experience</label><span class="required"> *</span>
+              <select required class="form-select pExperience" [(ngModel)]="editProDetails.isExperience"
+                name="edit_pro_experiance" #editproexperiance="ngModel">
+                <!-- <option value=""  disabled selected hidden>Experience *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editproexperiance.untouched) || editproexperiance.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproexperiance.errors?.['required']">Select the above(Experience) field
+                </div>
+              </div>
+              <!-- <div *ngIf="pExperience.touched && pExperience.invalid"  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                <div *ngIf="pExperience.errors?.['pattern']|| pExperience.errors?.['required']">Invalid data Please fill the above(Experience) field</div>
+                            </div> -->
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Are you pursuing post graduation?</label><span class="required">
+                *</span>
+              <select required class="form-select" name="edit_pro_postorg"
+                [(ngModel)]="editProDetails.pursuingPostGraduate" #editproppostorg="ngModel">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editproppostorg.untouched) || editproppostorg.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproppostorg.errors?.['required']">Select the above field</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.pursuingPostGraduate=='Yes'">
+              <label class="mb-1">Post-graduation Academic Institution name? <span class="required"> *</span></label>
+              <p-dropdown [options]="collegeDetails" [required]="true"
+                [(ngModel)]="editProDetails.postGraduationInstitution" name="edit_pro_postclgName"
+                optionLabel="academic_institution_name" [filter]="true" #editproppostCollegeName="ngModel"
+                filterBy="academic_institution_name" [showClear]="true" placeholder="Select a College">
+                <ng-template pTemplate="selectedItem">
+                  <div class="college-item college-item-value" *ngIf="editProDetails.postGraduationInstitution">
+                    <div>{{ editProDetails.postGraduationInstitution['academic_institution_name'] }}</div>
+                  </div>
+                </ng-template>
+                <ng-template let-college pTemplate="item">
+                  <div>{{college.academic_institution_name}}</div>
+                </ng-template>
+              </p-dropdown>
+              <div style="display: block" class="invalid-feedback">
+                <div *ngIf="(editProForm.submitted && !editProDetails.postGraduationInstitution)" class="error">
+                  <div *ngIf="editproppostCollegeName.errors?.['required']">
+                    Select the above(Academic Institution) field
+                  </div>
+                </div>
+              </div>
+              <!-- <select type="search" required list="college-name" class="form-select webkit-none"
+                [(ngModel)]="editProDetails.postGraduationInstitution" name="edit_pro_postclgName" autocomplete="off"
+                #editproppostCollegeName="ngModel">
+                <option *ngFor="let x of collegeDetails" value="{{x.academic_institution_name | lowercase}}">
+                  {{x.academic_institution_name}}</option>
+              </select>
+              <div
+                *ngIf="(editProForm.submitted && editproppostCollegeName.untouched) || editproppostCollegeName.touched"
+                class="required">
+                <div *ngIf="editproppostCollegeName.errors?.['required']"> Select the above(Academic
+                  Institution) field</div>
+              </div> -->
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.pursuingPostGraduate=='Yes'">
+              <label class="mb-1">Post-Graduation Qualification? </label><span class="required"> *</span>
+              <input required pattern="^[a-zA-Z .]*$" class="form-control" name="edit_pro_postQualification"
+                [(ngModel)]="editProDetails.postGraduationQualification" #editproppostgraduateQualification="ngModel">
+              <div
+                *ngIf="(editProForm.submitted && editproppostgraduateQualification.untouched) || editproppostgraduateQualification.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproppostgraduateQualification.errors?.['required']">Post-Graduation
+                  Qualification is required</div>
+              </div>
+              <div *ngIf="editproppostgraduateQualification.touched && editproppostgraduateQualification.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproppostgraduateQualification.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3 grad" *ngIf="editProDetails.pursuingPostGraduate=='Yes'">
+              <label class="mb-1">Passing Year?</label><span class="required"> *</span>
+              <input required type="number" min="1950" max="{{currentYear}}" class="form-control"
+                name="edit_pro_postyear" [(ngModel)]="editProDetails.postGraduationPassingYear"
+                #editpropostgrad="ngModel">
+              <div *ngIf="editpropostgrad.touched" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropostgrad.errors?.['required']">Passing Year is required</div>
+              </div>
+              <div
+                *ngIf="(editpropostgrad.touched && editpropostgrad.invalid) || (editProForm.submitted && editpropostgrad.untouched) "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropostgrad.errors?.['max'] || editpropostgrad.errors?.['min'] ">Enter a
+                  valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Score</label><span class="required"> *</span>
+              <input required pattern="\d{0,2}(\.\d{1,2})?" type="text" class="form-control" name="edit_pro_markper"
+                [(ngModel)]="editProDetails.percentageMarks" #editpropmarkper="ngModel">
+              <div *ngIf="(editProForm.submitted && editpropmarkper.untouched) || editpropmarkper.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropmarkper.errors?.['required']">Score is required</div>
+              </div>
+              <div *ngIf="editpropmarkper.touched && editpropmarkper.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editpropmarkper.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Are you placed in any organization?</label><span class="required">
+                *</span>
+              <select required class="form-select graduated" [(ngModel)]="editProDetails.isPlaced"
+                name="edit_pro_placedorganization" #editproplacedorg="ngModel"
+                (change)="isPlaced($any($event.target).value, 'professional')">
+                <option value="" disabled selected hidden>Are you placed in any organization? *</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editproplacedorg.untouched) || editproplacedorg.touched "
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editproplacedorg.errors?.['required']">Select the above field</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced == 'Yes'">
+              <label class="mb-2">Current Organization Placed With</label><span class="required">
+                *</span>
+              <select required type="text" class="form-select" id="editNameOfPlacedOrg"
+                (change)="getSectorName($any($event.target).value)" [(ngModel)]="editProDetails.placedOrganization"
+                name="edit_pro_org" #edit_pro_org="ngModel">
+                <option *ngFor="let x of organizationNameList"
+                  value="{{ x.placementemployer_id }}_{{ x.placement_employer_name }}">
+                  {{x.placement_employer_name}}</option>
+              </select>
+
+              <div *ngIf="(editProForm.submitted && edit_pro_org.untouched) || edit_pro_org.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="edit_pro_org.errors?.['required']">Select the above(Current Organization)
+                  field</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced == 'Yes'">
+              <label class="mb-2">Sector</label><span class="required">*</span>
+              <input required type="text" readonly class="form-control" id="" [(ngModel)]="editProDetails.sector"
+                #sector="ngModel" name="sector" />
+              <div *ngIf="(editProForm.submitted && sector.untouched) || sector.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="sector.errors?.['required']">Sector field is required
+                  field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced=='Yes'">
+              <label class="mb-1">Designation</label>
+              <input type="text" class="form-control" pattern="^[a-z0-9A-Z._\s^%&$#!/~@,-]+$" name="edit_pro_des"
+                [(ngModel)]="editProDetails.designation" #editprodesignation="ngModel">
+              <div *ngIf="editprodesignation.touched && editprodesignation.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editprodesignation.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced=='Yes'">
+              <label class="mb-1">Month joining the organization ?</label>
+              <select type="text" class="form-select" name="edit_pro_month" [(ngModel)]="editProDetails.joiningMonth"
+                #joinmonth="ngModel">
+                <!-- <option value=""  disabled selected hidden>Month joining the organization ?</option> -->
+                <option>JAN</option>
+                <option>FEB</option>
+                <option>MAR</option>
+                <option>APR</option>
+                <option>MAY</option>
+                <option>JUN</option>
+                <option>JUl</option>
+                <option>AUG</option>
+                <option>SEP</option>
+                <option>OCT</option>
+                <option>NOV</option>
+                <option>DEC</option>
+              </select>
+            </div>
+
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced=='Yes'">
+              <label class="mb-1">Previous Employer 1</label><span class="required"> *</span>
+              <input type="text" pattern="^[a-zA-Z0-9._ ^'%&$#!~@,-]*$" class="form-control" id="" name="edit_pro_emp1"
+                [(ngModel)]="editProDetails.employer1" required #editproemp1="ngModel">
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+                <div *ngIf="(editProForm.submitted && editproemp1.untouched) || editproemp1.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editproemp1.errors?.['required']">Previous Employer 1 is
+                    required</div>
+                </div>
+                <div *ngIf="editproemp1.touched && editproemp1.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editproemp1.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced=='Yes'">
+              <label class="mb-1">Previous Employer 2</label><span class="required"> *</span>
+              <input type="text" pattern="^[a-zA-Z0-9._ ^'%&$#!~@,-]*$" class="form-control" id="" name="edit_pro_emp2"
+                [(ngModel)]="editProDetails.employer2" required #editproemp2="ngModel">
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+
+                <div *ngIf="(editProForm.submitted && editproemp2.untouched) || editproemp2.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editproemp2.errors?.['required']">Previous Employer 2 is
+                    required</div>
+                </div>
+                <div *ngIf="editproemp2.touched && editproemp2.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editproemp2.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isPlaced=='Yes'">
+              <label class="mb-1">Are you Experienced</label><span class="required"> *</span>
+              <select required class="form-select pExperience" (change)="isExperience($any($event.target).value)"
+                [(ngModel)]="editProDetails.isExperience" name="pExperience" #editproexperiance="ngModel">
+                <!-- <option value=""  disabled selected hidden>Experience *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editproexperiance.untouched) || editproexperiance.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproexperiance.errors?.['required']">Select the above(Experience) field</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3" *ngIf="editProDetails.isExperience=='Yes'">
+              <label class="mb-1">Year of Experience</label><span class="required"> *</span>
+              <input required pattern="[0-9]{1,2}" type="text" class="form-control" name="edit_pro_years"
+                [(ngModel)]="editProDetails.experienceYears" #editproyears="ngModel">
+              <div *ngIf="(editProForm.submitted && editproyears.untouched) || editproyears.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproyears.errors?.['required']">Year is required</div>
+              </div>
+              <div *ngIf="editproyears.touched && editproyears.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproyears.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Marital Status</label><span class="required"> *</span>
+              <select required class="form-select" [(ngModel)]="editProDetails.maritalStatus"
+                name="edit_pro_maritalstatus" #editpromaritalstatus="ngModel">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editpromaritalstatus.untouched) || editpromaritalstatus.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editpromaritalstatus.errors?.['required']"> Select the above (Martial
+                  Status) field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Father Name</label><span class="required"> *</span>
+              <input required pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" type="text"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                class="form-control" id="" name="edit_pro_fathername" [(ngModel)]="editProDetails.fatherName" required
+                #editpropfathername="ngModel">
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+
+                <div *ngIf="(editProForm.submitted && editpropfathername.untouched) || editpropfathername.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editpropfathername.errors?.['required']">Father Name is required</div>
+                </div>
+                <div *ngIf="editpropfathername.touched && editpropfathername.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editpropfathername.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Mother Name</label><span class="required"> *</span>
+              <input required pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" type="text"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                class="form-control" id="" name="edit_pro_mothername" [(ngModel)]="editProDetails.motherName"
+                #editpropmothername="ngModel">
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+
+                <div *ngIf="(editProForm.submitted && editpropmothername.untouched) || editpropmothername.touched "
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editpropmothername.errors?.['required']">Mother Name is required</div>
+                </div>
+                <div *ngIf="editpropmothername.touched && editpropmothername.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editpropmothername.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Guardian Name</label><span class="required"> *</span>
+              <input required type="text" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                class="form-control" id="" name="edit_pro_guardianname" [(ngModel)]="editProDetails.guardianName"
+                required #editproguardianname="ngModel">
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+                <div *ngIf="(editProForm.submitted && editproguardianname.untouched) || editproguardianname.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editproguardianname.errors?.['required']">Guardian Name is required
+                  </div>
+                </div>
+                <div *ngIf="editproguardianname.touched && editproguardianname.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editproguardianname.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Pincode</label><span class="required"> *</span>
+              <input required pattern="[0-9]{6}" type="text" class="form-control" name="edit_pro_pinCode"
+                [(ngModel)]="editProDetails.pincode" #editproppincode="ngModel">
+              <div *ngIf="(editProForm.submitted && editproppincode.untouched) || editproppincode.touched "
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproppincode.errors?.['required']">Pincode is required</div>
+              </div>
+              <div *ngIf="editproppincode.touched && editproppincode.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editproppincode.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Disability Type</label><span class="required"> *</span>
+              <select required class="form-select" [(ngModel)]="editProDetails.disabilityType"
+                name="edit_pro_disability_type" #editprodisabilitytype="ngModel">
+                <!--<option  value="" disabled selected hidden>Disability Type *</option> -->
+                <option value="Vision Impairment">Vision Impairment</option>
+                <option value="Deaf">Deaf</option>
+                <option value="Physical Disability">Physical Disability</option>
+                <option value="None">None</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editprodisabilitytype.untouched) || editprodisabilitytype.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editprodisabilitytype.errors?.['required']">
+                  Select the above(Disability Type) field
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4 prof">
+              <label class="mb-2">Language Known</label><span class="required"> *</span>
+              <ng-multiselect-dropdown [settings]="dropdownSettings" placeholder="You can select more than one language"
+                class="form-multiselect" [(ngModel)]="editProDetails.selectedKeyLanguages"
+                (onSelect)="onSelectLanguage($event)" (onSelectAll)="onSelectAllLanguage($event)"
+                (onDeSelect)="onDeSelectLanguage($event)" (onDeSelectAll)="onDeSelectAllLanguage($event)"
+                #editprolanguageKnown="ngModel" [data]="dropdownList" name="edit_pro_language" required="true">
+              </ng-multiselect-dropdown>
+              <div *ngIf="(editProForm.submitted && editprolanguageKnown.untouched) || editprolanguageKnown.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editprolanguageKnown.errors?.['required']">
+                  Select the above(Language Known) field
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Alternative number </label>
+              <input pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="edit_pro_alt_mobile_no"
+                [(ngModel)]="editProDetails.alternateNumber" #editproaltmobileNumber="ngModel" [disabled]="false" />
+              <!--<div *ngIf="(editProForm.submitted && editproaltmobileNumber.untouched) || editproaltmobileNumber.touched" style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                <div *ngIf="editproaltmobileNumber.errors?.['required']">
+                                    Alternative number is required
+                                </div>
+                            </div>-->
+              <div *ngIf="editproaltmobileNumber.touched && editproaltmobileNumber.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editproaltmobileNumber.errors?.['pattern']">
+                  Enter a valid data
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-2">
+              <label class="mb-2">Caste</label>
+              <input pattern="[a-zA-Z][a-zA-Z\s]+" class="form-control" name="edit_pro_caste"
+                [(ngModel)]="editProDetails.caste" #editprocastetype="ngModel" />
+              <!--<div *ngIf="(editProForm.submitted && editprocastetype.untouched) || editprocastetype.touched" style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                <div *ngIf="editprocastetype.errors?.['required']">
+                                    Caste type is required
+                                </div>
+                            </div>-->
+              <div *ngIf="editprocastetype.touched && editprocastetype.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editprocastetype.errors?.['pattern']">
+                  Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label class="mb-2">Vaccination Status</label><span class="required"> *</span>
+              <select required class="form-select" name="edit_pro_vaccination"
+                [(ngModel)]="editProDetails.vaccinationStatus" #editprovaccine="ngModel"
+                (change)="changeVaccinationStatus($any($event.target).value, 'pro')">
+                <!-- <option value="" disabled selected hidden>Vaccination Status *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && editprovaccine.untouched) || editprovaccine.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editprovaccine.errors?.['required']">
+                  Select the above(Vaccination Status) field
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label>Status <span class="text-danger">*</span></label>
+              <select required class="form-select" [(ngModel)]="editProDetails.status" name="edit_pro_status"
+                #ediprostatus="ngModel">
+                <!--<option value="" disabled selected hidden>Gender *</option>-->
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <div *ngIf="(editProForm.submitted && ediprostatus.untouched) || ediprostatus.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="ediprostatus.errors?.['required']">Select the status field</div>
+              </div>
+
+            </div>
+
+            <div [formGroup]="myGroup" class="col-md-12 mb-2" *ngIf="editProDetails.vaccinationStatus=='Yes'">
+              <label for="file" class=" mb-1">Vaccination certificate</label>
+
+              <div class="input-group file-group" *ngIf="proUploadOption == true">
+                <input type="text" class="form-control" name="upload"
+                  [value]="editProDetails.uploadVaccinationCertificate" disabled>
+                <button class="btn" type="button" (click)="proUploadCerticate(false)"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+
+              <div class="input-group file-group" *ngIf="proUploadOption == false">
+                <input formControlName="file" id="file" type="file" class="form-control" name="upload"
+                  (change)="onFileProChange($event)" [value]="editProDetails.uploadVaccinationCertificate">
+                <button class="btn" type="button" (click)="proUploadCerticate(true)"
+                  [disabled]="editProDetails.vaccinationStatus =='Yes' && proUploadOption == false"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+
+
+              <div style="font-size: 10.5pt; margin-top: 2pt; color:#6b6969;">
+                <div>(Max file size should not exceed 2MB & file format should be Excel, PDF, CSV and JPG )
+                </div>
+              </div>
+              <!-- <div
+                *ngIf="(editProForm.submitted && myGroup.untouched && editProDetails.uploadVaccinationCertificate == null) || (editProForm.submitted && myGroup.untouched && editProDetails.uploadVaccinationCertificate == '') || ((editProForm.submitted && proUploadOption == false && message == ''))"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Vaccination Certificate is required</div>
+              </div> -->
+              <div style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                {{message}}
+              </div>
+
+            </div>
+
+            <div class="col-md-12 mb-1">
+              <div class="form-check">
+                <input required class="form-check-input" type="checkbox" value="" name="edit_pro_agree"
+                  [(ngModel)]="editProDetails.termsAndConditions" #editprocheckbox="ngModel">
+                <label class="form-check-label" for="agree">
+                  I agree to <a href="{{ terms_and_conditions_url }}" target="_blank" class="none_underline"
+                    [ngStyle]="{'pointer-events': (terms_and_conditions_url == null) ? 'none' : 'inherit'}"> Terms and
+                    Conditions </a>
+                </label>
+                <div *ngIf="editProForm.submitted && editprocheckbox.invalid"
+                  style="font-size: 13px; margin-top: 2pt; color:red;">
+                  <div *ngIf="editprocheckbox.errors?.['required']">Check this box before submission
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer ps-0 pe-0">
+            <button type="submit" class="btn btn-blue">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

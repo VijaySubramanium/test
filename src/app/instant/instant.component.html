@@ -1,0 +1,66 @@
+<div>
+  <app-header></app-header>
+  <div class="main">
+    <!-- <app-spinner></app-spinner> -->
+    <app-sidebar (listOfRightMenus)="onListOfRightMenus($event)"></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+      <div class="card">
+        <div class="card-header">
+          <h5>List of Instant Url</h5>
+          <span *ngFor="let subMenu of rightSideMenus">
+            <div class="dropdown float-end header-links">
+              <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="las la-ellipsis-v"></i>
+              </button>
+
+            </div>
+          </span>
+        </div>
+        <div class="card-body" style="height: 450px;">
+          <div class="row">
+            <!-- <div class=""></div> -->
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;padding: 20px;text-align: center;">
+                <a href="">https://skillsalpha.com</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

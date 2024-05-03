@@ -1,0 +1,180 @@
+.download-btn {
+    display: inline-block;
+    font-weight: 400;
+    line-height: normal;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid #278ce8;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    color: #278ce8;
+    font-weight: 700;
+    padding: 0 5px;
+    position: relative;
+  }
+
+  .no-filter{
+    color: #278ce8;
+    background-color: transparent;
+    border: 1px solid #278ce8;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    font-weight: 700;
+    padding: 5px !important;
+  }
+  .download-btn span {
+    font-size: 18px;
+  }
+
+  .dashboard-wrapper {
+    padding: 20px;
+  }
+
+  .dashboard-heading {
+    font-size: 2rem;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #dfdfdf;
+    margin-bottom: 30px;
+  }
+
+  .dashboard-card-wrapper {
+    border: 1px solid rgb(231, 231, 231);
+    padding: 20px;
+  }
+
+  .dashboard-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dashboard-label h5 {
+    font-size: .75rem;
+  }
+
+  .dashboard-label .form-select {
+    width: auto;
+    min-width: 130px;
+  }
+
+  .filter-btn{
+    position: relative;
+  }
+
+
+
+  .filter-btn:hover:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 100%;
+    margin-right: 2px;
+    background: rgba(0,0,0,0.54);
+    padding: 2px 5px;
+    font-size: 10px;
+    font-weight: 300;
+    color: white;
+    border-radius: 3px;
+  }
+
+  .download-btn:hover:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: 2px;
+    margin-left: -20px;
+    background: rgba(0,0,0,0.54);
+    padding: 2px 5px;
+    font-size: 10px;
+    font-weight: 300;
+    color: white;
+    border-radius: 3px;
+  }
+
+  .canvas-inner-wrapper {
+    display: flex;
+  }
+
+  .canvas-wrapper {
+    margin-left: -30px;
+  }
+
+  .left-text {
+    transform: rotate(180deg);
+    writing-mode: tb;
+    margin: 0;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .left-text p {
+    margin: 0 0 0px;
+  }
+
+  .btn-red {
+    background-color: white;
+    color: red;
+  }
+  .bottom-text {
+    text-align: center;
+    margin-top: -25px;
+    margin-bottom: 0;
+    font-size: 10px;
+  }
+
+  .mychart {
+    position: relative;
+    width: 100% !important;
+    overflow: hidden;
+  }
+
+  table, td, th {
+    border: 1px solid;
+  }
+
+  table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+  }
+
+  .btn-grey,
+  .btn-grey:hover {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    background: #e1e2e4;
+    color: rgb(6, 0, 0);
+    border-radius: 4px;
+    margin-inline-start: 2px;
+  }
+
+  .btn-get {
+    margin-left: 5px;
+    padding: 5px 10px;
+    height: fit-content;
+  }
+
+  .min-width {
+    min-width: 210px;
+  }
+
+  @media (max-width: 576px) {
+    .canvas-wrapper {
+        margin-left: -15px;
+    }
+    .left-text {
+        font-size: 8px;
+    }
+    .bottom-text {
+        margin-top: -15px;
+        font-size: 8px;
+    }
+    .respon{
+        margin-top: 5px;
+    }
+  }

@@ -1,0 +1,51 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "questions": "\"write the trainer performance\"",
+      "formname": "Form June",
+      "questionoptionid": "489,490",
+      "isactive": 1,
+      "questionoption": "Good,Bad",
+      "isrequired": 0,
+      "feedbackQuestionId": 222,
+      "formid": 92,
+      "optionorder": "0,1",
+      "options": [
+        {
+          "optionid": 92,
+          "optionname": "Good"
+        },
+        {
+          "optionid": 93,
+          "optionname": "Bad"
+        }
+      ],
+      "actiontype": "Single Select"
+    },
+    {
+      "questions": "\"write the training performance\"",
+      "formname": "Form June",
+      "isactive": 1,
+      "questionoption": "Good,Bad",
+      "isrequired": 0,
+      "feedbackQuestionId": 223,
+      "questionoptionid": "491,492",
+      "actiontype": "Multi Select",
+      "formid": 92,
+      "options": [
+        {
+          "optionid": 97,
+          "optionname": "Good"
+        },
+        {
+          "optionid": 98,
+          "optionname": "Bad"
+        }
+      ],
+      "optionorder": "0,1"
+    }
+  ],
+  "status": "Success",
+  "message": "feedbackform details retrieved successfully."
+}

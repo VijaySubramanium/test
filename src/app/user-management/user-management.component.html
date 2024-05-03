@@ -1,0 +1,2945 @@
+<app-spinner></app-spinner>
+<app-header></app-header>
+<div class="main">
+  <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+  <app-sidebar (listOfRightMenus)=onListOfRightMenus($event)></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+
+      <div class="card-header">
+        <h5>User management</h5>
+        <span *ngFor="let subMenu of rightSideMenus">
+          <div *ngIf="currentTab1 == subMenu.sub_menu_url" class="dropdown float-end header-links">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"
+              *ngIf="addAdminUserScreen.includes(loggedInRoleName) &&  loggedInRoleName != 'MIS'">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+
+                <div
+                  *ngIf="subMenuAction.action_url == 'addstudentprofessional' && addAdminUserScreen.includes(loggedInRoleName)">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+                <!-- [ngStyle]="{'pointer-events': (selectedUserDetails.length > 0) ? 'inherit' : 'none'}" -->
+                <div
+                  *ngIf="((subMenuAction.action_url == 'assignproject' && loggedInRoleName == 'GTT_ADMIN') || (selectedUserDetails.length > 0 && subMenuAction.action_url == 'assignproject' && loggedInRoleName == 'TRAINING_COORDINATOR') || (selectedUserDetails.length > 0 && subMenuAction.action_url == 'assignproject' && loggedInRoleName == 'PROGRAM_LEAD') || (selectedUserDetails.length > 0 && subMenuAction.action_url == 'assignproject' && loggedInRoleName == 'PROJECT_MANAGER'))">
+                  <a class="dropdown-item" href="javascript:void(0);" (click)="resetUserAdminForm(assign)"
+                    [ngClass]="{'adisabled': (selectedUserDetails.length == 0)}" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url == 'attendance' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    (click)="attendanceNavigation()" [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url == 'generatelink' && accessRoleNames.includes(loggedInRoleName)">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url == 'changestatus' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [ngClass]="{'adisabled': (selectedUserDetails.length == 0)}"
+                    [attr.data-bs-target]="'#stupro'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url == 'resetpassword' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [ngClass]="{'adisabled': (selectedUserDetails.length == 0)}"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()" (click)="SendresetPassword()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url == 'sendmail' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [ngClass]="{'adisabled': (selectedUserDetails.length == 0)}"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()" (click)="sendMailButton()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url.trim() == 'migratesa' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" (click)="migrateToSA()"
+                    [ngClass]="{'adisabled': (selectedUserDetails.length == 0)}">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+                <!-- <div *ngIf="subMenuAction.action_url.trim() == 'migratesa' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);"
+                    [ngClass]="{'adisabled': (selectedUserDetails.length == 0)}" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div> -->
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="currentTab2 == subMenu.sub_menu_url" class="dropdown float-end header-links">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+                <div
+                  *ngIf="selectedCoordinatorDetails.length > 0 && subMenuAction.action_url.trim() == 'changestatus' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    (click)="changeStatusCss();"
+                    [attr.data-bs-target]="'#coordinator'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div
+                  *ngIf="selectedCoordinatorDetails.length > 0 && subMenuAction.action_url.trim() == 'sendmail' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()" (click)="sendMailButton()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div
+                  *ngIf="subMenuAction.action_url.trim() != 'sendmail' && subMenuAction.action_url.trim() != 'generatelink' && subMenuAction.action_url.trim() != 'changestatus' && accessRoleNames.includes(loggedInRoleName)">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()"
+                    (click)="resetUserAdminForm(addCoForm)">{{ subMenuAction.action_name }}</a>
+                </div>
+
+                <div
+                  *ngIf="selectedCoordinatorDetails.length > 0 && subMenuAction.action_url.trim() == 'generatelink' && accessRoleNames.includes(loggedInRoleName)">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#coordinator'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+
+
+          <div *ngIf="currentTab3 == subMenu.sub_menu_url" class="dropdown float-end header-links">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+
+                <div
+                  *ngIf="selectedUserAdminDetails.length > 0 && subMenuAction.action_url.trim() == 'changestatus' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#admin'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="subMenuAction.action_url.trim() == 'uploadtc' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div
+                  *ngIf="selectedUserAdminDetails.length > 0 && subMenuAction.action_url.trim() == 'sendmail' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()" (click)="sendMailButton()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div
+                  *ngIf="subMenuAction.action_url.trim() != 'sendmail' && subMenuAction.action_url.trim() != 'changestatus' && subMenuAction.action_url.trim() != 'uploadtc' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" (click)="resetUserAdminForm(addAdminForm)" href="javascript:void(0);"
+                    data-bs-toggle="modal" [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </span>
+      </div>
+
+
+      <!-- Delete User Modal -->
+      <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2 pb-2">
+              <p class="text-center mb-0"> <b>Are you sure want to delete?</b></p>
+            </div>
+            <div class="modal-footer border-top">
+              <button type="button" class="btn btn-blue" (click)="deleteUser(currentGttId)">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- addstudentprofessional Modal -->
+      <div class="modal fade" id="addstudentprofessional" tabindex="-1" aria-labelledby="addstudentprofessional"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add Student/Professional</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                (click)="uploadCloseButton()"></button>
+            </div>
+            <div class="modal-body modal-scroll slim-scroll">
+              <div class="form-check form-check-inline">
+                <input class="file-upload-radio form-check-input" type="radio" name="student_inlineRadioOptions"
+                  id="inlineRadio_student1" value="single" checked>
+                <label class="form-check-label" for="inlineRadio1">Single</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="file-upload-radio form-check-input" (change)="uploadCloseButton()" type="radio"
+                  name="student_inlineRadioOptions" id="inlineRadio_student2" value="bulk">
+                <label class="form-check-label" for="inlineRadio2">Bulk</label>
+              </div>
+              <!-- Bulk Update -->
+              <!-- <div class="form-check form-check-inline" *ngIf="loggedInRoleName == 'GTT_ADMIN'">
+                <input class="file-upload-radio form-check-input" (change)="uploadCloseButton()" type="radio"
+                  name="student_inlineRadioOptions" id="inlineRadio_student3" value="bulk-update">
+                <label class="form-check-label" for="inlineRadio3">Update Bulk</label>
+              </div> -->
+              <!-- single -->
+              <div class="row file-upload mt-3" id="show-single">
+                <div class="col-md-12">
+                  <ul class="nav nav-tabs card-nav" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link active" id="student-tab" data-bs-toggle="tab" data-bs-target="#student"
+                        type="button" role="tab" aria-controls="student" aria-selected="true">Student</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link" id="professional-tab" data-bs-toggle="tab" data-bs-target="#professional"
+                        type="button" role="tab" aria-controls="professional"
+                        aria-selected="false">Professional</button>
+                    </li>
+
+                  </ul>
+                  <div class="tab-content card-tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="student" role="tabpanel" aria-labelledby="student-tab">
+                      <div class="row">
+                        <app-student-add (filterCities)="FilterCity($event)"
+                          (callParentGetUserManagement)="getUserManagementNewDetails($event.paramRoleIds, $event.pageNumber, $event.showCount)"
+                          [filterCityNameList]="filterCityNameList" [collegeDetails]="collegeDetails"
+                          [cityDetails]="cityDetails" [stateDetails]="stateDetails"
+                          [organizationNameList]="organizationNameList" [loggedInUserId]="currentLoginUserId"
+                          [pageNumber]="pageNumber" [showCount]="showCount"
+                          [terms_and_conditions_url]="terms_and_conditions_url">
+                        </app-student-add>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="professional" role="tabpanel" aria-labelledby="professional-tab">
+                      <div class="row">
+                        <!-- <p>Professional</p> -->
+                        <app-professional-add (filterCities)="FilterCity($event)"
+                          (callParentGetUserManagement)="getUserManagementNewDetails($event.paramRoleIds, $event.pageNumber, $event.showCount)"
+                          [filterCityNameList]="filterCityNameList" [collegeDetails]="collegeDetails"
+                          [cityDetails]="cityDetails" [stateDetails]="stateDetails"
+                          [organizationNameList]="organizationNameList" [loggedInUserId]="currentLoginUserId"
+                          [pageNumber]="pageNumber" [showCount]="showCount"
+                          [terms_and_conditions_url]="terms_and_conditions_url">
+                        </app-professional-add>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- <app-studentscreen></app-studentscreen> -->
+              </div>
+              <!--## single ##-->
+
+              <!-- bulk -->
+              <div class="row file-upload mt-3" id="show-bulk">
+                <div class="col-md-6 offset-md-6">
+                  <div class="d-flex justify-content-end">
+                    <a target="_self" style="text-decoration:none;" class="f-green"
+                      href="assets/template/Student And Professional Bulk Template.xlsx">Download
+                      Template</a>
+                    <!--<label class="f-green" style="cursor: pointer;" (click)="downloadTemplate()">Download
+                                                Template</label>-->
+                  </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                  <div class="modal-bulk">
+                    <div class="bulkupload">
+                      <input id="file" #stuProFileInput (change)="onBulkUploadChange($event)" type="file"
+                        class="form-control">
+                    </div>
+                    <div *ngIf="stuProBulkUploadMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div>Please upload valid file</div>
+                    </div>
+                  </div>
+                </div>
+                <!--## bulk ##-->
+                <div class="col-md-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal"
+                    (click)="uploadCloseButton()">Close</button>
+                  <button type="button" (click)="onBulkUpload()" class="btn btn-blue">Upload</button>
+                </div>
+              </div>
+
+
+              <!-- bulk -->
+              <div class="row file-upload mt-3" id="show-bulk-update">
+                <div class="col-md-6 offset-md-6">
+                  <div class="d-flex justify-content-end">
+                    <!-- <a target="_self" style="text-decoration:none;" class="f-green"
+                      href="assets/template/Student And Professional Bulk Template.xlsx">Download
+                      Template</a> -->
+                    <!--<label class="f-green" style="cursor: pointer;" (click)="downloadTemplate()">Download
+                                                Template</label>-->
+                  </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                  <div class="modal-bulk">
+                    <div class="bulkupload">
+                      <input id="updatefile" #stuProFileUpdateInput (change)="onBulkUploadUpdateChange($event)"
+                        type="file" class="form-control">
+                    </div>
+                    <div *ngIf="stuProBulkUploadUpdateMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div>Please upload valid file</div>
+                    </div>
+                  </div>
+                </div>
+                <!--## bulk ##-->
+                <div class="col-md-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal"
+                    (click)="uploadCloseButton()">Close</button>
+                  <button type="button" (click)="onBulkUploadUpdate()" class="btn btn-blue">Update</button>
+                </div>
+              </div>
+              <!-- <div class="modal-footer ps-0 pe-0" id="show-bulk">
+                                    <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-blue">Add</button>
+                                </div> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <app-edit-stu-pro [currentUserId]="currentUserId" [stuUploadOption]="stuUploadOption"
+        [proUploadOption]="proUploadOption" (filterCities)="FilterCity($event)"
+        [filterCityNameList]="filterCityNameList"
+        (callParentGetUserManagement)="getUserManagementNewDetails($event.paramRoleIds, $event.pageNumber, $event.showCount)"
+        [editStuDetails]="editStuDetails" [collegeDetails]="collegeDetails" [editProDetails]="editProDetails"
+        [cityDetails]="cityDetails" [organizationNameList]="organizationNameList" [stateDetails]="stateDetails"
+        [languageIds]="languageIds" [pageNumber]="pageNumber" [showCount]="showCount"
+        [terms_and_conditions_url]="terms_and_conditions_url">
+      </app-edit-stu-pro>
+
+
+
+
+
+
+      <!-- Assign Modal -->
+      <div class="modal fade" id="assignproject" tabindex="-1" aria-labelledby="assignproject" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Assign Project</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form #assign="ngForm" name="form" (ngSubmit)="assign.form.valid">
+
+                <div class="row">
+
+                  <!-- <div class="col-md-6 mb-4">
+                                        <label class="form-check-label mb-1">Student Name</label><span class="required"> *</span>
+                                        <ng-multiselect-dropdown [settings]="studentdropdownSettings" [data]="studentddl" type="text" class="form-multiselect" [(ngModel)]="projectAssign.students"
+                                            name="student" #student="ngModel" required>>
+                                        </ng-multiselect-dropdown>
+                                        <div *ngIf="(assign.submitted && student.untouched) || student.touched" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                            <div *ngIf="student.errors?.['required']">Select the above(Student Name) field</div>
+                                        </div>
+                                    </div> -->
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Project Name</label><span class="required">
+                      *</span>
+                    <select class="form-select" name="project"
+                      (change)="getBatchProgramBasedOnProject($any($event.target).value)"
+                      [(ngModel)]="projectAssign.project_id" #project="ngModel" required>
+                      <!-- <option value=""  disabled selected hidden> </option> -->
+                      <option *ngFor="let x of projectddl" value={{x.project_id}}>
+                        {{x.project_name}}</option>
+                    </select>
+                    <div *ngIf="(assign.submitted && project.untouched) || project.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="project.errors?.['required']">Select the above(Project Name)
+                        field
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Batch Name</label><span class="required">
+                      *</span>
+                    <select class="form-select" name="batchname" id="assignBatchName"
+                      (change)="getCourseTrainerBasedOnBatch($any($event.target).value)"
+                      [(ngModel)]="projectAssign.batch_code" #batchname="ngModel" required>
+                      <option value="" disabled selected hidden> -- Select -- </option>
+                      <option *ngFor="let x of listOfBatches" value="{{x.batch_code}}__{{ x.program_id }}">
+                        {{x.batch_name}}
+                      </option>
+                    </select>
+                    <div *ngIf="(assign.submitted && batchname.untouched) || batchname.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="batchname.errors?.['required']">Select the above(Batch Name)
+                        field
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Course Name</label><span class="required">
+                      *</span>
+                    <select class="form-select" name="program"
+                      (change)="getTrainerBasedOnCourse($any($event.target).value)"
+                      [(ngModel)]="projectAssign.courses" #course="ngModel" required>
+                      <option value="" disabled selected hidden> Select Program </option>
+                      <option *ngFor="let x of listOfCourses" value="{{x.courseid}}">
+                        {{x.coursename}}</option>
+                    </select>
+                    <div *ngIf="(assign.submitted && course.untouched) || course.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="course.errors?.['required']">Select the above(Course Name)
+                        field
+                      </div>
+                    </div>
+                  </div> -->
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Course Name</label><span class="required">
+                      *</span>
+                    <input readonly class="form-control" autocomplete="off" name="course"
+                      [(ngModel)]="projectAssign.courses" #course="ngModel">
+                  </div>
+
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Trainer Name</label><span class="required">
+                      *</span>
+                    <input readonly class="form-control" autocomplete="off" name="trainer"
+                      [(ngModel)]="projectAssign.trainer_id" #trainer="ngModel">
+                  </div>
+
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Project Manager Name</label><span class="required"> *</span>
+                    <select class="form-select" name="projectmanager" [(ngModel)]="projectAssign.project_manager_id"
+                      #projectmanager="ngModel" required>
+                      <option value="" disabled selected hidden> -- Select --</option>
+                      <option *ngFor="let x of listOfProjectManger" value="{{x.project_manager_id}}">
+                        {{x.project_manager_name}}</option>
+                    </select>
+                    <div *ngIf="assign.submitted && projectmanager.untouched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="projectmanager.errors?.['required']">Select the above(Project
+                        Manager Name) field</div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-check-label mb-1">Training Co-ordinator Name</label>
+                    <span class="required"> *</span>
+                    <select class="form-select" name="trainingcoordinator"
+                      [(ngModel)]="projectAssign.training_coordinator_id" #trainingcoordinator="ngModel" required>
+                      <option value="" disabled selected hidden> -- Select --</option>
+                      <option *ngFor="let x of trainingcorddl" value="{{x.userid}}">
+                        {{x.firstname}} {{x.lastname}}</option>
+                    </select>
+                    <div *ngIf="(assign.submitted && trainingcoordinator.untouched) || trainingcoordinator.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="trainingcoordinator.errors?.['required']">Select the
+                        above(Training Co-ordinator Name) field</div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="modal-footer ps-0 pe-0">
+                  <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" (click)="onAssignProject(assign.form, assign)" class="btn btn-blue">Add</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="modal fade" id="migratesa" tabindex="-1" aria-labelledby="migratesa" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Migrate to Skills Aplha</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form #assign="ngForm" name="form" (ngSubmit)="assign.form.valid">
+
+                <div class="row">
+
+                  <br />
+                  <div class="col-md-2 mb-4"></div>
+                  <div class="col-md-8 mb-4">
+                    <label class="form-check-label mb-1">Tag Name</label><span class="required">
+                      *</span>
+                    <input class="form-control" autocomplete="off" name="course" [(ngModel)]="projectAssign.courses"
+                      #course="ngModel">
+                  </div>
+                  <div class="col-md-2 mb-4"></div>
+
+
+
+                  <div class="col-md-2 mb-4"></div>
+                  <div class="col-md-8 mb-4">
+                    <label class="form-check-label mb-1">Instant Urls</label><span
+                      style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      *</span>
+                    <p-multiSelect required="true" name="urls" #instantUrl="ngModel" [options]="listOfInstantUrls"
+                      #selectedUser name="instant_url" [(ngModel)]="selectedInstantUrls"
+                      defaultLabel="Select a Instant" optionLabel="item_text" display="chip"></p-multiSelect>
+
+                  </div>
+                  <div class="col-md-2 mb-4"></div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer ps-0 pe-0">
+                  <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" (click)="onAssignProject(assign.form, assign)" class="btn btn-blue">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="uploadtc" tabindex="-1" aria-labelledby="uploadtc" aria-hidden="true">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">General Terms and Conditions</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+              (click)="GenResetForm(updateTerm)"></button>
+          </div>
+          <form #updateTerm="ngForm" name="form" (ngSubmit)="updateTerm.form.valid">
+            <div class="modal-body pt-2 pb-2">
+              <!-- bulk -->
+              <div class="row mt-3">
+
+                <div class="col-md-6 mb-4">
+                  <label class="">Terms and Conditions</label><span class="required">
+                    *</span>
+                  <!-- <div class="input-group file-group"
+                    *ngIf="bulkUploadTermOption == true && locStorageTermFileName != null">
+                    <input type="text" class="form-control" name="termUpload"
+                      [value]="(termUploadFileName != undefined && termUploadFileName != null) ? termUploadFileName : ''"
+                      disabled>
+                    <button class="btn" type="button" (click)="UploadTermCerticate(false)"><i
+                        class="las la-times-circle"></i></button>
+                  </div> -->
+
+                  <div class="input-group file-group"
+                    *ngIf="bulkUploadTermOption == false || locStorageTermFileName == null">
+                    <input type="file" #termUploadFileInput class="form-control" name="upload"
+                      (change)="onGeneralTermsUploadChange($event)">
+                    <!-- <button class="btn" type="button" (click)="UploadTermCerticate(true)"><i
+                        class="las la-times-circle"></i></button> -->
+                  </div>
+
+                  <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                    <div>(Max file size should not exceed 2MB & file format should be PDF )
+                    </div>
+                  </div>
+
+                  <div
+                    *ngIf="(updateTerm.submitted && termGroup.untouched && termMessage == null && termUploadFileName == null) || (updateTerm.submitted && termGroup.touched && termUploadFileName == null && termMessage == null)"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div>Terms & Conditions pdf file is required</div>
+                  </div>
+                  <div *ngIf="termMessage != ''" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    {{termMessage}}
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Version</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <input pattern="^[a-zA-Z]{1}[0-9](\.[0-9]{1,2})?(\.[0-9])?$" type="text" class="form-control"
+                    name="version" [(ngModel)]="termUploadVerion" #version="ngModel" required />
+                  <div *ngIf="(updateTerm.submitted && version.untouched) ||
+                    version.touched
+                  " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="version.errors?.['required']">
+                      Version is required
+                    </div>
+                  </div>
+                  <div *ngIf="version.touched && version.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="version.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+              Latest File: <a href="{{ terms_and_conditions_url }}" target="_blank"><b>{{ locStorageTermFileName
+                  }}</b></a><br />
+              Version: <b>{{ locStorageTermFileVersion }}</b>
+            </div>
+            <div class="modal-footer border-top">
+              <!--## bulk ##-->
+              <div class="col-md-12 d-flex justify-content-end">
+                <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal"
+                  (click)="GenResetForm(updateTerm)">Close</button>
+                <button type="submit" (click)="onGeneralTermsUpload(updateTerm)" class="btn btn-blue">Upload</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="sendmail" tabindex="-1" aria-labelledby="sendmail" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Send Bulk Mail</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="mailFormReset(mail)"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form #mail="ngForm" name="form" (ngSubmit)="mail.form.valid" enctype="multipart/form-data">
+              <div class="modal-body pt-2 pb-2">
+                <!-- bulk -->
+                <div class="row mt-3">
+                  <div class="col-md-12 mb-4">
+                    <label class="form-check-label mb-1">To:</label><span
+                      style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      *</span>
+                    <label style="float:right;font-size:12px;cursor: pointer;" (click)="bccOption()"><b
+                        *ngIf="bccInput">Bcc</b><span *ngIf="bccInput == false">Bcc</span></label>&nbsp;
+                    <label style="float:right;font-size:12px;cursor: pointer;" (click)="ccOption()"><b
+                        *ngIf="ccInput">Cc</b><span *ngIf="ccInput == false">Cc</span></label>
+                    <p-multiSelect required="true" name="users" #users="ngModel" [options]="mailUsers" #selectedUser
+                      name="users" [(ngModel)]="selectedMailedUsers" defaultLabel="Select a User" optionLabel="name"
+                      display="chip"></p-multiSelect>
+                    <div *ngIf="(mail.submitted && users.untouched) || users.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="users.errors?.['required']">User is required</div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-12 mb-3" *ngIf="ccInput == true">
+                    <label class="form-check-label mb-1">Cc</label><span
+                      style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      *</span>
+                    <p-chips [addOnTab]="true" [(ngModel)]="ccMailsSelected" separator="," required="true" name="ccMail"
+                      [ngStyle]="{'display': 'block'}" #ccMail="ngModel" (onAdd)=checkCcInput($event)
+                      (onRemove)="checkCcRemove($event)"></p-chips>
+                    <div *ngIf="(mail.submitted && ccMail.untouched) || ccMail.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="ccMail.errors?.['required']">Cc mail id is required</div>
+                    </div>
+                    <div *ngIf="ccMailMessage != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div>{{ ccMailMessage }}</div>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-12 mb-3" *ngIf="bccInput == true">
+                    <label class="form-check-label mb-1">Bcc</label><span
+                      style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      *</span>
+                    <p-chips [addOnTab]="true" [(ngModel)]="bccMailsSelected" separator="," required="true"
+                      name="bccMail" [ngStyle]="{'display': 'block'}" #bccMail="ngModel" (onAdd)=checkBccInput($event)
+                      (onRemove)="checkBccRemove($event)"></p-chips>
+                    <div *ngIf="(mail.submitted && bccMail.untouched) || bccMail.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="bccMail.errors?.['required']">Bcc mail id is required</div>
+                    </div>
+                    <div *ngIf="bccMailMessage != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div>{{ bccMailMessage }}</div>
+                    </div>
+                  </div>
+
+
+
+                  <div class="col-md-12 mb-3">
+                    <label class="mb-1">Subject</label><span class="required"> *</span>
+                    <input required type="text" class="form-control" name="subject" [(ngModel)]="sendMail.subject"
+                      #subject="ngModel">
+                    <div *ngIf="(mail.submitted && subject.untouched) ||  subject.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="subject.errors?.['required']">Subject is required</div>
+                    </div>
+                    <!-- <div *ngIf="subject.touched && subject.invalid"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="subject.errors?.['pattern']">Enter a valid data
+                      </div>
+                    </div> -->
+                  </div>
+
+                  <div class="col-md-12 mb-3">
+                    <label class="mb-1">Message</label><span class="required"> *</span>
+                    <textarea required class="form-control" name="message" [(ngModel)]="sendMail.message"
+                      #message="ngModel"></textarea>
+                    <div *ngIf="(mail.submitted && message.untouched) ||  message.touched"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="message.errors?.['required']">Message is required</div>
+                    </div>
+                    <!-- <div *ngIf="message.touched && message.invalid"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="message.errors?.['pattern']">Enter a valid data
+                      </div>
+                    </div> -->
+                  </div>
+
+
+                  <div [formGroup]="mailGroup" class="col-md-12 mb-4">
+                    <label for="file" class=" mb-1">Attachments</label>
+                    <input formControlName="file" id="file" type="file" class="form-control" #mailFileInput
+                      (change)="onMailFileChange($event)" multiple>
+                    <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                      <div>(Max file size should not exceed 10MB & file format should be pdf, jpg, xlsx, csv, doc, ppt,
+                        png)
+                      </div>
+                    </div>
+                    <!-- <div
+                      *ngIf="(mail.submitted && mailGroup.untouched && mailMessage == null) || (mail.submitted && mailGroup.touched && sendMail.attachment == null && mailMessage == null)"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div>Attachement file is required</div>
+                    </div> -->
+                    <div *ngIf="mailMessage !== ''" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      {{mailMessage}}
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="modal-footer border-top">
+                <!--## bulk ##-->
+                <div class="col-md-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal"
+                    (click)="mailFormReset(mail)">Close</button>
+                  <button type="submit" (click)="sendBulkMail(mail)" class="btn btn-blue">Send Mail</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- View Modal -->
+    <div class="modal fade" id="view" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Project</small>
+                <select class="form-select" disabled aria-label="Default select example">
+                  <option selected>Project 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Project Manager</small>
+                <select class="form-select" disabled aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Trainer</small>
+                <select class="form-select" disabled aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Training coordinator</small>
+                <select class="form-select" disabled aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Program</small>
+                <select class="form-select" disabled aria-label="Default select example">
+                  <option selected>Program 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Course & Batch</small>
+                <select class="form-select" disabled aria-label="Default select example">
+                  <option selected>Course & Batch 1</option>
+                </select>
+              </div>
+
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="edit" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Project</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Project 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Project Manager</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Trainer</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Training coordinator</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Program</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Program 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Course & Batch</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Course & Batch 1</option>
+                </select>
+              </div>
+
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-blue">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Project</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Project 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Project Manager</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Trainer</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Training coordinator</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Program</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Program 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <small class="mb-2">Course & Batch</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Course & Batch 1</option>
+                </select>
+              </div>
+
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-red">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Attendance Modal -->
+    <div class="modal fade" id="view-attendance" tabindex="-1" aria-labelledby="view-attendance" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View Attendance</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <small class="mb-2">Student Name</small>
+                <select class="form-select" aria-label="Default select example" disabled>
+                  <option selected>Name 1</option>
+                  <option>Name 2</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <small class="mb-2">Select Date</small>
+                <input type="text" class="dateselect form-control" placeholder="Select Date" required="required"
+                  disabled />
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" type="radio" id="viewinlineRadio1"
+                    name="viewattendance" checked disabled>
+                  <label class="form-check-label" for="viewinlineRadio1">Present</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" type="radio" id="viewinlineRadio2"
+                    name="viewattendance" disabled>
+                  <label class="form-check-label" for="viewinlineRadio2">Absent</label>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Attendance Modal -->
+    <div class="modal fade" id="edit-attendance" tabindex="-1" aria-labelledby="edit-attendance" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Attendance</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <small class="mb-2">Student Name</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                  <option>Name 2</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <small class="mb-2">Select Date</small>
+                <input type="text" class="dateselect form-control" placeholder="Select Date" required="required" />
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" type="radio" id="editinlineRadio1"
+                    name="editattendance" checked>
+                  <label class="form-check-label" for="editinlineRadio1">Present</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" type="radio" id="editinlineRadio2"
+                    name="editattendance">
+                  <label class="form-check-label" for="editinlineRadio2">Absent</label>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-blue">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Attendance Modal -->
+    <div class="modal fade" id="delete-attendance" tabindex="-1" aria-labelledby="delete-attendance" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Delete Attendance</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <small class="mb-2">Student Name</small>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                  <option>Name 2</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <small class="mb-2">Select Date</small>
+                <input type="text" class="dateselect form-control" placeholder="Select Date" required="required" />
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" type="radio" id="deleteinlineRadio1"
+                    name="deleteattendance" checked>
+                  <label class="form-check-label" for="deleteinlineRadio1">Present</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" type="radio" id="deleteinlineRadio2"
+                    name="deleteattendance">
+                  <label class="form-check-label" for="deleteinlineRadio2">Absent</label>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-red">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Status Modal -->
+    <!-- <ng-template #test let-modal>
+    <div>
+        <span></span>
+    </div>
+    </ng-template> -->
+
+
+
+    <!-- Change Status Modal -->
+    <div class="modal fade" id="stuprochangestatus" tabindex="-1" aria-labelledby="stuprochangestatus"
+      aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-md modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="StatusModal()"
+              aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-center mt-3">
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Active"
+                    [(ngModel)]="userModel.status" type="radio" id="statusinlineRadio1" name="status">
+                  <label class="form-check-label" for="statusinlineRadio1">Active</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Inactive"
+                    [(ngModel)]="userModel.status" type="radio" id="statusinlineRadio2" name="status">
+                  <label class="form-check-label" for="statusinlineRadio2">Inactive</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer border-top">
+            <button type="button" class="btn btn-red" (click)="StatusModal()" data-bs-dismiss="modal">Close</button>
+            <button type="button" (click)="onUserChangeStatus()" class="btn btn-blue">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Generate Link Modal -->
+    <div class="modal fade" id="generatelink" tabindex="-1" aria-labelledby="generatelink" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Generate Link</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="mb-2">Project</label>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Project 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label class="mb-2">Project Manager</label>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-blue">Generate Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Coordinator Generate Link Modal -->
+    <div class="modal fade" id="coordinatorgeneratelink" tabindex="-1" aria-labelledby="coordinatorgeneratelink"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Generate Link</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="mb-2">Project</label>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Project 1</option>
+                </select>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label class="mb-2">Project Manager</label>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Name 1</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-blue">Generate Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal fade" id="studentsearch" tabindex="-1" aria-labelledby="studentsearch" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)"
+                  [selectionLimit]="5" optionLabel="header" [(ngModel)]="_selectedSearchColumns"
+                  selectedItemsLabel="{0} columns selected" [style]="{minWidth: '180px'}" placeholder="Choose Columns"
+                  [showToggleAll]="false"></p-multiSelect>
+              </div>
+            </div>
+
+            <div class="row p-2">
+              <table>
+                <tr *ngFor="let searchColumns of _selectedSearchColumns">
+                  <td class="w-auto p-2 text-center">
+                    {{searchColumns.header}}
+                  </td>
+                  <td class="w-auto p-2">
+                    <input required type="text" [placeholder]="searchHolder(searchColumns.field)" class="form-control"
+                      name="subject" [(ngModel)]="searchColumns.search" #subject="ngModel">
+                  </td>
+                  <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1">
+                    <select required class="form-select" aria-placeholder="Select" title="Condition"
+                      [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                      <option [ngValue]="undefined" disabled selected>Select</option>
+                      <option>AND</option>
+                      <option>OR</option>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="row p-2" *ngIf="searchError">
+              <p style="color: red;">*Mandatory to fill all fields.</p>
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal"
+                [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+              <button type="button" class="btn btn-blue" (click)="submitSearch()"
+                [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-tabView (onChange)="getCoordinator($event)">
+      <p-tabPanel header="Student / Professional" *ngIf="addAdminUserScreen.includes(loggedInRoleName)">
+        <div class="row">
+          <div class="col-md-3 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <small><span class="result-found"><b>{{ userTotalRecords }}</b> Results
+                  Found</span></small>
+            </div>
+          </div>
+          <div class="col-md-9 d-block d-sm-inline-flex justify-content-end" style="margin-bottom: -10px;">
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <p-multiSelect [options]="cols" optionLabel="header" [(ngModel)]="_selectedColumns"
+                selectedItemsLabel="{0} columns selected" (onChange)="onStuProMultiSelect($event)"
+                [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+            </div>
+            <!-- <form #searchForm="ngForm" name="form" class="d-block d-sm-inline-flex" (ngSubmit)="searchForm"
+              novalidate>
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <p-dropdown [required]="true" [options]="searchUserFields" [(ngModel)]="selectedSearchFields"
+                  placeholder="Select a column" #selectSearchColumn="ngModel" [filter]="true" style="min-width: 180px;"
+                  optionLabel="displayName"></p-dropdown>
+                <div style="height: 4px; display: block;" class="invalid-feedback">
+                  <div *ngIf="(searchForm.submitted && selectSearchColumn.untouched)"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="selectSearchColumn.errors?.['required']">Search Column is required</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <input type="text" class="form-control" placeholder="Search" #searchText="ngModel"
+                  [(ngModel)]="searchInputText" required>
+                <div style=" display: block;" class="invalid-feedback">
+                  <div *ngIf="(searchForm.submitted && searchText.untouched)"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="searchText.errors?.['required']">Search is required</div>
+                  </div>
+                  <div *ngIf="searchForm.touched && searchText.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="searchText.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <button class="btn btn-primary" style="font-size: 14px;" (click)="onSearch(searchForm.form)">Search</button>
+              </div>
+            </form>
+
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <button class="btn btn-primary" style="font-size: 14px;" (click)="onSearchFormReset(searchForm)">Reset</button>
+            </div> -->
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <!-- <input type="text" class="form-control" placeholder="Search"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"> -->
+              <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"
+                [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''" (click)="searchClose()"
+                data-bs-toggle="modal" [attr.data-bs-target]="'#studentsearch'" class="mr-2" title="Search"
+                tooltipPosition="bottom"></button>
+            </div>
+            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-4">
+              <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Export<i class="las la-angle-down ms-2"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <!-- Without Bulk Upload and Update-->
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file" (click)="exportall('CSV')" class="mr-2"
+                    title="CSV" pTooltip="CSV" tooltipPosition="bottom"></button>
+                </li>
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportall('EXCEL')"
+                    class="p-button-success mr-2" title="XLS" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </li>
+
+                <!-- Bulk Upload and Update-->
+                <!-- <li>
+                  <button type="button" pButton pRipple icon="pi pi-file" (click)="exportallFieldscsv()" class="mr-2"
+                    title="CSV" pTooltip="CSV" tooltipPosition="bottom"></button>
+                </li>
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportallFields()"
+                    class="p-button-success mr-2" title="XLS" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </li> -->
+                <!-- <li>
+                                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf(dt)"
+                                        class="p-button-warning mr-2" title="PDF" tooltipPosition="bottom"></button>
+                                </li> -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!--{{ userDetails | json}}-->
+
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="p-table-grid" [columns]="selectedColumns" (onFilter)="onFilter($event, dt)"
+            [(selection)]="selectedUserDetails" [value]="userDetails" [rows]="userRowNum" [paginator]="false"
+            sortMode="multiple" [responsive]="true" [globalFilterFields]="stuProGlobalFilter"
+            [exportFilename]="exportUser">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-userDetail let-columns="columns">
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="userDetail"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns">
+                  <span
+                    *ngIf="col.field !== 'status' && col.field !== 'dob' && col.field !== 'firstName' && col.field !== 'lastName' && col.field !== 'collegeCity' && col.field !== 'educationalQualification'
+                   && col.field !== 'subject' && col.field !== 'profession' && col.field !== 'currentLocation' && col.field !== 'fatherName' && col.field !== 'motherName'
+                   && col.field !== 'guardianName' && col.field !== 'employer1' && col.field !== 'employer2' && col.field !== 'designation' && col.field !== 'caste'">
+                    {{ userDetail[col.field] }}
+                  </span>
+
+                  <span *ngIf="col.field == 'dob'">
+                    {{ userDetail[col.field] }}
+                  </span>
+
+                  <span *ngIf="col.field == 'firstName'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'lastName'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'collegeCity'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'educationalQualification'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'subject'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'profession'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'currentLocation'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'fatherName'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'motherName'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'guardianName'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'employer1'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'employer2'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'designation'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'caste'">
+                    {{ userDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field == 'status'">
+                    {{ userDetail[col.field] }}
+                  </span>
+                </td>
+                <td *ngIf="addAdminUserScreen.includes(loggedInRoleName)">
+                  <a href="javascript:void(0);" data-bs-toggle="modal" *ngIf="userDetail['additionalFields'] == true"
+                    data-bs-target="#additionalfields" (click)="getAdditionalFieldsGrid(userDetail)" class="mr-5"><i
+                      class="las la-eye"></i></a>
+                  <!--<a href="javascript:void(0);" class="" *ngIf="userDetail['additionalFields'] == true" data-bs-toggle="modal" click="getAdditionalFields()"><i class="las la-eye"></i></a> -->
+                  <a href="javascript:void(0);" *ngIf="!editAccessScreen.includes(loggedInRoleName)"
+                    (click)="editUserDetails(userDetail)"><i class="las la-pen"></i></a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <p-paginator [rows]="userRowNum" #customPaginator [totalRecords]="userTotalRecords"
+            [rowsPerPageOptions]="[10, 30, 50, 100, 500]" (onPageChange)="paginate($event)"></p-paginator>
+          <hr />
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Coordinators" *ngIf="accessRoleNames.includes(loggedInRoleName)">
+        <div class="row">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <small><span class="result-found"><b>{{ ct.totalRecords }}</b> Results
+                  Found</span></small>
+            </div>
+          </div>
+
+          <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <p-multiSelect [options]="coordinatorscols" optionLabel="header"
+                [(ngModel)]="_coordinatorsSelectedColumns" selectedItemsLabel="{0} columns selected"
+                (onChange)="onCoordinatorMultiSelect($event)" [style]="{minWidth: '180px'}"
+                placeholder="Choose Columns"></p-multiSelect>
+            </div>
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <input type="text" class="form-control" placeholder="Search"
+                (input)="ct.filterGlobal($any($event.target).value, 'contains')">
+            </div>
+            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+              <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Export<i class="las la-angle-down ms-2"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file" (click)="exportCoordinatorCSV()" title="CSV"
+                    class="mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+
+                </li>
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportCoordinatorExcel()"
+                    class="p-button-success mr-2" title="XLSX" pTooltip="XLSX" tooltipPosition="bottom"></button>
+                </li>
+                <li>
+                  <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf"
+                                        (click)="exportCoordinatorPdf(dt)" class="p-button-warning mr-2" title="PDF"
+                                        tooltipPosition="bottom"></button> -->
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #ct class="p-table-grid" [columns]="selectedCoordinatorColumns" [value]="coordinatorDetails"
+            [paginator]="true" [(selection)]="selectedCoordinatorDetails" [rowsPerPageOptions]="[5,10,25,50,100,500]"
+            [rows]="10" sortMode="multiple" [responsive]="true" [globalFilterFields]="coordinatorFilter"
+            [exportFilename]="exportCoordinateName">
+
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-coordinatorDetail let-columns="columns">
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="coordinatorDetail"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns">
+                  <span
+                    *ngIf="col.field !== 'status' && col.field !== 'dob' && col.field !== 'first_name' && col.field !== 'last_name'">
+                    {{ coordinatorDetail[col.field] }}
+                  </span>
+                  <span *ngIf="col.field == 'first_name'">
+                    {{ coordinatorDetail[col.field] | titlecase }}
+                  </span>
+                  <span *ngIf="col.field == 'last_name'">
+                    {{ coordinatorDetail[col.field] | titlecase }}
+                  </span>
+                  <span *ngIf="col.field === 'status'">
+                    {{(coordinatorDetail[col.field] == "Active") ? 'Active' :"Inactive" }}
+                  </span>
+
+                  <span *ngIf="col.field == 'dob'">
+                    {{ coordinatorDetail[col.field] | date:'yyyy-MM-dd' }}
+                  </span>
+                </td>
+
+                <td>
+                  <a href="javascript:void(0);" (click)="editCoordinateDetails(coordinatorDetail)"
+                    *ngIf="!editAccessScreen.includes(loggedInRoleName)"><i class="las la-pen"></i></a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Admin" *ngIf="loggedInRoleName == 'GTT_ADMIN'">
+        <div class="row">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <small><span class="result-found"><b>{{ at.totalRecords }}</b> Results
+                  Found</span></small>
+            </div>
+          </div>
+
+          <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <p-multiSelect [options]="userAdminCols" [(ngModel)]="_selectedUserAdminColumns" optionLabel="header"
+                selectedItemsLabel="{0} columns selected" (onChange)="onUserAdminMultiSelect($event)"
+                [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+            </div>
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <input type="text" class="form-control" placeholder="Search"
+                (input)="at.filterGlobal($any($event.target).value, 'contains')">
+            </div>
+            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+              <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Export<i class="las la-angle-down ms-2"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file" (click)="exportUserAdminCSV()" class="mr-2"
+                    title="CSV" pTooltip="CSV" tooltipPosition="bottom"></button>
+                </li>
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportUserAdminExcel()"
+                    title="XLSX" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </li>
+                <li>
+                  <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf"
+                                        (click)="exportUserAdminPdf(at)" title="PDF" class="p-button-warning mr-2"
+                                        pTooltip="PDF" tooltipPosition="bottom"></button> -->
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #at class="p-table-grid" [(selection)]="selectedUserAdminDetails"
+            [columns]="selectedUserAdminColumns" [value]="adminDetails" [paginator]="true"
+            [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple" [responsive]="true"
+            [globalFilterFields]="adminFilter" [exportFilename]="exportAdminName">
+
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-adminDetail let-columns="columns">
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="adminDetail"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns">
+                  <span
+                    *ngIf="col.field !== 'status' && col.field !== 'dob' && col.field !== 'first_name' && col.field !== 'last_name'">
+                    {{ adminDetail[col.field] }}
+                  </span>
+
+                  <span *ngIf="col.field === 'status'">
+                    {{(adminDetail[col.field] == "Active") ? "Active" :"Inactive" }}
+                  </span>
+
+                  <span *ngIf="col.field === 'first_name'">
+                    {{ adminDetail[col.field] | titlecase }}
+                  </span>
+
+                  <span *ngIf="col.field === 'last_name'">
+                    {{ adminDetail[col.field] | titlecase }}
+                  </span>
+
+
+                  <span *ngIf="col.field == 'dob'">
+                    {{ adminDetail[col.field] | date:'yyyy-MM-dd' }}
+                  </span>
+                </td>
+                <td>
+                  <a href="javascript:void(0);" (click)="editAdminDetails(adminDetail)"><i class="las la-pen"></i></a>
+                  <!-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteUserAdminModal" (click)="deleteCurrentAdminId(adminDetail)"><i class="las la-trash-alt"></i></a> -->
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+      <!-- <p-tabPanel header="Bulk Upload Template" *ngIf="loggedInRoleName == 'GTT_ADMIN'">
+                <div class="row">
+                    <div class="col-md-4 d-flex align-items-center">
+                        <div class="show-entries d-flex mb-3">
+                            <small><span class="result-found"><b>{{ at.totalRecords }}</b> Results
+                                    Found</span></small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                        <div class="search-input w-xs-100 me-2 mb-3">
+                            <input type="text" class="form-control" placeholder="Search"
+                                (input)="at.filterGlobal($any($event.target).value, 'contains')">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 scroll-table scrolling-table-div" style="height:auto !important;">
+                    <p-table #at class="p-table-grid" [(selection)]="selectedBulkUploadTemplateDetails"
+                        [columns]="selectedBulkUploadTemplateColumns" [value]="bulkUploadTemplateDetails"
+                        [paginator]="true" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple"
+                        [responsive]="true" [globalFilterFields]="adminFilter">
+
+
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th>
+                                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                </th>
+                                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                    {{col.header}}
+                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-templateDetail let-columns="columns">
+                            <tr>
+                                <td>
+                                    <p-tableCheckbox [value]="templateDetail"></p-tableCheckbox>
+                                </td>
+                                <td *ngFor="let col of columns">
+                                    <span *ngIf="col.field !== 'file_name'">
+                                        {{ templateDetail[col.field] }}
+                                    </span>
+
+                                    <span *ngIf="col.field == 'file_name'">
+                                        <a href="assets/template/{{ templateDetail[col.field] }}">{{
+                                            templateDetail[col.field] }}</a>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);" (click)="editBulkUploadTemplate(templateDetail)"><i
+                                            class="las la-pen"></i></a>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </p-tabPanel> -->
+    </p-tabView>
+
+  </div>
+</div>
+
+
+<!-- Coordinator Change Status -->
+<div class="modal fade" id="editbulktemplte" tabindex="-1" aria-labelledby="editbulktemplte" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Bulk Template</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form #bulktemplate="ngForm" name="form" (ngSubmit)="bulkUploadTemplateSubmit()">
+          <div class="row">
+            <div class="col-md-12 mb-4">
+              <label class="mb-2">Template</label><span class="required">
+                *</span>
+              <div class="input-group file-group" *ngIf="bulkUploadOption == true">
+                <input type="text" class="form-control" name="upload" [value]="bulkUploadFileName" disabled>
+                <button class="btn" type="button" (click)="UploadCerticate(false)"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+              <div class="input-group file-group" *ngIf="bulkUploadOption == false">
+                <input type="file" class="form-control" name="upload" (change)="onBulkUploadTemplateChange($event)"
+                  [value]="bulkUploadFileName">
+                <button class="btn" type="button" (click)="UploadCerticate(true)"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+              <!-- <div *ngIf="!bulkTemplateFileError"
+                                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                <div>Please upload valid file</div>
+                            </div> -->
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-blue">Update</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit userAdmin Modal -->
+<div class="modal fade" id="edit_admin_details" tabindex="-1" aria-labelledby="edit_admin_details" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit User Admin Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+        <form #editAdminForm="ngForm" name="userAdminForm" (ngSubmit)="onSubmitUpdateUserAdmin(editAdminForm.form)">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label>First Name <span class="text-danger">*</span></label>
+              <input pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" type="text" title="First Name"
+                class="form-control" (input)="dotAfterCaptilize(userAdmin.firstName, 'admin_edit_fistname')"
+                id="admin_edit_fistname" name="admin_edit_first_name" [(ngModel)]="userAdmin.firstName"
+                #admineditfirstname="ngModel" required>
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+                <div *ngIf="(editAdminForm.submitted && admineditfirstname.untouched) || admineditfirstname.touched"
+                  class="error">
+                  <div *ngIf="admineditfirstname.errors?.['required']">First name is required</div>
+                </div>
+                <div *ngIf="admineditfirstname.touched && admineditfirstname.invalid" class="error">
+                  <div *ngIf="admineditfirstname.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Last Name </label>
+              <!-- <span class="text-danger">*</span>
+              required pattern="^[a-zA-Z.]+$" -->
+              <input type="text" class="form-control" title="Last Name"
+                pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$"
+                (input)="dotAfterCaptilize(userAdmin.lastName, 'admin_edit_lastname')" id="admin_edit_lastname"
+                name="admin_edit_last_name" [(ngModel)]="userAdmin.lastName" #admineditlastname="ngModel">
+              <div *ngIf="userAdmin.lastName != null">
+                <div *ngIf="admineditlastname.touched && admineditlastname.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="admineditlastname.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div class="col-md-6 mb-3">
+              <label>Gender <span class="text-danger">*</span></label>
+              <select required class="form-select" title="Gender" [(ngModel)]="userAdmin.gender"
+                name="admin_edit_gender" #admineditgender="ngModel">
+                <option value="" disabled selected hidden>Gender *</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Lesbian">Lesbian</option>
+                <option value="Gay">Gay</option>
+                <option value="Bisexual">Bisexual</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Queer">Queer</option>
+                <option value="Other">Other</option>
+              </select>
+              <div *ngIf="(editAdminForm.submitted && admineditgender.untouched) || admineditgender.touched"
+                class="error">
+                <div *ngIf="admineditgender.errors?.['required']">Select the gender field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Date of Birth <span class="text-danger">*</span></label>
+              <p-calendar [(ngModel)]="userAdmin.dob" placeholder="YYYY-MM-DD" [required]="true" type="date"
+                title="Date of Birth" [maxDate]="dateTime" name="admin_edit_dob" class="date-input"
+                dateFormat="yy-mm-dd" #admineditbirthdate="ngModel">
+              </p-calendar>
+              <div *ngIf="(editAdminForm.submitted && admineditbirthdate.untouched) || admineditbirthdate.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="admineditbirthdate.errors?.['required']">Date of Birth is required </div>
+              </div>
+              <div *ngIf="admineditbirthdate.touched && admineditbirthdate.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="admineditbirthdate.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <!-- ^[a-zA-Z0-9.]+@[a-zA-Z.]+[a-zA-Z]{2,4}$ -->
+            <div class="col-md-6 mb-3">
+              <label>Email <span class="text-danger">*</span></label>
+              <input pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" type="text"
+                title="Email" class="form-control" name="admin_edit_email" [(ngModel)]="userAdmin.email"
+                #admineditemail="ngModel" required>
+              <div style="height: 4px; display: block;" class="invalid-feedback">
+                <div *ngIf="(editAdminForm.submitted && admineditemail.untouched) ||  admineditemail.touched "
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="admineditemail.errors?.['required']">Email id is required</div>
+                </div>
+                <div *ngIf="admineditemail.touched && admineditemail.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="admineditemail.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Marital Status <span class="text-danger">*</span></label>
+              <select required class="form-select" title="Marital Status" [(ngModel)]="userAdmin.maritalStatus"
+                name="admin_edit_marital_status" #admineditmaritalstatus="ngModel">
+                <option value="" disabled selected hidden>Marital Status *</option>
+                <option>Single</option>
+                <option>Married</option>
+                <option>Divorced</option>
+                <option>Widowed</option>
+              </select>
+              <div
+                *ngIf="(editAdminForm.submitted && admineditmaritalstatus.untouched) || admineditmaritalstatus.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="admineditmaritalstatus.errors?.['required']">Select the above(Marital
+                  Status) field</div>
+              </div>
+              <div *ngIf="admineditmaritalstatus.touched && admineditmaritalstatus.invalid" class="error">
+                <div *ngIf="admineditmaritalstatus.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Mobile Number <span class="text-danger">*</span></label>
+              <input required pattern="^[1-9]{1}[0-9 ]{9}" type="text" class="form-control" title="Mobile Number"
+                name="admin_edit_mobile" [(ngModel)]="userAdmin.mobile" #admineditcontact="ngModel">
+              <div *ngIf="(editAdminForm.submitted && admineditcontact.untouched)  || admineditcontact.touched"
+                class="error">
+                <div *ngIf="admineditcontact.errors?.['required']">Mobile Number is required</div>
+              </div>
+              <div *ngIf="admineditcontact.touched && admineditcontact.invalid" class="error">
+                <div *ngIf="admineditcontact.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Whatsapp Number <span class="text-danger">*</span></label>
+              <input required pattern="^[1-9]{1}[0-9 ]{9}" type="text" class="form-control" title="Whatsapp Number"
+                name="admin_edit_whats_app" [(ngModel)]="userAdmin.whatsappNumber" #admineditwhatsapp="ngModel">
+              <div *ngIf="(editAdminForm.submitted && admineditwhatsapp.untouched)  || admineditwhatsapp.touched"
+                class="error">
+                <div *ngIf="admineditwhatsapp.errors?.['required']">Whatsapp number is required</div>
+              </div>
+              <div *ngIf="admineditwhatsapp.touched && admineditwhatsapp.invalid" class="error">
+                <div *ngIf="admineditwhatsapp.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input required class="form-control" title="Password"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="show_button ? 'text' : 'password'" name="admin_edit_pswd" [(ngModel)]="userAdmin.password"
+                  #admineditpassword="ngModel" id="password">
+                <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+                  id="eye"></i>
+              </div>
+
+              <div *ngIf="editAdminForm.submitted && admineditpassword.untouched" class="error">
+                <div *ngIf="admineditpassword.errors?.['required']">Password is required
+                </div>
+              </div>
+              <div *ngIf="admineditpassword.touched && admineditpassword.invalid" class="error">
+                <div class="alert alert-danger" *ngIf="admineditpassword.errors?.['pattern']">Password
+                  must contain atleast 8 characters, 1 upper case letter, 1 lower case letter, 1
+                  number
+                  and 1 special character</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Confirm Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+
+                <input required
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="confirm_show_button ? 'text' : 'password'" class="form-control" title="Confirm Password"
+                  name="admin_edit_cpswd" [(ngModel)]="userAdmin.confirmPassword" #admineditpasswordconfirm="ngModel"
+                  id="password">
+                <i [class]="confirm_show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                  (click)="confirmShowPassword()" id="eye"></i>
+              </div>
+
+              <div
+                *ngIf="(editAdminForm.submitted && admineditpasswordconfirm.untouched) || admineditpasswordconfirm.touched"
+                class="error">
+                <div *ngIf="admineditpasswordconfirm.errors?.['required']"> Confirm password is required
+                </div>
+              </div>
+              <div class="help-block"
+                *ngIf="admineditpasswordconfirm.dirty && admineditpasswordconfirm.value !== admineditpassword.value"
+                class="error">
+                Both the password are not same
+              </div>
+            </div>
+          </div>
+          <!--  -->
+          <div class="modal-footer ps-0 pe-0 border-top">
+            <button type="submit" class="btn btn-blue">Update</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="addcoordinator" tabindex="-1" aria-labelledby="addcoordinator" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Coordinator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="coor_inlineRadioOptions"
+            id="inlineRadio_coor1" value="single-coor" checked>
+          <label class="form-check-label" for="inlineRadio1">Single</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="coor_inlineRadioOptions"
+            id="inlineRadio_coor2" value="bulk-coor">
+          <label class="form-check-label" for="inlineRadio2">Bulk</label>
+        </div>
+
+
+
+        <div class="row file-upload mt-3" id="show-single-coor">
+          <form #addCoForm="ngForm" name="form" (ngSubmit)="addCoForm.form.valid">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>First Name <span class="text-danger">*</span></label>
+                <input pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30" type="text"
+                  title="First Name" (input)="dotAfterCaptilize(coordinator.firstName, 'co_add_firstname')"
+                  id="co_add_firstname" class="form-control" name="co_add_first_name"
+                  [(ngModel)]="coordinator.firstName" #coaddfirstname="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addCoForm.submitted && coaddfirstname.untouched) ||  coaddfirstname.touched "
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="coaddfirstname.errors?.['required']">First name is required</div>
+                  </div>
+                  <div *ngIf="coaddfirstname.touched && coaddfirstname.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="coaddfirstname.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Last Name </label>
+                <!-- <span class="text-danger">*</span> -->
+                <!-- pattern="^[a-zA-Z.]+$" maxlength="15" -->
+                <input type="text" title="Last Name"
+                  (input)="dotAfterCaptilize(coordinator.lastName, 'co_add_lastname')"
+                  pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" id="co_add_lastname" class="form-control"
+                  name="co_add_last_name" [(ngModel)]="coordinator.lastName" #coaddlastname="ngModel">
+                <div style="display: block;" class="invalid-feedback">
+                  <!-- <div *ngIf="(addCoForm.submitted && coaddlastname.untouched) ||  coaddlastname.touched "
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="coaddlastname.errors?.['required']">Last name is required</div>
+                  </div> -->
+                  <div *ngIf="coordinator.lastName != null">
+                    <div *ngIf="coaddlastname.touched && coaddlastname.invalid"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="coaddlastname.errors?.['pattern']">Enter a valid data
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Gender <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Gender" [(ngModel)]="coordinator.gender"
+                  name="co_add_gender" #coaddgender="ngModel">
+                  <!--<option value="" disabled selected hidden>Gender *</option>-->
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Lesbian">Lesbian</option>
+                  <option value="Gay">Gay</option>
+                  <option value="Bisexual">Bisexual</option>
+                  <option value="Transgender">Transgender</option>
+                  <option value="Queer">Queer</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div *ngIf="(addCoForm.submitted && coaddgender.untouched) || coaddgender.touched" class="error">
+                  <div *ngIf="coaddgender.errors?.['required']">Select the gender field</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Date of Birth <span class="text-danger">*</span></label>
+                <p-calendar [(ngModel)]="coordinator.dob" placeholder="YYYY-MM-DD" [required]="true" type="date"
+                  title="Date of Birth" [maxDate]="dateTime" name="co_add_dob" class="date-input" dateFormat="yy-mm-dd"
+                  #coaddbirthdate="ngModel">
+                </p-calendar>
+                <div *ngIf="(addCoForm.submitted && coaddbirthdate.untouched) || coaddbirthdate.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="coaddbirthdate.errors?.['required']">Date of Birth is required </div>
+                </div>
+                <div *ngIf="coaddbirthdate.touched && coaddbirthdate.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="coaddbirthdate.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+
+              <!-- ^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$ -->
+              <div class="col-md-6 mb-3">
+                <label>Email<span class="text-danger">*</span></label>
+                <input pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" type="text"
+                  title="Email" class="form-control" name="co_add_email" [(ngModel)]="coordinator.email"
+                  #coaddemail="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addCoForm.submitted && coaddemail.untouched) ||  coaddemail.touched "
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="coaddemail.errors?.['required']">Email id is required</div>
+                  </div>
+                  <div *ngIf="coaddemail.touched && coaddemail.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="coaddemail.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Marital Status <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Marital Status" [(ngModel)]="coordinator.maritalStatus"
+                  name="co_add_marital_status" #coaddmaritalstatus="ngModel">
+                  <!--<option value="" disabled selected hidden>Marital Status *</option>-->
+                  <option>Single</option>
+                  <option>Married</option>
+                  <option>Divorced</option>
+                  <option>Widowed</option>
+                </select>
+                <div *ngIf="(addCoForm.submitted && coaddmaritalstatus.untouched) || coaddmaritalstatus.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="coaddmaritalstatus.errors?.['required']">Select the above(Marital
+                    Status) field</div>
+                </div>
+                <div *ngIf="coaddmaritalstatus.touched && coaddmaritalstatus.invalid" class="error">
+                  <div *ngIf="coaddmaritalstatus.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Mobile Number <span class="text-danger">*</span></label>
+                <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" title="Mobile Number"
+                  name="co_add_mobile" [(ngModel)]="coordinator.mobile" #coaddcontact="ngModel">
+                <div *ngIf="(addCoForm.submitted && coaddcontact.untouched)  || coaddcontact.touched" class="error">
+                  <div *ngIf="coaddcontact.errors?.['required']">Mobile number is required</div>
+                </div>
+                <div *ngIf="coaddcontact.touched && coaddcontact.invalid" class="error">
+                  <div *ngIf="coaddcontact.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Whatsapp No <span class="text-danger">*</span></label>
+                <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" title="Whatsapp Number"
+                  name="co_add_whats_app" [(ngModel)]="coordinator.whatsappNumber" #coaddwhatsapp="ngModel">
+                <div *ngIf="(addCoForm.submitted && coaddwhatsapp.untouched)  || coaddwhatsapp.touched" class="error">
+                  <div *ngIf="coaddwhatsapp.errors?.['required']">Whatsapp number is required</div>
+                </div>
+                <div *ngIf="coaddwhatsapp.touched && coaddwhatsapp.invalid" class="error">
+                  <div *ngIf="coaddwhatsapp.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Password <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <input required class="form-control" title="Password"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                    [type]="show_button ? 'text' : 'password'" name="co_add_pswd" [(ngModel)]="coordinator.password"
+                    #coaddpassword="ngModel" id="password">
+                  <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+                    id="eye"></i>
+                </div>
+
+                <div *ngIf="(addCoForm.submitted && coaddpassword.untouched) || coaddpassword.touched" class="error">
+                  <div *ngIf="coaddpassword.errors?.['required']">Password is required</div>
+                </div>
+                <div *ngIf="coaddpassword.touched && coaddpassword.invalid" class="error">
+                  <div *ngIf="coaddpassword.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Confirm Password <span class="text-danger">*</span></label>
+                <div class="input-group">
+
+                  <input required
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                    [type]="confirm_show_button ? 'text' : 'password'" class="form-control" title="Confirm Password"
+                    name="co_add_cpswd" [(ngModel)]="coordinator.confirmPassword" #coaddpasswordconfirm="ngModel"
+                    id="password">
+                  <i [class]="confirm_show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                    (click)="confirmShowPassword()" id="eye"></i>
+                </div>
+
+                <div *ngIf="(addCoForm.submitted && coaddpasswordconfirm.untouched) || coaddpasswordconfirm.touched"
+                  class="error">
+                  <div *ngIf="coaddpasswordconfirm.errors?.['required']"> Confirm password is required
+                  </div>
+                </div>
+                <div class="help-block"
+                  *ngIf="coaddpasswordconfirm.dirty && coaddpasswordconfirm.value !== coaddpassword.value"
+                  class="error">
+                  Both the password are not same
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Role <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Role" [(ngModel)]="coordinator.role" name="co_add_role"
+                  #coaddrole="ngModel">
+                  <!--<option value="" disabled selected hidden>Gender *</option>-->
+                  <option *ngFor="let role of roleDetails" [value]="role.role_id">
+                    {{role.role_name}}
+                  </option>
+                </select>
+                <div *ngIf="(addCoForm.submitted && coaddrole.untouched) || coaddrole.touched" class="error">
+                  <div *ngIf="coaddrole.errors?.['required']">Select the role field</div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Status <span class="text-danger">*</span></label>
+                <select required class="form-select" [(ngModel)]="coordinator.status" name="co_add_status"
+                  #coaddstatus="ngModel">
+                  <!--<option value="" disabled selected hidden>Gender *</option>-->
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <div *ngIf="(addCoForm.submitted && coaddstatus.untouched) || coaddstatus.touched" class="error">
+                  <div *ngIf="coaddstatus.errors?.['required']">Select the status field</div>
+                </div>
+              </div>
+              <div class="modal-footer ps-0 pe-0 border-top">
+                <button type="submit" class="btn btn-blue"
+                  (click)="onAddCoordinatorSubmit(addCoForm.form)">Register</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- bulk -->
+        <div class="row file-upload mt-3" id="show-bulk-coor">
+          <div class="col-md-6 offset-md-6">
+            <div class="d-flex justify-content-end">
+              <a target="_self" style="text-decoration:none;" class="f-green"
+                href="assets/template/Coordinators Bulk Template.xlsx">Download Template</a>
+              <!--<label style="cursor: pointer;" (click)="downloadTemplate()" class="f-green">Download
+                                                Template</label>-->
+            </div>
+          </div>
+          <div class="col-md-12 mb-3">
+            <div class="modal-bulk">
+              <div class="bulkupload">
+                <input id="file" #coorFileInput (change)="onCoorBulkUploadChange($event)" type="file"
+                  class="form-control">
+              </div>
+              <div *ngIf="coordiantorBulkUploadMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Please upload valid file</div>
+              </div>
+            </div>
+
+          </div>
+          <!--## bulk ##-->
+          <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-blue" (click)="onCoorBulkUpload()">Upload</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Edit Coordinator Modal -->
+<div class="modal fade" id="edit_coordinator_details" tabindex="-1" aria-labelledby="edit_user_details"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Coordinator Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+        <form #editCoForm="ngForm" name="coorForm" (ngSubmit)="onSubmitUpdateCoordinator(editCoForm.form)">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label>First Name <span class="text-danger">*</span></label>
+              <input pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" type="text" title="First Name"
+                class="form-control" (input)="dotAfterCaptilize(coordinator.firstName, 'co_edit_firstname')"
+                id="co_edit_firstname" name="co_edit_first_name" [(ngModel)]="coordinator.firstName"
+                #coeditfirstname="ngModel" required>
+              <div style="display: block;" class="invalid-feedback">
+                <div *ngIf="(editCoForm.submitted && coeditfirstname.untouched) || coeditfirstname.touched"
+                  class="error">
+                  <div *ngIf="coeditfirstname.errors?.['required']">First name is required</div>
+                </div>
+                <div *ngIf="coeditfirstname.touched && coeditfirstname.invalid" class="error">
+                  <div *ngIf="coeditfirstname.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Last Name</label>
+              <!-- <span class="text-danger">*</span> -->
+              <!-- pattern="^[a-zA-Z.]+$" -->
+              <input type="text" class="form-control" title="Last Name"
+                pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$"
+                (input)="dotAfterCaptilize(coordinator.lastName, 'co_edit_lastname')" id="co_edit_lastname"
+                name="co_edit_last_name" [(ngModel)]="coordinator.lastName" #coeditlastname="ngModel">
+              <!-- <div *ngIf="(editCoForm.submitted && coeditlastname.untouched) ||  coeditlastname.touched" class="error">
+                <div *ngIf="coeditlastname.errors?.['required']">Last name is required</div>
+              </div>
+              <div *ngIf="coeditlastname.touched && coeditlastname.invalid" class="error">
+                <div *ngIf="coeditlastname.errors?.['pattern']">Enter a valid data
+                </div>
+              </div> -->
+
+              <div *ngIf="coordinator.lastName != null">
+                <div *ngIf="coeditlastname.touched && coeditlastname.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="coeditlastname.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Gender <span class="text-danger">*</span></label>
+              <select required class="form-select" title="Gender" [(ngModel)]="coordinator.gender" name="co_edit_gender"
+                #coeditgender="ngModel">
+                <option value="" disabled selected hidden>Gender *</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Lesbian">Lesbian</option>
+                <option value="Gay">Gay</option>
+                <option value="Bisexual">Bisexual</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Queer">Queer</option>
+                <option value="Other">Other</option>
+              </select>
+              <div *ngIf="(editCoForm.submitted && coeditgender.untouched) || coeditgender.touched" class="error">
+                <div *ngIf="coeditgender.errors?.['required']">Select the gender field</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Date of Birth <span class="text-danger">*</span></label>
+              <p-calendar [(ngModel)]="coordinator.dob" placeholder="YYYY-MM-DD" [required]="true" type="date"
+                title="Date of Birth" [maxDate]="dateTime" name="co_edit_dob" class="date-input" dateFormat="yy-mm-dd"
+                #coeditbirthdate="ngModel">
+              </p-calendar>
+              <div *ngIf="(editCoForm.submitted && coeditbirthdate.untouched) || coeditbirthdate.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="coeditbirthdate.errors?.['required']">Date of Birth is required </div>
+              </div>
+              <div *ngIf="coeditbirthdate.touched && coeditbirthdate.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="coeditbirthdate.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+            <!-- ^[a-zA-Z0-9.]+@[a-zA-Z.]+[a-zA-Z]{2,4}$ -->
+            <div class="col-md-6 mb-3">
+              <label>Email <span class="text-danger">*</span></label>
+              <input pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" type="text"
+                title="Email" placeholder="Email" class="form-control" name="co_edit_email"
+                [(ngModel)]="coordinator.email" #coeditemail="ngModel" required>
+              <div style="display: block;" class="invalid-feedback">
+                <div *ngIf="(editCoForm.submitted && coeditemail.untouched) ||  coeditemail.touched "
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="coeditemail.errors?.['required']">Email id is required</div>
+                </div>
+                <div *ngIf="coeditemail.touched && coeditemail.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="coeditemail.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Marital Status <span class="text-danger">*</span></label>
+              <select required class="form-select" title="Marital Status" [(ngModel)]="coordinator.maritalStatus"
+                name="co_edit_marital_status" #coeditmaritalstatus="ngModel">
+                <option value="" disabled selected hidden>Marital Status *</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+              <div *ngIf="(editCoForm.submitted && coeditmaritalstatus.untouched) || coeditmaritalstatus.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="coeditmaritalstatus.errors?.['required']">Select the above(Marital Status)
+                  field
+                </div>
+              </div>
+              <div *ngIf="coeditmaritalstatus.touched && coeditmaritalstatus.invalid" class="error">
+                <div *ngIf="coeditmaritalstatus.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Mobile Number <span class="text-danger">*</span></label>
+              <input required pattern="^[1-9]{1}[0-9 ]{9}" type="text" class="form-control" title="Mobile Number"
+                name="co_edit_mobile" [(ngModel)]="coordinator.mobile" #coeditcontact="ngModel">
+              <div *ngIf="(editCoForm.submitted && coeditcontact.untouched)  || coeditcontact.touched" class="error">
+                <div *ngIf="coeditcontact.errors?.['required']">Mobile Number is required</div>
+              </div>
+              <div *ngIf="coeditcontact.touched && coeditcontact.invalid" class="error">
+                <div *ngIf="coeditcontact.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Whatsapp Number <span class="text-danger">*</span></label>
+              <input required pattern="^[1-9]{1}[0-9 ]{9}" type="text" class="form-control" title="Whatsapp Number"
+                name="co_edit_whats_app" [(ngModel)]="coordinator.whatsappNumber" #coeditwhatsapp="ngModel">
+              <div *ngIf="(editCoForm.submitted && coeditwhatsapp.untouched)  || coeditwhatsapp.touched" class="error">
+                <div *ngIf="coeditwhatsapp.errors?.['required']">Whatsapp number is required</div>
+              </div>
+              <div *ngIf="coeditwhatsapp.touched && coeditwhatsapp.invalid" class="error">
+                <div *ngIf="coeditwhatsapp.errors?.['pattern']">Enter a valid data
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input required class="form-control" title="Password"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="show_button ? 'text' : 'password'" name="co_edit_pswd" [(ngModel)]="coordinator.password"
+                  #coeditpassword="ngModel" id="password">
+                <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+                  id="eye"></i>
+              </div>
+
+              <div *ngIf="(editCoForm.submitted && coeditpassword.untouched) || coeditpassword.touched" class="error">
+                <div *ngIf="coeditpassword.errors?.['required']">Password is required</div>
+              </div>
+              <div *ngIf="coeditpassword.touched && coeditpassword.invalid" class="error">
+                <div *ngIf="coeditpassword.errors?.['pattern']">Enter a valid data</div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Confirm Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input required
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                  [type]="confirm_show_button ? 'text' : 'password'" class="form-control" title="Confirm Password"
+                  name="co_edit_cpswd" [(ngModel)]="coordinator.confirmPassword" #coeditpasswordconfirm="ngModel"
+                  id="password">
+                <i [class]="confirm_show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                  (click)="confirmShowPassword()" id="eye"></i>
+              </div>
+
+              <div *ngIf="(editCoForm.submitted && coeditpasswordconfirm.untouched) || coeditpasswordconfirm.touched"
+                class="error">
+                <div *ngIf="coeditpasswordconfirm.errors?.['required']"> Confirm password is required
+                </div>
+              </div>
+              <div class="help-block"
+                *ngIf="!coeditpasswordconfirm.errors?.['required'] && coeditpasswordconfirm.dirty && coeditpasswordconfirm.value !== coeditpassword.value"
+                class="error">
+                Both the password are not same
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Role <span class="text-danger">*</span></label>
+              <select required class="form-select" [(ngModel)]="coordinator.role" name="co_edit_role"
+                #coeditrole="ngModel">
+                <!--<option value="" disabled selected hidden>Gender *</option>-->
+                <option *ngFor="let role of roleDetails" value="{{ role.role_id }}_{{ role.role_name }}">
+                  {{role.role_name}}
+                </option>
+              </select>
+              <div *ngIf="(editCoForm.submitted && coeditrole.untouched) || coeditrole.touched" class="error">
+                <div *ngIf="coeditrole.errors?.['required']">Select the role field</div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label>Status <span class="text-danger">*</span></label>
+              <select required class="form-select" [(ngModel)]="coordinator.status" name="co_edit_status"
+                #coeditstatus="ngModel">
+                <!--<option value="" disabled selected hidden>Gender *</option>-->
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <div *ngIf="(editCoForm.submitted && coeditstatus.untouched) || coeditstatus.touched" class="error">
+                <div *ngIf="coeditstatus.errors?.['required']">Select the status field</div>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="modal-footer ps-0 pe-0 border-top">
+            <button type="submit" class="btn btn-blue">Update</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Admin Details Modal -->
+<div class="modal fade" id="addadmin" tabindex="-1" aria-labelledby="addadmin" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add User Admin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="admin_inlineRadioOptions"
+            id="inlineRadio_admin1" value="single-admin" checked>
+          <label class="form-check-label" for="inlineRadio1">Single</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="admin_inlineRadioOptions"
+            id="inlineRadio_admin2" value="bulk-admin">
+          <label class="form-check-label" for="inlineRadio2">Bulk</label>
+        </div>
+
+        <div class="row file-upload mt-3" id="show-single-admin">
+          <form #addAdminForm="ngForm" name="form" (ngSubmit)="addAdminForm.form.valid">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>First Name <span class="text-danger">*</span></label>
+                <input pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30" type="text"
+                  title="First Name" (input)="dotAfterCaptilize(userAdmin.firstName, 'admin_add_firstname')"
+                  id="admin_add_firstname" class="form-control" name="admin_add_first_name"
+                  [(ngModel)]="userAdmin.firstName" #adminaddfirstname="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addAdminForm.submitted && adminaddfirstname.untouched) ||  adminaddfirstname.touched "
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="adminaddfirstname.errors?.['required']">First name is required</div>
+                  </div>
+                  <div *ngIf="adminaddfirstname.touched && adminaddfirstname.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="adminaddfirstname.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Last Name </label>
+                <!-- <span class="text-danger">*</span> -->
+                <!-- pattern="^[a-zA-Z.]+$" maxlength="15" -->
+                <input type="text" title="Last Name" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$"
+                  (input)="dotAfterCaptilize(userAdmin.lastName, 'admin_add_lastname')" class="form-control"
+                  id="admin_add_lastname" name="admin_add_last_name" [(ngModel)]="userAdmin.lastName"
+                  #adminaddlastname="ngModel">
+                <div *ngIf="userAdmin.lastName != null">
+                  <div *ngIf="adminaddlastname.touched && adminaddlastname.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="adminaddlastname.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Gender <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Gender" [(ngModel)]="userAdmin.gender"
+                  name="admin_add_gender" #adminaddgender="ngModel">
+                  <option value="" selected hidden>Gender *</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Lesbian">Lesbian</option>
+                  <option value="Gay">Gay</option>
+                  <option value="Bisexual">Bisexual</option>
+                  <option value="Transgender">Transgender</option>
+                  <option value="Queer">Queer</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addAdminForm.submitted && adminaddgender.untouched) || adminaddgender.touched"
+                    class="error">
+                    <div *ngIf="adminaddgender.errors?.['required']">Select the gender field</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Date of Birth <span class="text-danger">*</span></label>
+                <p-calendar [(ngModel)]="userAdmin.dob" placeholder="YYYY-MM-DD" [required]="true" type="date"
+                  title="Date of Birth" [maxDate]="dateTime" name="admin_add_dob" class="date-input"
+                  dateFormat="yy-mm-dd" #adminaddbirthdate="ngModel">
+                </p-calendar>
+                <div *ngIf="(addAdminForm.submitted && adminaddbirthdate.untouched) || adminaddbirthdate.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="adminaddbirthdate.errors?.['required']">Date of Birth is required </div>
+                </div>
+                <div *ngIf="adminaddbirthdate.touched && adminaddbirthdate.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="adminaddbirthdate.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+
+              <!-- ^[a-zA-Z0-9.]+@[a-zA-Z]+[.]+[a-zA-Z]{2,4}$ -->
+              <div class="col-md-6 mb-3">
+                <label>Email <span class="text-danger">*</span></label>
+                <input pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" type="text"
+                  title="Email" class="form-control" name="admin_add_email" [(ngModel)]="userAdmin.email"
+                  #adminaddemail="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addAdminForm.submitted && adminaddemail.untouched) ||  adminaddemail.touched "
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="adminaddemail.errors?.['required']">Email id is required</div>
+                  </div>
+                  <div *ngIf="adminaddemail.touched && adminaddemail.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="adminaddemail.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Marital Status <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Marital Status" [(ngModel)]="userAdmin.maritalStatus"
+                  name="admin_add_marital_status" #adminaddmaritalstatus="ngModel">
+                  <option value="" disabled selected hidden>Marital Status *</option>
+                  <option>Single</option>
+                  <option>Married</option>
+                  <option>Divorced</option>
+                  <option>Widowed</option>
+                </select>
+                <div
+                  *ngIf="(addAdminForm.submitted && adminaddmaritalstatus.untouched) || adminaddmaritalstatus.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="adminaddmaritalstatus.errors?.['required']">Select the above(Marital
+                    Status) field</div>
+                </div>
+                <div *ngIf="adminaddmaritalstatus.touched && adminaddmaritalstatus.invalid" class="error">
+                  <div *ngIf="adminaddmaritalstatus.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Mobile Number<span class="text-danger">*</span></label>
+                <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" title="Mobile Number"
+                  name="admin_add_mobile" [(ngModel)]="userAdmin.mobile" #adminaddcontact="ngModel">
+                <div *ngIf="(addAdminForm.submitted && adminaddcontact.untouched)  || adminaddcontact.touched"
+                  class="error">
+                  <div *ngIf="adminaddcontact.errors?.['required']">Mobile number is required</div>
+                </div>
+                <div *ngIf="adminaddcontact.touched && adminaddcontact.invalid" class="error">
+                  <div *ngIf="adminaddcontact.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Whatsapp Number <span class="text-danger">*</span></label>
+                <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" title="Whatsapp Number"
+                  name="admin_add_whats_app" [(ngModel)]="userAdmin.whatsappNumber" #adminaddwhatsapp="ngModel">
+                <div *ngIf="(addAdminForm.submitted && adminaddwhatsapp.untouched)  || adminaddwhatsapp.touched"
+                  class="error">
+                  <div *ngIf="adminaddwhatsapp.errors?.['required']">Whatsapp number is required</div>
+                </div>
+                <div *ngIf="adminaddwhatsapp.touched && adminaddwhatsapp.invalid" class="error">
+                  <div *ngIf="adminaddwhatsapp.errors?.['pattern']">Enter a valid data
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Password <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <input required class="form-control" title="Password"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                    [type]="show_button ? 'text' : 'password'" name="admin_add_pswd" [(ngModel)]="userAdmin.password"
+                    #adminaddpassword="ngModel" id="password">
+                  <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+                    id="eye"></i>
+                </div>
+
+                <div *ngIf="addAdminForm.submitted && adminaddpassword.untouched" class="error">
+                  <div *ngIf="adminaddpassword.errors?.['required']">Password is required
+                  </div>
+                </div>
+                <div *ngIf="adminaddpassword.touched && adminaddpassword.invalid" class="error">
+                  <div class="alert alert-danger" *ngIf="adminaddpassword.errors?.['pattern']">
+                    Password must contain atleast 8 characters max 16 characters, 1 upper case letter, 1 lower case
+                    letter, 1 number and 1 special character</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Confirm Password <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <input required
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                    [type]="confirm_show_button ? 'text' : 'password'" class="form-control" title="Confirm Password"
+                    name="admin_add_cpswd" [(ngModel)]="userAdmin.confirmPassword" #adminaddpasswordconfirm="ngModel"
+                    id="password">
+                  <i [class]="confirm_show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                    (click)="confirmShowPassword()" id="eye"></i>
+                </div>
+
+                <div
+                  *ngIf="(addAdminForm.submitted && adminaddpasswordconfirm.untouched) || adminaddpasswordconfirm.touched"
+                  class="error">
+                  <div *ngIf="adminaddpasswordconfirm.errors?.['required']"> Confirm password is
+                    required
+                  </div>
+                </div>
+                <div class="help-block"
+                  *ngIf="adminaddpasswordconfirm.dirty && adminaddpasswordconfirm.value !== adminaddpassword.value"
+                  class="error">
+                  Both the password are not same
+                </div>
+              </div>
+
+
+              <div class="modal-footer ps-0 pe-0 border-top">
+                <button type="submit" class="btn btn-blue"
+                  (click)="addUserAdminSubmit(addAdminForm.form)">Register</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
+        <!-- bulk -->
+        <div class="row file-upload mt-3" id="show-bulk-admin">
+          <div class="col-md-6 offset-md-6">
+            <div class="d-flex justify-content-end">
+              <a target="_self" style="text-decoration:none;" class="f-green"
+                href="assets/template/Admin Bulk Template.xlsx">Download Template</a>
+              <!--<label style="cursor: pointer;" (click)="downloadTemplate()" class="f-green">Download
+                                                Template</label>-->
+            </div>
+          </div>
+          <div class="modal-bulk">
+            <div class="bulkupload">
+              <input id="file" #adminFileInput (change)="onAdminBulkUploadChange($event)" type="file"
+                class="form-control">
+            </div>
+            <div *ngIf="adminBulkUploadMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+              <div>Please upload valid file</div>
+            </div>
+
+          </div>
+          <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-blue" (click)="onAdminBulkUpload()">Upload</button>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2 pb-2">
+        <p class="text-center mb-0"> <b>Are you sure want to delete?</b></p>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-blue" (click)="deleteUser(currentGttId)">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Student Professional Additional Fields -->
+<!-- Editstudentprofessional Modal Grid-->
+<div class="modal fade" id="additionalfields" tabindex="-1" aria-labelledby="additionalfields" aria-hidden="true">
+  <div class="modal-dialog studprof-modal-grid modal-md modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Additional Fields</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+
+        <div class="row">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <p-multiSelect [options]="_projectBasedReportColumnHeader" [(ngModel)]="projectBasedRegistrationColumns"
+                  optionLabel="header" (onChange)="projectBasedFilter($event)" selectedItemsLabel="{0} columns selected"
+                  [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #ct class="p-table-grid" [columns]="projectBasedRegistrationColumns"
+            [value]="finalProjectBasedReports" [paginator]="false" [rowsPerPageOptions]="[5,10,25,50,100,500]"
+            [rows]="10" sortMode="multiple" [responsive]="true">
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-finalProjectBasedReport let-columns="columns">
+              <tr>
+
+
+                <td *ngFor="let col of columns">
+                  <span *ngIf="col.field !== 'status' && col.field !== 'dob' && col.field !== 'PanNumber'"
+                    class="capitalize">
+                    {{ finalProjectBasedReport[col.field]}}
+                  </span>
+                  <span *ngIf="col.field == 'dob'">
+                    {{ finalProjectBasedReport[col.field] | date:'yyyy-MM-dd' }}
+                  </span>
+                  <span *ngIf="col.field == 'PanNumber'">
+                    {{ finalProjectBasedReport[col.field] | uppercase }}
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+
+          </p-table>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" (click)="downloadadditionalfieldView()" class="btn btn-blue"> Download
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Delete Coordinate Modal -->
+<div class="modal fade" id="deleteCoordinatorModal" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2 pb-2">
+        <p class="text-center mb-0"> <b>Are you sure want to delete?</b></p>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-blue"
+          (click)="deleteCoordinator(currentCoordinatorRowData.id)">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Coordinator Change Status -->
+<div class="modal fade" id="coordinatorchangestatus" tabindex="-1" aria-labelledby="coordinatorchangestatus"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" value="Active" type="radio" id="coordinatorstatusactive"
+                name="coordinatorstatus">
+              <label class="form-check-label" for="coordinatorstatusactive">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" value="Inactive" type="radio"
+                id="coordinatorstatusinactive" name="coordinatorstatus">
+              <label class="form-check-label" for="coordinatorstatusinactive">Inactive</label>
+            </div>
+          </div>
+
+        </div>
+        <br />
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="CoordinatorChangeStatus()" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Admin Change Status -->
+<div class="modal fade" id="adminchangestatus" tabindex="-1" aria-labelledby="adminchangestatus" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="StatusModal()"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" value="Active" (click)="changeStatusCss()" type="radio"
+                id="useradminstatusactive" name="useradminstatus">
+              <label class="form-check-label" for="useradminstatusactive">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Inactive"
+                type="radio" id="useradminstatusinactive" name="useradminstatus">
+              <label class="form-check-label" for="useradminstatusinactive">Inactive</label>
+            </div>
+          </div>
+
+        </div>
+        <br />
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal" (click)="StatusModal()">Close</button>
+          <button type="button" (click)="UserAdminChangeStatus()" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

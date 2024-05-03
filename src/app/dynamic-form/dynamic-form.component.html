@@ -1,0 +1,344 @@
+<!-- <app-spinner *ngIf="spinner"></app-spinner> -->
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+<!-- <div
+  style="text-align: center; height:1.5em; font-size: 18px; font-weight:bold; color:#278ce8;padding-bottom: 20px;padding-top: 20px;"
+  *ngIf="questions.projectAddtionalFields.length>0">
+  <div>Project Name: {{ currentProjectName }}</div>
+</div> -->
+<!-- overflow-card-body slim-scroll -->
+<div class="tab-content card-tab-content row">
+
+  <div class="project-name" *ngIf="questions.projectAddtionalFields.length>0">
+    <div>Project Name: {{ currentProjectName }}</div>
+  </div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" #dynamicForm="ngForm" style="padding:0px 74px">
+    <div formArrayName="questions">
+      <div class="row d-flex align-items-center">
+        <div class="dynamic-form-wrapper" [formGroupName]="i"
+          [ngClass]="{'col-md-6':questions.registeration,'col-md-4':!questions.registeration, 'mb-2':true}"
+          *ngFor="let question of questionsArray.controls; let i = index">
+
+          <div formGroupName="text" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('text.fieldType')?.value=='Text'">
+            <label class="mb-2">{{questionsArray.controls[i].get('text.label').value}}</label><span
+              *ngIf="questionsArray.controls[i].get('text.mandatory')?.value" class="required"> *</span>
+            <input type="text" formControlName="value" class="form-control capitalize"
+              (keypress)="keyPressAlpha($event)"
+              oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+              [attr.disabled]="questionsArray.controls[i].get('text.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('text.value')?.invalid &&
+                    (questionsArray.controls[i].get('text.value')?.touched || questionsArray.controls[i].get('text.value')?.dirty) }">
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                          *ngIf="questionsArray.controls[i].get('text.value')?.errors?.['required']">
+                          Please enter {{questionsArray.controls[i].get('text.label')?.value}}
+                    </span> -->
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('text.value')?.invalid &&
+                    (questionsArray.controls[i].get('text.value')?.touched || questionsArray.controls[i].get('text.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('text.label')?.value}}
+            </span>
+          </div>
+
+          <div formGroupName="int" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('int.fieldType')?.value=='INT'">
+            <label class="mb-2">{{questionsArray.controls[i].get('int.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('int.mandatory')?.value=='1'" class="required"> *</span></label>
+            <input type="text" formControlName="value" class="form-control"
+              (keypress)="keyPressNumber($event, questionsArray.controls[i].get('int.label').value)"
+              [attr.disabled]="questionsArray.controls[i].get('int.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('int.value')?.invalid &&
+                        (questionsArray.controls[i].get('int.value')?.touched || questionsArray.controls[i].get('int.value')?.dirty) }">
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                              *ngIf="questionsArray.controls[i].get('int.value')?.errors?.['required']">
+                         Please enter {{questionsArray.controls[i].get('int.label')?.value}}
+                        </span>     -->
+
+
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('int.value')?.invalid &&
+                        (questionsArray.controls[i].get('int.value')?.touched || questionsArray.controls[i].get('int.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('int.label')?.value}}
+            </span>
+          </div>
+
+
+          <div formGroupName="percentage" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('percentage.fieldType')?.value=='Percentage'">
+            <label class="mb-2">{{questionsArray.controls[i].get('percentage.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('percentage.mandatory')?.value=='1'" class="required">
+                *</span></label>
+            <input type="text" formControlName="value" class="form-control"
+              [attr.disabled]="questionsArray.controls[i].get('percentage.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('percentage.value')?.invalid &&
+                        (questionsArray.controls[i].get('percentage.value')?.touched || questionsArray.controls[i].get('percentage.value')?.dirty) }">
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('percentage.value')?.invalid &&
+                        (questionsArray.controls[i].get('percentage.value')?.touched || questionsArray.controls[i].get('int.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('percentage.label')?.value}}
+            </span>
+          </div>
+
+
+          <div formGroupName="date" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('date.fieldType')?.value=='Date'">
+            <label class="mb-2">{{questionsArray.controls[i].get('date.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('date.mandatory')?.value=='1'" class="required"> *</span></label>
+            <input type="date" formControlName="value" class="form-control"
+              [attr.disabled]="questionsArray.controls[i].get('date.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('date.value')?.invalid &&
+                        (questionsArray.controls[i].get('date.value')?.touched || questionsArray.controls[i].get('date.value')?.dirty) }">
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                              *ngIf="questionsArray.controls[i].get('int.value')?.errors?.['required']">
+                         Please enter {{questionsArray.controls[i].get('int.label')?.value}}
+                        </span>     -->
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('date.value')?.invalid &&
+                        (questionsArray.controls[i].get('date.value')?.touched || questionsArray.controls[i].get('date.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('date.label')?.value}}
+            </span>
+          </div>
+
+
+          <div formGroupName="varchar1" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('varchar1.fieldType')?.value=='Varchar 1'">
+            <label class="mb-2">{{questionsArray.controls[i].get('varchar1.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('varchar1.mandatory')?.value=='1'" class="required">
+                *</span></label>
+            <input type="text" formControlName="value" class="form-control capitalize"
+              (keypress)="keyPressChar($event, questionsArray.controls[i].get('varchar1.fieldType')?.value)"
+              [attr.disabled]="questionsArray.controls[i].get('varchar1.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('varchar1.value')?.invalid &&
+                        (questionsArray.controls[i].get('varchar1.value')?.touched || questionsArray.controls[i].get('varchar1.value')?.dirty) }">
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                              *ngIf="questionsArray.controls[i].get('int.value')?.errors?.['required']">
+                         Please enter {{questionsArray.controls[i].get('int.label')?.value}}
+                        </span>     -->
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('varchar1.value')?.invalid &&
+                        (questionsArray.controls[i].get('varchar1.value')?.touched || questionsArray.controls[i].get('varchar1.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('varchar1.label')?.value}}
+            </span>
+          </div>
+
+
+          <div formGroupName="varchar2" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('varchar2.fieldType')?.value=='Varchar 2'">
+            <label class="mb-2">{{questionsArray.controls[i].get('varchar2.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('varchar2.mandatory')?.value=='1'" class="required">
+                *</span></label>
+            <input type="text" formControlName="value" class="form-control capitalize"
+              (keypress)="keyPressChar($event, questionsArray.controls[i].get('varchar2.fieldType')?.value)"
+              [attr.disabled]="questionsArray.controls[i].get('varchar2.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('varchar2.value')?.invalid &&
+                        (questionsArray.controls[i].get('varchar2.value')?.touched || questionsArray.controls[i].get('varchar2.value')?.dirty) }">
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                              *ngIf="questionsArray.controls[i].get('int.value')?.errors?.['required']">
+                         Please enter {{questionsArray.controls[i].get('int.label')?.value}}
+                        </span>     -->
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('varchar2.value')?.invalid &&
+                        (questionsArray.controls[i].get('varchar2.value')?.touched || questionsArray.controls[i].get('varchar2.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('varchar2.label')?.value}}
+            </span>
+          </div>
+
+
+          <div formGroupName="varchar3" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('varchar3.fieldType')?.value=='Varchar 3'">
+            <label class="mb-2">{{questionsArray.controls[i].get('varchar3.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('varchar3.mandatory')?.value=='1'" class="required">
+                *</span></label>
+            <input type="text" formControlName="value" class="form-control uppercase"
+              (keypress)="keyPressChar($event, questionsArray.controls[i].get('varchar3.fieldType')?.value)"
+              oninput="this.value = this.value.toUpperCase()"
+              [attr.disabled]="questionsArray.controls[i].get('varchar3.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('varchar3.value')?.invalid &&
+                        (questionsArray.controls[i].get('varchar3.value')?.touched || questionsArray.controls[i].get('varchar3.value')?.dirty) }">
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                              *ngIf="questionsArray.controls[i].get('int.value')?.errors?.['required']">
+                         Please enter {{questionsArray.controls[i].get('int.label')?.value}}
+                        </span>     -->
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('varchar3.value')?.invalid &&
+                        (questionsArray.controls[i].get('varchar3.value')?.touched || questionsArray.controls[i].get('varchar3.value')?.dirty)">
+              Please enter Valid {{questionsArray.controls[i].get('varchar3.label')?.value}}
+            </span>
+          </div>
+
+
+          <div formGroupName="fileupload" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('fileupload.fieldType')?.value == 'File upload'">
+            <label class="mb-2">{{questionsArray.controls[i].get('fileupload.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('fileupload.mandatory')?.value=='1'" class="required">
+                *</span></label>
+            <div [ngClass]="{'hide_input': (questionsArray.controls[i].get('fileupload.disabled')?.value == null) }">
+              <input type="text" [attr.disabled]="questionsArray.controls[i].get('fileupload.disabled')?.value"
+                class="form-control" id="{{questionsArray.controls[i].get('fileupload.documentFieldName')?.value}}"
+                [ngClass]="{'is-invalid':questionsArray.controls[i].get('fileupload.value')?.invalid &&
+              (questionsArray.controls[i].get('fileupload.value')?.touched || questionsArray.controls[i].get('fileupload.value')?.dirty) }"
+                value="{{questionsArray.controls[i].get('fileupload.uploadFileName')?.value}}" />
+              <!-- {{ questionsArray.controls[i].get('fileupload.disabled')?.value }} -->
+            </div>
+
+            <div [ngClass]="{'hide_input': (questionsArray.controls[i].get('fileupload.disabled')?.value == true) }">
+              <input id="{{questionsArray.controls[i].get('fileupload.documentFieldName')?.value}}"
+                (change)="onFileSelect($event, questionsArray.controls[i].get('fileupload.label').value)" type="file"
+                class="form-control" formControlName="value"
+                [attr.disabled]="questionsArray.controls[i].get('fileupload.disabled')?.value"
+                [ngClass]="{'is-invalid':questionsArray.controls[i].get('fileupload.value')?.invalid &&
+                        (questionsArray.controls[i].get('fileupload.value')?.touched || questionsArray.controls[i].get('fileupload.value')?.dirty) }">
+            </div>
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('fileupload.value')?.errors?.['required']">
+              Please upload {{questionsArray.controls[i].get('fileupload.label')?.value}}
+            </span>
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('fileupload.value')?.invalid &&
+                        (questionsArray.controls[i].get('fileupload.value')?.touched || questionsArray.controls[i].get('fileupload.value')?.dirty)">
+              Please upload Valid {{questionsArray.controls[i].get('fileupload.label')?.value}}
+            </span>
+          </div>
+
+          <div formGroupName="video" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('video.fieldType')?.value == 'Video'">
+            <label class="mb-2">{{questionsArray.controls[i].get('video.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('video.mandatory')?.value=='1'" class="required">
+                *</span></label>
+            <div [ngClass]="{'hide_input': (questionsArray.controls[i].get('video.disabled')?.value == null) }">
+              <input type="text" [attr.disabled]="questionsArray.controls[i].get('video.disabled')?.value"
+                class="form-control" id="{{questionsArray.controls[i].get('video.documentFieldName')?.value}}"
+                [ngClass]="{'is-invalid':questionsArray.controls[i].get('video.value')?.invalid &&
+              (questionsArray.controls[i].get('video.value')?.touched || questionsArray.controls[i].get('video.value')?.dirty) }"
+                value="{{questionsArray.controls[i].get('video.uploadFileName')?.value}}" />
+              <!-- {{ questionsArray.controls[i].get('fileupload.disabled')?.value }} -->
+            </div>
+
+            <div [ngClass]="{'hide_input': (questionsArray.controls[i].get('video.disabled')?.value == true) }">
+              <input id="{{questionsArray.controls[i].get('video.documentFieldName')?.value}}"
+                (change)="onVideoFileSelect($event, questionsArray.controls[i].get('video.label').value)" type="file"
+                class="form-control" formControlName="value"
+                [attr.disabled]="questionsArray.controls[i].get('video.disabled')?.value"
+                [ngClass]="{'is-invalid':questionsArray.controls[i].get('video.value')?.invalid &&
+                        (questionsArray.controls[i].get('video.value')?.touched || questionsArray.controls[i].get('video.value')?.dirty) }">
+            </div>
+
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('video.value')?.errors?.['required']">
+              Please upload {{questionsArray.controls[i].get('video.label')?.value}}
+            </span>
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('video.value')?.invalid &&
+                        (questionsArray.controls[i].get('video.value')?.touched || questionsArray.controls[i].get('video.value')?.dirty)">
+              Please upload Valid {{questionsArray.controls[i].get('video.label')?.value}}
+            </span>
+          </div>
+
+          <div formGroupName="dropdown" class="col-md-12 mb-4"
+            *ngIf="questionsArray.controls[i].get('dropdown.fieldType')?.value=='DropDown'">
+            <label class="mb-2">{{questionsArray.controls[i].get('dropdown.label').value}} <span
+                *ngIf="questionsArray.controls[i].get('dropdown.mandatory')?.value=='1'" class="required ">
+                *</span></label>
+            <select formControlName="value" [attr.disabled]="questionsArray.controls[i].get('dropdown.disabled')?.value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('dropdown.value')?.invalid &&
+                      (questionsArray.controls[i].get('dropdown.value')?.touched || questionsArray.controls[i].get('dropdown.value')?.dirty) }"
+              class="form-select">
+              <option value="" disabled selected hidden>-- Select --</option>
+              <option value="{{ web.value }}"
+                *ngFor="let web of ($any(questionsArray.controls[i].get('dropdown.optionsValue'))).value?($any(questionsArray.controls[i].get('dropdown.optionsValue'))).value:[{}]">
+                {{ web.value }}</option>
+            </select>
+
+            <!-- <pre>
+                        {{($any(questionsArray.controls[i].get('dropdown.optionsValue')).value).key }}
+                      </pre> -->
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                            *ngIf="questionsArray.controls[i].get('dropdown.value')?.errors?.['required']">
+                       Please Select {{questionsArray.controls[i].get('dropdown.label')?.value}}
+                      </span>  -->
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('dropdown.value')?.invalid &&
+                      (questionsArray.controls[i].get('dropdown.value')?.touched || questionsArray.controls[i].get('dropdown.value')?.dirty)">
+              Please Select Valid {{questionsArray.controls[i].get('dropdown.label')?.value}}
+            </span>
+          </div>
+
+          <div formGroupName="multiple" class=""
+            *ngIf="questionsArray.controls[i].get('multiple.fieldType')?.value=='Multiple'">
+            <div>
+              <label class="mb-2">{{questionsArray.controls[i].get('multiple.label').value}} <span
+                  *ngIf="questionsArray.controls[i].get('multiple.mandatory')?.value" class="required"> *</span></label>
+            </div>
+            <!-- <select formControlName="value"  [ngClass]="{'is-invalid':questionsArray.controls[i].get('multiple.value')?.invalid &&
+                    (questionsArray.controls[i].get('multiple.value')?.touched || questionsArray.controls[i].get('multiple.value')?.dirty) }">
+                        <option disabled>Select</option>
+                          <option *ngFor="let web of ($any(questionsArray.controls[i].get('multiple.optionsValue'))).value?($any(questionsArray.controls[i].get('multiple.optionsValue'))).value:[{}]">
+                            {{web.value}}</option>
+                    </select> -->
+
+            <p-multiSelect [options]="($any(questionsArray.controls[i].get('multiple.optionsValue'))).value"
+              optionLabel="value" (onChange)="columnFilter($event)" selectedItemsLabel="{0} columns selected"
+              placeholder="Choose" [disabled]="questionsArray.controls[i].get('multiple.disabled')?.value"
+              formControlName="value"
+              [ngClass]="{'is-invalid':questionsArray.controls[i].get('multiple.value')?.invalid &&
+                    (questionsArray.controls[i].get('multiple.value')?.touched || questionsArray.controls[i].get('multiple.value')?.dirty) }">
+            </p-multiSelect>
+
+            <!-- <pre>
+                      {{($any(questionsArray.controls[i].get('multiple.optionsValue')).value).key }}
+                    </pre> -->
+            <!-- <span class="invalid-feedback text-danger mx-2"
+                          *ngIf="questionsArray.controls[i].get('multiple.value')?.errors?.['required']">
+                     Please Select {{questionsArray.controls[i].get('multiple.label')?.value}}
+                    </span>  -->
+            <span class="invalid-feedback text-danger mx-2"
+              *ngIf="questionsArray.controls[i].get('multiple.value')?.invalid &&
+                    (questionsArray.controls[i].get('multiple.value')?.touched || questionsArray.controls[i].get('multiple.value')?.dirty)">
+              Please Select Valid {{questionsArray.controls[i].get('multiple.label')?.value}}
+            </span>
+          </div>
+        </div>
+        <div class="col-md-12 mb-4"
+          *ngIf="questions.projectAddtionalFields[currentIndex].fields.length > 0 && terms_and_conditions_url_status == 'Yes'">
+          <div class="form-check">
+            <!-- <input class="form-check-input" type="checkbox" value="" id="agree"> -->
+            <input class="form-check-input" type="checkbox" id="agreeCheck" name="agree" (change)="isChecked()" #agree>
+            <label class="form-check-label" for="agree">
+              I agree to <a href="{{ terms_and_conditions_url }}" target="_blank" class="none_underline"
+                [ngStyle]="{'pointer-events': (terms_and_conditions_url == null) ? 'none' : 'inherit'}"> Terms and
+                Conditions </a>
+            </label>
+            <div *ngIf="!agreeCheckBox && dynamicForm.submitted" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+              Check this box before submission
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12 mb-4"
+      *ngIf="questions.projectAddtionalFields[currentIndex].fields.length > 0 && (terms_and_conditions_url_status == 'Yes' || terms_and_conditions_url_status == 'yes')">
+      <button type="submit" [disabled]="(!form?.valid || !agreeCheckBox)"
+        class="btn btn-primary gray-on-disabled">Register</button>
+    </div>
+
+    <div class="col-md-12 mb-4"
+      *ngIf="questions.projectAddtionalFields[currentIndex].fields.length > 0 && (terms_and_conditions_url_status == 'No' || terms_and_conditions_url_status == 'no')">
+      <button type="submit" [disabled]="(!form?.valid)" class="btn btn-primary gray-on-disabled">Register</button>
+    </div>
+    <!-- <pre>{{form.value | json}}</pre>      -->
+    <!-- <pre>{{form.valid | json}}</pre>
+      <pre>{{form.touched | json}}</pre>
+      <pre>{{form.dirty | json}}</pre> -->
+  </form>
+
+  <!-- <div *ngIf="payLoad" class="form-row">
+      <strong>Saved the following values</strong><br>{{payLoad}}
+    </div>   -->
+</div>

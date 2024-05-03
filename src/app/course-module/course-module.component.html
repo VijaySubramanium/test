@@ -1,0 +1,43 @@
+<div *ngIf="loggedInRoleName == 'STUDENT' || loggedInRoleName == 'PROFESSIONAL'">
+  <app-header></app-header>
+  <div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+      <div class="card">
+        <div class="card-header">
+          <h5>Courses</h5>
+        </div>
+        <div class="overflow-card-body slim-scroll">
+          <!-- Courses Grid -->
+
+
+          <p-tabView (onChange)="CourseGrid($event)">
+
+            <!-- Self learning Tab -->
+            <p-tabPanel header="Self learning">
+              <app-course-self></app-course-self>
+            </p-tabPanel>
+
+            <!-- Online training Tab -->
+            <!-- <p-tabPanel header="Online training">
+              <app-course-online></app-course-online>
+            </p-tabPanel> -->
+
+            <!-- Classroom training Tab -->
+            <!-- <p-tabPanel header="Classroom training">
+              <app-course-classroom></app-course-classroom>
+            </p-tabPanel> -->
+
+          </p-tabView>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="courseViewModulesAccess.includes(loggedInRoleName)">
+  <app-course-admin></app-course-admin>
+</div>

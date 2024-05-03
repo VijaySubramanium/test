@@ -1,0 +1,943 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+  <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+  <app-sidebar (listOfRightMenus)=onListOfRightMenus($event)></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>Batch Management</h5>
+        <span *ngFor="let subMenu of rightSideMenus">
+          <div class="dropdown float-end header-links" *ngIf="!notAccessRoleNames.includes(loggedInRoleName)">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <!--<li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addBatch"
+                                    (click)="resetBatchForm(addBatchForm)">Add Batch</a></li>-->
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+                <div
+                  *ngIf="selectedBatchDetails.length > 0 && subMenuAction.action_url.trim() == 'changestatus' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" (click)="StatusModal()" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#batch'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+
+                <div
+                  *ngIf="((subMenuAction.action_url.trim() != 'changestatus' && loggedInRoleName == 'GTT_ADMIN') || (subMenuAction.action_url.trim() != 'changestatus' && loggedInRoleName == 'TRAINING_COORDINATOR'))">
+                  <a class="dropdown-item" (click)="resetBatchForm(addBatchForm)" href="javascript:void(0);"
+                    data-bs-toggle="modal" [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </span>
+      </div>
+
+      <div class="card-body">
+        <ul class="nav nav-tabs card-nav" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="userManagement-tab" data-bs-toggle="tab"
+              data-bs-target="#userManagement" type="button" role="tab" aria-controls="userManagement"
+              aria-selected="true">Batch</button>
+          </li>
+        </ul>
+
+        <div class="tab-content card-tab-content" id="myTabContent">
+          <div class="tab-pane fade active show" id="userManagement" role="tabpanel"
+            aria-labelledby="userManagement-tab">
+            <div class="row">
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="show-entries d-flex mb-3">
+                  <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results
+                      Found</span></small>
+                </div>
+              </div>
+
+              <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <p-multiSelect [options]="batchCols" [(ngModel)]="selectedBatchColumns" optionLabel="header"
+                    (onChange)="columnFilter($event)" selectedItemsLabel="{0} columns selected"
+                    [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+                </div>
+                <!-- <div class="search-input w-xs-100 me-2 mb-3">
+                  <input type="text" class="form-control" placeholder="Search"
+                    (input)="at.filterGlobal($any($event.target).value, 'contains')">
+                </div> -->
+
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"
+                    [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''" (click)="searchClose()"
+                    data-bs-toggle="modal" [attr.data-bs-target]="'#batchSearch'" class="mr-2" title="Search"
+                    tooltipPosition="bottom"></button>
+                  <!-- <input type="text" class="form-control" placeholder="Search" (input)="dt.filterGlobal($any($event.target).value, 'contains')" /> -->
+                </div>
+
+                <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                  <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Export<i class="las la-angle-down ms-2"></i>
+                  </button>
+
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li>
+                      <button type="button" title="CSV" pButton pRipple icon="pi pi-file"
+                        (click)="exportBatchCSV()" class="p-button-info ml-auto"
+                        pTooltip="CSV" tooltipPosition="bottom"></button>
+                    </li>
+                    <li>
+                      <button type="button" title="XLSX" pButton pRipple icon="pi pi-file-excel"
+                        (click)="exportBatchDetailExcel()" class="p-button-success mr-2" pTooltip="XLS"
+                        tooltipPosition="bottom"></button>
+                    </li>
+                    <!-- <li>
+                                            <button type="button" title="PDF" pButton pRipple icon="pi pi-file-pdf"
+                                                (click)="exportBatchDetailPdf(at)" class="p-button-warning mr-2"
+                                                pTooltip="PDF" tooltipPosition="bottom"></button>
+                                        </li> -->
+
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-12 scroll-table scrolling-table-div">
+            <p-table #dt class="p-table-grid" [columns]="selectedBatchColumns" [(selection)]="selectedBatchDetails"
+              [value]="batchDetails" [paginator]="true" [rowsPerPageOptions]="[5, 10, 25, 50, 100, 500]" [rows]="10"
+              sortMode="multiple" [responsive]="true" [(selection)]="selectedBatchDetails"
+              [globalFilterFields]="['program_name', 'courses', 'batch_code','project_names','start_date','end_date','projectmanagers','batch_status']"
+              [exportFilename]="exportBatchName">
+
+              <ng-template pTemplate="header" let-columns class="batch-bg">
+                <tr class="batch-bg">
+                  <th class="batch-bg">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field" class="batch-bg">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                  <th class="batch-bg">Action</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-batchDetail let-columns="columns">
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="batchDetail"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns">
+
+                    <div
+                      *ngIf="col.field != 'program_outline' && col.field != 'courses' && col.field != 'project_managers' && col.field != 'batch_status'">
+                      {{ batchDetail[col.field] }}
+                    </div>
+
+                    <div *ngIf="col.field == 'courses'" class="text-center">
+                      <span *ngFor="let course of batchDetail[col.field]" class="mb-1">
+                        {{ course }} <br />
+                      </span>
+                    </div>
+
+
+                    <div *ngIf="col.field == 'project_managers'" class="text-center">
+                      <span *ngFor="let project_manager_name of batchDetail[col.field]" class="mb-1">
+                        {{ project_manager_name }} <br />
+                      </span>
+                    </div>
+
+                    <div *ngIf="col.field == 'program_outline'" class="text-center">
+                      <a href="{{ batchDetail['program_outline_url'] }}" target="_blank">{{ batchDetail[col.field]
+                        }}</a>
+                    </div>
+
+                    <span *ngIf="col.field == 'batch_status'">
+                      {{(batchDetail[col.field] == 'Active') ? "Active" :"Inactive" }}
+                    </span>
+                  </td>
+                  <td>
+                    <a href="javascript:void(0);" class="p-1" (click)="viewBatchDetails(batchDetail)"><i
+                        class="las la-eye"></i></a>
+                    <a href="javascript:void(0);" class="p-1" *ngIf="!notAccessRoleNames.includes(loggedInRoleName)"
+                      (click)="editBatchDetails(batchDetail)"><i class="las la-pen"></i></a>
+                    <!-- <a href="javascript:void(0);" class="p-1" data-bs-toggle="modal" data-bs-target="#deleteBatchModal" (click)="deleteCurrentBatchId(batchDetail)"><i class="las la-trash-alt"></i></a> -->
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            <!-- <p-paginator [rows]="batchRowNum" #customPaginator [totalRecords]="batchTotalRecords"
+                        [rowsPerPageOptions]="[10, 30, 50, 100, 500]" (onPageChange)="paginate($event)"></p-paginator> -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Search Modal -->
+<div class="modal fade" id="batchSearch" tabindex="-1" aria-labelledby="batchSearch" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="clearSearch()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)" [selectionLimit]="5" optionLabel="header"
+              [(ngModel)]="_selectedSearchColumns" selectedItemsLabel="{0} columns selected"
+              [style]="{minWidth: '180px'}" placeholder="Choose Columns" [showToggleAll]="false"></p-multiSelect>
+          </div>
+        </div>
+
+        <div class="row p-2">
+          <table>
+            <tr *ngFor="let searchColumns of _selectedSearchColumns">
+              <td class="w-auto p-2 text-center">
+                {{searchColumns.header}}
+              </td>
+              <td class="w-auto p-2">
+                <input required type="text" [placeholder]="searchHolder(searchColumns.field)" class="form-control"
+                  name="subject" [(ngModel)]="searchColumns.search" #subject="ngModel">
+              </td>
+              <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1">
+                <select required class="form-select" aria-placeholder="Select" title="Condition"
+                  [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                  <option [ngValue]="undefined" disabled selected>Select</option>
+                  <option>AND</option>
+                  <option>OR</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row p-2" *ngIf="searchError">
+          <p style="color: red;">*Mandatory to fill all fields.</p>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal"
+            [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+          <button type="button" class="btn btn-blue" (click)="submitSearch()"
+            [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Batch Details Modal -->
+<div class="modal fade" id="addbatch" tabindex="-1" aria-labelledby="addbatch" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Batch Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+            value="single" checked>
+          <label class="form-check-label" for="inlineRadio1">Single</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+            value="bulk">
+          <label class="form-check-label" for="inlineRadio2">Bulk</label>
+        </div>
+        <div class="row file-upload mt-3" id="show-single">
+          <form #addBatchForm="ngForm" name="form" (ngSubmit)="addBatchForm.form.valid">
+            <div class="row">
+
+
+              <div class="col-md-6 mb-3">
+                <label>Program Name</label><span class="required"> *</span>
+                <select required class="form-select" (change)="getProjectsBasedOnProgram($any($event.target).value)"
+                  [(ngModel)]="batch.programName" #batchaddprogram="ngModel" name="batch_add_program_name">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfPrograms" value="{{x.program_id}}__{{ x.program_name }}">
+                    {{x.program_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && batchaddprogram.untouched) || batchaddprogram.touched"
+                    class="error">
+                    <div *ngIf="batchaddprogram.errors?.['required']">Select the program field</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- (change)="getProjectManagersBasedOnProject($any($event.target).value)" -->
+              <div class="col-md-6 mb-3">
+                <label>Course Name <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Course" [(ngModel)]="batch.courseName"
+                  (change)="getProjectsBasedOnCourse($any($event.target).value, 'add')" name="batch_add_course_name"
+                  #batchaddcoursename="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfCourses" value="{{ x.course_id }}__{{ x.course_name }}">
+                    {{x.course_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && batchaddcoursename.untouched) || batchaddcoursename.touched"
+                    class="error">
+                    <div *ngIf="batchaddcoursename.errors?.['required']">Select the course field</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="col-md-6 mb-3">
+                                <label>Course Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="batch_add_course_name"
+                                    [(ngModel)]="batch.courseName" #batchaddcoursename="ngModel" required readonly>
+
+                            </div> -->
+
+              <div class="col-md-6 mb-3">
+                <label>Project <span class="text-danger">*</span></label>
+                <select required class="form-select"
+                  (change)="getProjectManagersBasedOnProject($any($event.target).value)" title="project"
+                  [(ngModel)]="batch.projectName" name="batch_add_project_name" id="batch_add_project_name"
+                  #batchaddproject="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfProjects" value="{{ x.project_id }}__{{ x.project_name }}">
+                    {{x.project_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && batchaddproject.untouched) || batchaddproject.touched"
+                    class="error">
+                    <div *ngIf="batchaddproject.errors?.['required']">Select the project field</div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>No of Students <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_add_no_of_students" [(ngModel)]="batch.noOfStudents"
+                  #noofstudents="ngModel" required readonly>
+                <!--<div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(addBatchForm.submitted && noofstudents.untouched) ||  noofstudents.touched ">
+                                            <div *ngIf="noofstudents.errors?.['required']">No of students is required</div>
+                                        </div>
+                                        <div *ngIf="noofstudents.touched && noofstudents.invalid">
+                                            <div *ngIf="noofstudents.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>-->
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Start Date<span class="text-danger">*</span></label>
+                <p-calendar [(ngModel)]="batch.startDate" placeholder="YYYY-MM-DD" [required]="true" type="date"
+                  name="batch_add_start_date" class="date-input" dateFormat="yy-mm-dd" #batchstartdate="ngModel">
+                </p-calendar>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && batchstartdate.untouched) || batchstartdate.touched">
+                    <div *ngIf="batchstartdate.errors?.['required']">Start date is required </div>
+                  </div>
+                  <div *ngIf="batchstartdate.touched && batchstartdate.invalid">
+                    <div *ngIf="batchstartdate.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>End Date<span class="text-danger">*</span></label>
+                <p-calendar [(ngModel)]="batch.endDate" placeholder="YYYY-MM-DD" [required]="true" type="date"
+                  name="batch_add_end_date" class="date-input" dateFormat="yy-mm-dd" [minDate]="batch.startDate"
+                  #batchenddate="ngModel">
+                </p-calendar>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && batchenddate.untouched) || batchenddate.touched">
+                    <div *ngIf="batchenddate.errors?.['required']">End date is required </div>
+                  </div>
+                  <div *ngIf="batchenddate.touched && batchenddate.invalid">
+                    <div *ngIf="batchenddate.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Days<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_add_days" [(ngModel)]="batch.days"
+                  pattern="^(0|[1-9][0-9]*)$" #addbatchdays="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && addbatchdays.untouched) ||  addbatchdays.touched ">
+                    <div *ngIf="addbatchdays.errors?.['required']">Days is required</div>
+                  </div>
+                  <div *ngIf="addbatchdays.touched && addbatchdays.invalid">
+                    <div *ngIf="addbatchdays.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Hours<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_add_hours" [(ngModel)]="batch.hours"
+                  pattern="^(0|[1-9][0-9]*)$" #addbatchhours="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && addbatchhours.untouched) ||  addbatchhours.touched ">
+                    <div *ngIf="addbatchhours.errors?.['required']">Hours is required</div>
+                  </div>
+                  <div *ngIf="addbatchhours.touched && addbatchhours.invalid">
+                    <div *ngIf="addbatchhours.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Course Type <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Course Type" [(ngModel)]="batch.courseType"
+                  name="batch_add_course_type" id="batch_add_course_type" #batchaddcoursetype="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfCourseTypes" value="{{ x.course_type_id }}">
+                    {{ x.course_type_name }}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && batchaddproject.untouched) || batchaddproject.touched"
+                    class="error">
+                    <div *ngIf="batchaddproject.errors?.['required']">Select the course type field</div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Project Manager<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_add_project_manager" readonly
+                  [(ngModel)]="batch.projectManagerName" #addbacthprojectmanagername="ngModel" required>
+                <!--<div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(addBatchForm.submitted && noofstudents.untouched) ||  noofstudents.touched ">
+                                            <div *ngIf="noofstudents.errors?.['required']">No of students is required</div>
+                                        </div>
+                                        <div *ngIf="noofstudents.touched && noofstudents.invalid">
+                                            <div *ngIf="noofstudents.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>-->
+              </div>
+
+
+
+
+              <div class="col-md-6 mb-3">
+                <label>Trainer Name <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Trainer" [(ngModel)]="batch.trainerName"
+                  name="batch_add_trainer_name" #trainer="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfTrainers" value="{{ x.trainer_id }}__{{ x.trainer_name }}">
+                    {{x.trainer_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(addBatchForm.submitted && trainer.untouched) || trainer.touched" class="error">
+                    <div *ngIf="trainer.errors?.['required']">Select the trainer field</div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Program Outline <span class="text-danger">*</span></label>
+                <input type="text" readonly title="Program Outline" class="form-control"
+                  name="batch_add_program_outline" [(ngModel)]="batch.programOutline" #programoutline="ngModel"
+                  required>
+                <span *ngIf="batch.programOutline != null && batch.programOutline != ''" style="font-size:12px;">Click
+                  to view: <a href="{{ batch.programOutlineUrl }}" target="_blank" title="{{ batch.programOutline }}">{{ batch.programOutline.substring(1,20) }}...</a></span>
+                <!--<div style="display: block;" class="invalid-feedback">
+                                    <div
+                                        *ngIf="(addBatchForm.submitted && programoutline.untouched) ||  programoutline.touched ">
+                                        <div *ngIf="programoutline.errors?.['required']">Program outline is required
+                                        </div>
+                                    </div>
+                                    <div *ngIf="programoutline.touched && programoutline.invalid">
+                                        <div *ngIf="programoutline.errors?.['pattern']">Enter a valid data
+                                        </div>
+                                    </div>
+                                </div>-->
+              </div>
+
+              <!--<div class="col-md-6 mb-3">
+                                <label>Overall Status <span class="text-danger">*</span></label>
+                                <select required class="form-select" [(ngModel)]="batch.overallStatus" name="batch_add_over_all_status" #overallstatus="ngModel">
+                                    <option value="" selected hidden>-- Select --</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="In-progress">In-Progress</option>
+                                    <option value="Yet to start">Yet to Start</option>
+                                    <option value="On-hold">On-Hold</option>
+                                </select>
+                                <div style="display: block;" class="invalid-feedback">
+                                    <div *ngIf="(addBatchForm.submitted && overallstatus.untouched) || overallstatus.touched" class="error">
+                                        <div *ngIf="overallstatus.errors?.['required']">Select the overall status field
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+
+              <!-- <div class="col-md-6 mb-3">
+                                <label>Feedback Score</label>
+                                <input class="form-control" name="batch_add_feedback_score" [(ngModel)]="batch.feedbackScore" #feedbackscore="ngModel"
+                                /> -->
+              <!--pattern="^\d+$"-->
+              <!--<div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(addBatchForm.submitted && feedbackscore.untouched) ||  feedbackscore.touched ">
+                                            <div *ngIf="feedbackscore.errors?.['required']">Feedback is required</div>
+                                        </div>
+                                        <div *ngIf="feedbackscore.touched && feedbackscore.invalid">
+                                            <div *ngIf="feedbackscore.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>-->
+              <!-- </div> -->
+
+
+              <div class="col-md-6 mb-3">
+                <label>Status <span class="text-danger">*</span></label>
+                <select required class="form-select" [(ngModel)]="batch.status" name="batch_add_status"
+                  #batchaddstatus="ngModel">
+                  <!--<option value="" disabled selected hidden>Gender *</option>-->
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <div *ngIf="(addBatchForm.submitted && batchaddstatus.untouched) || batchaddstatus.touched"
+                  class="error">
+                  <div *ngIf="batchaddstatus.errors?.['required']">Select the status field</div>
+                </div>
+              </div>
+
+              <div class="modal-footer ps-0 pe-0 border-top">
+                <button type="submit" class="btn btn-blue"
+                  (click)="addBatchSubmit(addBatchForm.form, addBatchForm)">Register</button>
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+        <!-- bulk -->
+        <div class="row file-upload mt-3" id="show-bulk">
+          <div class="col-md-6 offset-md-6">
+            <div class="d-flex justify-content-end">
+              <a target="_self" style="text-decoration:none;" class="f-green"
+                href="assets/template/Batch Bulk Template.xlsx">Download Template</a>
+            </div>
+          </div>
+          <div class="col-md-12 mb-3">
+            <div class="modal-bulk">
+              <div class="bulkupload">
+                <input id="file" #batchFileInput (change)="onBulkUploadChange($event)" type="file" class="form-control">
+              </div>
+              <div *ngIf="batchBulkUploadMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Please upload valid file</div>
+              </div>
+            </div>
+          </div>
+
+          <!--## bulk ##-->
+          <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-blue" (click)="onBulkUplaod()">Upload</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit Batch Details Modal -->
+<div class="modal fade" id="edit_batch_details" tabindex="-1" aria-labelledby="edit_batch_details" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Batch Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll slim-scroll">
+        <div class="row">
+          <form #editBatchForm="ngForm" name="form" (ngSubmit)="editBatchForm.form.valid">
+            <div class="row">
+
+              <div class="col-md-6 mb-3">
+                <label>Program Name</label><span class="required"> *</span>
+                <select required class="form-select" (change)="getProjectsBasedOnProgram($any($event.target).value)"
+                  [(ngModel)]="batch.programName" #batcheditprogram="ngModel" name="batch_edit_program_name">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfPrograms" value="{{x.program_id}}__{{ x.program_name }}">
+                    {{x.program_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && batcheditprogram.untouched) || batcheditprogram.touched"
+                    class="error">
+                    <div *ngIf="batcheditprogram.errors?.['required']">Select the program field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Course Name<span class="text-danger">*</span></label>
+                <select required class="form-select" title="Course Name" [(ngModel)]="batch.courseName"
+                  (change)="getProjectsBasedOnCourse($any($event.target).value, '')" name="batch_edit_course_name"
+                  #batcheditcoursename="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfCourses" value="{{ x.course_id }}__{{ x.course_name }}">
+                    {{x.course_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && batcheditcoursename.untouched) || batcheditcoursename.touched"
+                    class="error">
+                    <div *ngIf="batcheditcoursename.errors?.['required']">Select the course field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Project <span class="text-danger">*</span></label>
+                <select required class="form-select"
+                  (change)="getProjectManagersBasedOnProject($any($event.target).value)" title="project"
+                  [(ngModel)]="batch.projectName" name="batch_edit_project_name" #batcheditproject="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfProjects" value="{{ x.project_id }}__{{ x.project_name }}">
+                    {{x.project_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && batcheditproject.untouched) || batcheditproject.touched"
+                    class="error">
+                    <div *ngIf="batcheditproject.errors?.['required']">Select the project field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>No of Students <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_edit_no_of_students"
+                  [(ngModel)]="batch.noOfStudents" #batcheditnoofstudents="ngModel" required readonly>
+                <!--<div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(editBatchForm.submitted && noofstudents.untouched) ||  noofstudents.touched ">
+                                            <div *ngIf="noofstudents.errors?.['required']">No of students is required</div>
+                                        </div>
+                                        <div *ngIf="noofstudents.touched && noofstudents.invalid">
+                                            <div *ngIf="noofstudents.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>-->
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Start Date<span class="text-danger">*</span></label>
+                <p-calendar [(ngModel)]="batch.startDate" [required]="true" type="date" name="batch_edit_start_date"
+                  class="date-input" dateFormat="yy-mm-dd" #batchstartdate="ngModel">
+                </p-calendar>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && batchstartdate.untouched) || batchstartdate.touched">
+                    <div *ngIf="batchstartdate.errors?.['required']">Start date is required </div>
+                  </div>
+                  <div *ngIf="batchstartdate.touched && batchstartdate.invalid">
+                    <div *ngIf="batchstartdate.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>End Date<span class="text-danger">*</span></label>
+                <p-calendar [(ngModel)]="batch.endDate" [required]="true" type="date" [minDate]="batch.startDate"
+                  name="batch_edit_end_date" class="date-input" dateFormat="yy-mm-dd" #batchenddate="ngModel">
+                </p-calendar>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && batchenddate.untouched) || batchenddate.touched">
+                    <div *ngIf="batchenddate.errors?.['required']">End date is required </div>
+                  </div>
+                  <div *ngIf="batchenddate.touched && batchenddate.invalid">
+                    <div *ngIf="batchenddate.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Days<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_edit_days" pattern="^(0|[1-9][0-9]*)$"
+                  [(ngModel)]="batch.days" #editbatchdays="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && editbatchdays.untouched) ||  editbatchdays.touched ">
+                    <div *ngIf="editbatchdays.errors?.['required']">Days is required</div>
+                  </div>
+                  <div *ngIf="editbatchdays.touched && editbatchdays.invalid">
+                    <div *ngIf="editbatchdays.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-3">
+                <label>Hours<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="batch_edit_hours" pattern="^(0|[1-9][0-9]*)$"
+                  [(ngModel)]="batch.hours" #editbatchhours="ngModel" required>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && editbatchhours.untouched) ||  editbatchhours.touched ">
+                    <div *ngIf="editbatchhours.errors?.['required']">Hours is required</div>
+                  </div>
+                  <div *ngIf="editbatchhours.touched && editbatchhours.invalid">
+                    <div *ngIf="editbatchhours.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label>Course Type <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Course Type" [(ngModel)]="batch.courseType"
+                  name="batch_edit_course_type" id="batch_edit_course_type" #editbatchcoursetype="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfCourseTypes" value="{{ x.course_type_id }}">
+                    {{ x.course_type_name }}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && editbatchcoursetype.untouched) || editbatchcoursetype.touched"
+                    class="error">
+                    <div *ngIf="editbatchcoursetype.errors?.['required']">Select the course type field</div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="col-md-6 mb-3">
+                <label>Project Manager</label>
+                <input type="text" class="form-control" name="batch_edit_project_manager" readonly
+                  [(ngModel)]="batch.projectManagerName" #editbatchprojectmanagername="ngModel">
+                <!--<div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(editBatchForm.submitted && noofstudents.untouched) ||  noofstudents.touched ">
+                                            <div *ngIf="noofstudents.errors?.['required']">No of students is required</div>
+                                        </div>
+                                        <div *ngIf="noofstudents.touched && noofstudents.invalid">
+                                            <div *ngIf="noofstudents.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>-->
+              </div>
+
+
+
+
+              <div class="col-md-6 mb-3">
+                <label>Trainer Name <span class="text-danger">*</span></label>
+                <select required class="form-select" title="Trainer" [(ngModel)]="batch.trainerName"
+                  name="batch_edit_trainer_name" #batchedittrainer="ngModel">
+                  <option value="" disabled selected hidden>-- Select --</option>
+                  <option *ngFor="let x of listOfTrainers" value="{{ x.trainer_id }}__{{ x.trainer_name }}">
+                    {{x.trainer_name}}</option>
+                </select>
+                <div style="display: block;" class="invalid-feedback">
+                  <div *ngIf="(editBatchForm.submitted && batchedittrainer.untouched) || batchedittrainer.touched"
+                    class="error">
+                    <div *ngIf="batchedittrainer.errors?.['required']">Select the trainer field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="col-md-6 mb-3">
+                <label>Program Outline </label>
+                <input type="text" readonly title="Program Outline" class="form-control"
+                  name="batch_edit_program_outline" [(ngModel)]="batch.programOutline"
+                  #batcheditprogramoutline="ngModel">
+                <span style="font-size:12px;" *ngIf="batch.programOutline != null && batch.programOutline != ''"> Click
+                  to view: <a href="{{ batch.programOutlineUrl }}" target="_blank" title="{{ batch.programOutline }}">{{ batch.programOutline.substring(1,20) }} ...</a></span>
+                <!--<div style="display: block;" class="invalid-feedback">
+                                    <div
+                                        *ngIf="(editBatchForm.submitted && programoutline.untouched) ||  programoutline.touched ">
+                                        <div *ngIf="programoutline.errors?.['required']">Program outline is required
+                                        </div>
+                                    </div>
+                                    <div *ngIf="programoutline.touched && programoutline.invalid">
+                                        <div *ngIf="programoutline.errors?.['pattern']">Enter a valid data
+                                        </div>
+                                    </div>
+                                </div>-->
+              </div>
+
+              <!--<div class="col-md-6 mb-3">
+                                <label>Overall Status <span class="text-danger">*</span></label>
+                                <select required class="form-select" [(ngModel)]="batch.overallStatus" name="batch_edit_over_all_status" #batcheditoverallstatus="ngModel">
+                                    <option value="" selected hidden>-- Select --</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="In-progress">In-Progress</option>
+                                    <option value="Yet to start">Yet to Start</option>
+                                    <option value="On-hold">On-Hold</option>
+                                </select>
+                                <div style="display: block;" class="invalid-feedback">
+                                    <div *ngIf="(editBatchForm.submitted && batcheditoverallstatus.untouched) || batcheditoverallstatus.touched" class="error">
+                                        <div *ngIf="batcheditoverallstatus.errors?.['required']">Select the overall status field
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+
+              <!-- <div class="col-md-6 mb-3">
+                                <label>Feedback Score</label>
+                                <input class="form-control" name="batch_edit_feedback_score"
+                                    [(ngModel)]="batch.feedbackScore" #feedbackscore="ngModel" /> -->
+              <!--pattern="^\d+$"-->
+              <!--<div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(editBatchForm.submitted && feedbackscore.untouched) ||  feedbackscore.touched ">
+                                            <div *ngIf="feedbackscore.errors?.['required']">Feedback is required</div>
+                                        </div>
+                                        <div *ngIf="feedbackscore.touched && feedbackscore.invalid">
+                                            <div *ngIf="feedbackscore.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>-->
+              <!-- </div> -->
+
+
+              <div class="col-md-6 mb-3">
+                <label>Status <span class="text-danger">*</span></label>
+                <select required class="form-select" [(ngModel)]="batch.status" name="batch_edit_status"
+                  #batcheditstatus="ngModel">
+                  <!--<option value="" disabled selected hidden>Gender *</option>-->
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <div *ngIf="(editBatchForm.submitted && batcheditstatus.untouched) || batcheditstatus.touched"
+                  class="error">
+                  <div *ngIf="batcheditstatus.errors?.['required']">Select the status field</div>
+                </div>
+              </div>
+
+              <div class="modal-footer ps-0 pe-0 border-top">
+                <button type="submit" class="btn btn-blue"
+                  (click)="onSubmitUpdateBatch(editBatchForm.form, editBatchForm)">Update</button>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- View Batch Details -->
+
+<div class="modal fade" id="view_batch_details" tabindex="-1" aria-labelledby="view_batch_details" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="p-table-grid" [value]="names" [paginator]="true" [rowsPerPageOptions]="[5, 10]"
+            [rows]="10" sortMode="multiple" [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Student Name</th>
+                <th>Email Id</th>
+                <th>Mobile Number</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-batchviewDetail>
+              <tr>
+                <td>
+                  {{ batchviewDetail.studentName }}
+                </td>
+                <td>
+                  {{ batchviewDetail.email }}
+                </td>
+                <td>
+                  {{ batchviewDetail.mobile }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" (click)="downloadView()" class="btn btn-blue"> Download </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Batch Change Status -->
+<div class="modal fade" id="batchchangestatus" tabindex="-1" aria-labelledby="batchchangestatus" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="StatusModal()"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Active"
+                [(ngModel)]="batch.status" type="radio" id="batchstatusactive" name="status" checked>
+              <label class="form-check-label" for="batchstatusactive">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Inactive"
+                [(ngModel)]="batch.status" type="radio" id="batchstatusinactive" name="status">
+              <label class="form-check-label" for="batchstatusinactive">Inactive</label>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-red" (click)="StatusModal()" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="BatchChangeStatus(at)" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Batch Modal -->
+<!--<div class="modal fade" id="deleteBatchModal" tabindex="-1" aria-labelledby="deleteBatchModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-2 pb-2">
+                <p class="text-center mb-0"> <b>Are you sure want to delete?</b></p>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-blue" (click)="deleteBatch(currentBatchRowData.program_id)">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>-->

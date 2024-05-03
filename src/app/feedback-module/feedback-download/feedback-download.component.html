@@ -1,0 +1,168 @@
+<!-- <form #addfield="ngForm" name="form" (ngSubmit)="(addfield)"> -->
+    <div class="row mt-2">
+        <div class="col-lg-4 mb-3">
+            <label [style.visibility]="isProjectSelect? 'visible': 'hidden'">Projects</label>
+            <div class="d-flex mt-1">
+                <p-multiSelect class="min-width" id="multiProjects" [options]="activeProjectList" [(ngModel)]="_selectedProjects" optionLabel="project_name"
+                    (onChange)="columnFilter($event,'projects')" placeholder="Select Projects"
+                    selectedItemsLabel="{0} projects selected">
+                </p-multiSelect>
+                <button class="btn btn-blue btn-get" [disabled]="!isProjectSelect" (click)="getProgramsByProjectId()"><i
+                        class="las la la-arrow-right"></i></button>
+            </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+            <select required class="form-select w-100" title="Select Project" style="cursor:pointer ;"
+                (change)="getProgramsByProjectId($any($event.target).value)" aria-label="Default select example"
+                [(ngModel)]="addFields.projectName" name="projectName" #projectName="ngModel">
+                <option value="" disabled selected hidden>
+                    Select Project
+                </option>
+                <option *ngFor="let x of activeProjectList" value="{{ x.project_id }}">
+                    {{ x.project_name}}
+                </option>
+            </select>
+            <div *ngIf=" (addfield.submitted && projectName.untouched) || projectName.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="projectName.errors?.['required']">
+                    Select Project
+                </div>
+            </div>
+        </div> -->
+        <div class="col-lg-4 mb-3">
+            <label [style.visibility]="isProgramSelect? 'visible': 'hidden'">Programs</label>
+            <div class="d-flex mt-1">
+                <p-multiSelect class="min-width" #multiPrograms [options]="programDetails" [(ngModel)]="_selectedPrograms" optionLabel="programname"
+                    (onChange)="columnFilter($event,'programs')" placeholder="Select Programs" [disabled]="!programDetails"
+                    selectedItemsLabel="{0} programs selected"></p-multiSelect>
+                <button class="btn btn-blue btn-get" [disabled]="!isProgramSelect"
+                    (click)="getCourseListByProjectIdAndProgramId()"><i class="las la la-arrow-right"></i></button>
+            </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+            <select required class="form-select w-100" title="Select Program" style="cursor:pointer ;"
+                aria-label="Default select example"
+                (change)="getBatchListByProjectIdAndProgramId($any($event.target).value)"
+                [(ngModel)]="addFields.programName" name="programName" #programName="ngModel">
+                <option value="" disabled selected hidden>
+                    Select Program
+                </option>
+                <option *ngFor="let x of programDetails" value="{{ x.programid }}">
+                    {{ x.programname}}
+                </option>
+            </select>
+            <div *ngIf=" (addfield.submitted && programName.untouched) || programName.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="programName.errors?.['required']">
+                    Select Program
+                </div>
+            </div>
+        </div> -->
+
+        <div class="col-lg-4 mb-3">
+            <label [style.visibility]="isCourseSelect? 'visible': 'hidden'">Courses</label>
+            <div class="d-flex mt-1">
+                <p-multiSelect class="min-width" #multiCourses [options]="courseDetails" [(ngModel)]="_selectedCourses" optionLabel="coursename"
+                    (onChange)="columnFilter($event,'courses')" defaultLabel="Select Courses" [disabled]="!courseDetails"
+                    selectedItemsLabel="{0} courses selected"></p-multiSelect>
+                <button class="btn btn-blue btn-get" [disabled]="!isCourseSelect" (click)="getTrainerListByBatchId()"><i
+                        class="las la la-arrow-right"></i></button>
+            </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+            <select required class="form-select w-100" title="Select Batch" style="cursor:pointer ;"
+                aria-label="Default select example" (change)="getFormListByBatchId($any($event.target).value)"
+                [(ngModel)]="addFields.BatchName" name="BatchName" #BatchName="ngModel">
+                <option value="" disabled selected hidden>
+                    Select Batch
+                </option>
+                <option *ngFor="let x of batchDetails" value="{{ x.batch_id }}">
+                    {{ x.batch_code}}
+                </option>
+            </select>
+            <div *ngIf=" (addfield.submitted && BatchName.untouched) || BatchName.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="BatchName.errors?.['required']">
+                    Select Batch
+                </div>
+            </div>
+        </div> -->
+
+    </div>
+    <div class="row mt-2">
+
+
+        <div class="col-lg-4 mb-3">
+            <label [style.visibility]="isTrainerSelect? 'visible': 'hidden'">Trainers</label>
+            <div class="d-flex mt-1">
+                <p-multiSelect class="min-width" #multiTrainers [options]="trainerDetails" [(ngModel)]="_selectedTrainer" optionLabel="fullName"
+                    (onChange)="columnFilter($event,'trainers')" defaultLabel="Select Trainers" [disabled]="!trainerDetails"
+                    selectedItemsLabel="{0} trainers selected"></p-multiSelect>
+                <button class="btn btn-blue btn-get" [disabled]="!isTrainerSelect" (click)="getBatchListByProjectIdAndProgramId()"><i
+                        class="las la la-arrow-right"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <label [style.visibility]="isBatchSelect? 'visible': 'hidden'">Batches</label>
+            <div class="d-flex mt-1">
+                <p-multiSelect class="min-width" #multiBatches [options]="batchDetails" [(ngModel)]="_selectedBatches" optionLabel="batchcode"
+                    (onChange)="columnFilter($event,'batches')" placeholder="Select Batches" [disabled]="!batchDetails"
+                    selectedItemsLabel="{0} batches selected"></p-multiSelect>
+                <button class="btn btn-blue btn-get" [disabled]="!isBatchSelect" (click)="getFormListByBatchId()"><i
+                        class="las la la-arrow-right"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <label [style.visibility]="isFormSelect? 'visible': 'hidden'">Forms</label>
+            <div class="d-flex mt-1">
+                <p-multiSelect class="min-width" #multiForms [options]="formDetails" [(ngModel)]="_selectedForms" optionLabel="formName"
+                    (onChange)="columnFilter($event,'forms')" placeholder="Select Forms" [disabled]="!formDetails"
+                    selectedItemsLabel="{0} forms selected"></p-multiSelect>
+            </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+            <select required class="form-select w-100" title="Select Form" style="cursor:pointer ;"
+                (change)="getSelectedForm($any($event.target).value)" aria-label="Default select example"
+                [(ngModel)]="addFields.FormName" name="FormName" #FormName="ngModel">
+                <option value="" disabled selected hidden>
+                    Select Form
+                </option>
+                <option *ngFor="let x of formDetails" value="{{ x.formId }}">
+                    {{ x.formName}}
+                </option>
+            </select>
+            <div *ngIf=" (addfield.submitted && FormName.untouched) || FormName.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="FormName.errors?.['required']">
+                    Select Form
+                </div>
+            </div>
+        </div> -->
+    </div>
+<!-- </form> -->
+
+<div class="row mt-3">
+    <div class="col-lg-6 mb-3 expBtn">
+        <button type="submit" [disabled]="!isProjectSelect" class="btn btn-white" (click)="exportQuestionForm()"
+            title="Export Form Question">
+            <div class="feedback-add-label">
+                <i class="las la la-arrow-circle-down download-icon"><span class="download-name">Export Forms</span></i>
+            </div>
+        </button>
+
+        <button type="submit" [disabled]="!isProjectSelect" class="btn btn-white" (click)="exportResponseForm()"
+            title="Export Form Response">
+            <div class="feedback-add-label">
+                <i class="las la-arrow-circle-down download-icon"><span class="download-name">Export Response</span></i>
+            </div>
+        </button>
+        <!-- <button class="question-btn" (click)="addQuestion()" type="button">
+            <div class="feedback-add-label">
+                <i class="las la-plus-circle"></i> Add Question
+            </div>
+        </button> -->
+    </div>
+    <div class="col-lg-6 mb-3">
+
+    </div>
+</div>

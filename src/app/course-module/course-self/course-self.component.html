@@ -1,0 +1,365 @@
+<div class="tab-pane fade show active" id="online-training" role="tabpanel" aria-labelledby="online-training-tab">
+
+    <!-- In Progress -->
+    <div *ngIf="inProgress !== undefined">
+        <div class="course-status-head">
+            <h6><span>In Progress</span> </h6>
+        </div>
+        <div class="swiper courses_swiper">
+            <div class="swiper-wrapper">
+                <p-carousel [value]="inProgress" [numVisible]="2" [numScroll]="1" [circular]="false"
+                    [responsiveOptions]="responsiveOptions" [showIndicators]="false">
+
+                    <ng-template let-inProgress pTemplate="item">
+                        <div class="product-item">
+                            <div class="product-item-content">
+                                <div>
+                                    <div class="swiper-slide">
+                                        <div class="course-card card">
+                                            <div class="row m-0">
+                                                <div class="col-md-5 d-flex p-0">
+                                                    <div
+                                                        class="course-card-left d-flex flex-column justify-content-between w-100 h-100">
+                                                        <div>
+                                                            <h6>{{inProgress.batchcode}} - {{inProgress.coursename}}</h6>
+                                                            <!-- <h5>Communication and Business Etiquette</h5> -->
+                                                        </div>
+
+                                                        <div class="course-badge-wrapper">
+                                                            <div class="course-badge">
+                                                                <span>{{inProgress.duration}} Hourse</span>
+                                                            </div>
+                                                            <!-- <div class="course-badge">
+                                                                <span>Online</span>
+                                                            </div> -->
+                                                            <div class="course-badge">
+                                                                <span>{{inProgress.version}}</span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7 d-flex p-0">
+                                                    <div class="course-card-right w-100 h-100">
+                                                        <div class="pb-2 border-bottom">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <!-- <p class="assessments"><i
+                                                                            class="las la-clipboard-list"></i> 2
+                                                                        Assessments
+                                                                    </p>
+                                                                    <p class="assessments"><i
+                                                                            class="las la-file-code"></i>
+                                                                        22 e-Learning
+                                                                        modules</p> -->
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="course-progress-wrapper">
+                                                                        <div class="course-progress-inner">
+                                                                            <mat-progress-bar mode="determinate"
+                                                                                value={{inProgress.completionpercentage}}>
+                                                                            </mat-progress-bar>
+                                                                        </div>
+                                                                        <p>{{inProgress.completionpercentage}}%
+                                                                            Completed</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="course-card-obj pt-2">
+                                                            <h6>Objectives</h6>
+                                                            <p>{{inProgress.description}}</p>
+                                                        </div>
+                                                        <div class="course-card-btn">
+                                                            <button type="button"
+                                                                (click)="onSkillDevelopment(inProgress)"
+                                                                class="btn btn-blue-rounded">Continue
+                                                                Skilling</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </p-carousel>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yet to start -->
+    <div *ngIf="yetToStart !== undefined">
+        <div class="course-status-head mt-2 mb-2">
+            <h6><span>Yet to start</span> </h6>
+        </div>
+        <div class="swiper courses_swiper">
+            <div class="swiper-wrapper">
+                <p-carousel [value]="yetToStart" [numVisible]="2" [numScroll]="1" [circular]="false"
+                    [responsiveOptions]="responsiveOptions" [showIndicators]="false">
+
+                    <ng-template let-yetToStart pTemplate="item">
+                        <div class="product-item">
+                            <div class="product-item-content">
+                                <div>
+                                    <div class="swiper-slide">
+                                        <div class="course-card card">
+                                            <div class="row m-0">
+                                                <div class="col-md-5 d-flex p-0">
+                                                    <div
+                                                        class="course-card-left d-flex flex-column justify-content-between w-100 h-100">
+                                                        <div>
+                                                            <h6>{{yetToStart.batchcode}} - {{yetToStart.coursename}}</h6>
+                                                            <!-- <h5>Communication and Business Etiquette</h5> -->
+                                                        </div>
+
+                                                        <div class="course-badge-wrapper">
+                                                            <div class="course-badge">
+                                                                <span>{{yetToStart.duration}} Hourse</span>
+                                                            </div>
+                                                            <!-- <div class="course-badge">
+                                                                <span>Online</span>
+                                                            </div> -->
+                                                            <div class="course-badge">
+                                                                <span>{{yetToStart.version}}</span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7 d-flex p-0">
+                                                    <div class="course-card-right w-100 h-100">
+                                                        <div class="pb-2 border-bottom">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <!-- <p class="assessments"><i
+                                                                            class="las la-clipboard-list"></i> 2
+                                                                        Assessments
+                                                                    </p>
+                                                                    <p class="assessments"><i
+                                                                            class="las la-file-code"></i>
+                                                                        22 e-Learning
+                                                                        modules</p> -->
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="course-progress-wrapper">
+                                                                        <div class="course-progress-inner">
+                                                                            <mat-progress-bar mode="determinate"
+                                                                                value={{yetToStart.completionpercentage}}>
+                                                                            </mat-progress-bar>
+                                                                        </div>
+                                                                        <p>{{yetToStart.completionpercentage}}%
+                                                                            Completed</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="course-card-obj pt-2">
+                                                            <h6>Objectives</h6>
+                                                            <p>{{yetToStart.description}}</p>
+
+                                                        </div>
+                                                        <div class="course-card-btn">
+                                                            <button type="button"
+                                                                (click)="onSkillDevelopment(yetToStart)"
+                                                                class="btn btn-blue-rounded ">Yet to start</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </p-carousel>
+            </div>
+        </div>
+    </div>
+
+    <!-- On hold -->
+    <div *ngIf="onHold !== undefined">
+        <div class="course-status-head mt-2 mb-2">
+            <h6><span>On hold</span> </h6>
+        </div>
+        <div class="swiper courses_swiper">
+            <div class="swiper-wrapper">
+                <p-carousel [value]="onHold" [numVisible]="2" [numScroll]="1" [circular]="false"
+                    [responsiveOptions]="responsiveOptions" [showIndicators]="false">
+
+                    <ng-template let-onHold pTemplate="item">
+                        <div class="product-item">
+                            <div class="product-item-content">
+                                <div>
+                                    <div class="swiper-slide">
+                                        <div class="course-card card">
+                                            <div class="row m-0">
+                                                <div class="col-md-5 d-flex p-0">
+                                                    <div
+                                                        class="course-card-left d-flex flex-column justify-content-between w-100 h-100">
+                                                        <div>
+                                                            <h6>{{onHold.batchcode}} - {{onHold.coursename}}</h6>
+                                                            <!-- <h5>Communication and Business Etiquette</h5> -->
+                                                        </div>
+
+                                                        <div class="course-badge-wrapper">
+                                                            <div class="course-badge">
+                                                                <span>{{onHold.duration}} Hourse</span>
+                                                            </div>
+                                                            <!-- <div class="course-badge">
+                                                                <span>Online</span>
+                                                            </div> -->
+                                                            <div class="course-badge">
+                                                                <span>{{onHold.version}}</span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7 d-flex p-0">
+                                                    <div class="course-card-right w-100 h-100">
+                                                        <div class="pb-2 border-bottom">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <!-- <p class="assessments"><i
+                                                                            class="las la-clipboard-list"></i> 2
+                                                                        Assessments
+                                                                    </p>
+                                                                    <p class="assessments"><i
+                                                                            class="las la-file-code"></i>
+                                                                        22 e-Learning
+                                                                        modules</p> -->
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="course-progress-wrapper">
+                                                                        <div class="course-progress-inner">
+                                                                            <mat-progress-bar mode="determinate"
+                                                                                value={{onHold.completionpercentage}}>
+                                                                            </mat-progress-bar>
+                                                                        </div>
+                                                                        <p>{{onHold.completionpercentage}}%
+                                                                            Completed</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="course-card-obj pt-2">
+                                                            <h6>Objectives</h6>
+                                                            <p>{{onHold.description}}</p>
+                                                        </div>
+                                                        <div class="course-card-btn">
+                                                            <span class="label-orng">On hold</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </p-carousel>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed -->
+    <div *ngIf="completed !== undefined">
+        <div class="course-status-head mt-2 mb-2">
+            <h6><span>Completed</span> </h6>
+        </div>
+        <div class="swiper courses_swiper">
+            <div class="swiper-wrapper">
+                <p-carousel [value]="completed" [numVisible]="2" [numScroll]="1" [circular]="false"
+                    [responsiveOptions]="responsiveOptions" [showIndicators]="false">
+
+                    <ng-template let-completed pTemplate="item">
+                        <div class="product-item">
+                            <div class="product-item-content">
+                                <div>
+                                    <div class="swiper-slide">
+                                        <div class="course-card card">
+                                            <div class="row m-0">
+                                                <div class="col-md-5 d-flex p-0">
+                                                    <div
+                                                        class="course-card-left d-flex flex-column justify-content-between w-100 h-100">
+                                                        <div>
+                                                            <h6>{{completed.batchcode}} - {{completed.coursename}}</h6>
+                                                            <!-- <h5>Communication and Business Etiquette</h5> -->
+                                                        </div>
+
+                                                        <div class="course-badge-wrapper">
+                                                            <div class="course-badge">
+                                                                <span>{{completed.duration}} Hourse</span>
+                                                            </div>
+                                                            <!-- <div class="course-badge">
+                                                                <span>Online</span>
+                                                            </div> -->
+                                                            <div class="course-badge">
+                                                                <span>{{completed.version}}</span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7 d-flex p-0">
+                                                    <div class="course-card-right w-100 h-100">
+                                                        <div class="pb-2 border-bottom">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <!-- <p class="assessments"><i
+                                                                            class="las la-clipboard-list"></i> 2
+                                                                        Assessments
+                                                                    </p>
+                                                                    <p class="assessments"><i
+                                                                            class="las la-file-code"></i>
+                                                                        22 e-Learning
+                                                                        modules</p> -->
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="course-progress-wrapper">
+                                                                        <div class="course-progress-inner">
+                                                                            <mat-progress-bar mode="determinate"
+                                                                                value={{completed.completionpercentage}}>
+                                                                            </mat-progress-bar>
+                                                                        </div>
+                                                                        <p>{{completed.completionpercentage}}%
+                                                                            Completed</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="course-card-obj pt-2">
+                                                            <h6>Objectives</h6>
+                                                            <p>{{completed.description}}</p>
+                                                        </div>
+                                                        <div class="course-card-btn">
+                                                            <span class="label-green">Successfully completed</span>
+                                                            <span class="label-blue"
+                                                                (click)="onSkillDevelopment(completed)">View
+                                                                course</span>
+                                                            <span class="label-blue"
+                                                                (click)="getFeedback(completed)">Feedback</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                </p-carousel>
+            </div>
+        </div>
+    </div>
+</div>

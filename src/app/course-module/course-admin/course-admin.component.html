@@ -1,0 +1,256 @@
+<div>
+  <app-header></app-header>
+  <div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+      <div class="card">
+        <div class="card-header">
+          <h5>Course details</h5>
+        </div>
+        <div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="show-entries d-flex mb-3">
+                  <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results
+                      Found</span></small>
+                </div>
+              </div>
+              <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <p-multiSelect [options]="_courseDetailColumnHeader" [(ngModel)]="registrationReportColumns"
+                    optionLabel="header" (onChange)="registrationFilter($event)"
+                    selectedItemsLabel="{0} columns selected" [style]="{minWidth: '180px'}"
+                    placeholder="Choose Columns"></p-multiSelect>
+                </div>
+                <!-- <div class="search-input w-xs-100 me-2 mb-3">
+                      <input type="text" class="form-control" placeholder="Search"
+                          (input)="dt.filterGlobal($any($event.target).value, 'contains')">
+                  </div> -->
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"
+                    [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''" (click)="searchClose()"
+                    data-bs-toggle="modal" [attr.data-bs-target]="'#courseSearch'" class="mr-2" title="Search"
+                    tooltipPosition="bottom"></button>
+                  <!-- <input type="text" class="form-control" placeholder="Search"
+                          (input)="dt.filterGlobal($any($event.target).value, 'contains')"> -->
+                </div>
+                <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                  <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Export<i class="las la-angle-down ms-2"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <!-- <li>
+                             <button type="button" pButton pRipple icon="pi pi-file"  class="mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                         </li> -->
+
+                    <li>
+                      <button type="button" pButton pRipple icon="pi pi-file" title="CSV"
+                        (click)="exportCSV()" class="p-button-info ml-auto"
+                        pTooltip="Selection Only" tooltipPosition="bottom"></button>
+                    </li>
+                    <li>
+                      <button type="button" pButton pRipple icon="pi pi-file-excel" title="XLSX" (click)="exportExcel()"
+                        class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                    </li>
+                    <!-- <li>
+                              <button type="button" pButton pRipple icon="pi pi-file-pdf" title="PDF" (click)="exportPdf(dt)" class="p-button-warning mr-2"
+                                  pTooltip="PDF" tooltipPosition="bottom"></button>
+                          </li> -->
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12 scroll-table scrolling-table-div">
+              <p-table #dt class="p-table-grid" [columns]="registrationReportColumns"
+                [(selection)]="selectedCourseDetails" [value]="courseDetails" [paginator]="true"
+                [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple" [responsive]="true"
+                [globalFilterFields]="_courseDetailFilter">
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th>
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th>Action</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-courseDetail let-columns="columns">
+                  <tr>
+                    <td>
+                      <p-tableCheckbox [value]="courseDetail"></p-tableCheckbox>
+                    </td>
+                    <td *ngFor="let col of columns">
+                      {{ courseDetail[col.field] }}
+                    </td>
+                    <td>
+                      <a href="javascript:void(0);" data-bs-toggle="modal" (click)="viewCourseInfo(courseDetail)"
+                        class="link-blue" title="View"><i class="las la-eye"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+
+
+          <!-- Search Modal -->
+          <div class="modal fade" id="courseSearch" tabindex="-1" aria-labelledby="courseSearch" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="clearSearch()"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)"  [selectionLimit]="5" optionLabel="header"
+                        [(ngModel)]="_selectedSearchColumns" selectedItemsLabel="{0} columns selected"
+                        [style]="{minWidth: '180px'}" placeholder="Choose Columns"
+                        [showToggleAll]="false"></p-multiSelect>
+                    </div>
+                  </div>
+
+                  <div class="row p-2">
+                    <table>
+                      <tr *ngFor="let searchColumns of _selectedSearchColumns">
+                        <td class="w-auto p-2 text-center">
+                          {{searchColumns.header}}
+                        </td>
+                        <td class="w-auto p-2">
+                          <input required type="text" [placeholder]="searchHolder(searchColumns.field)"
+                            class="form-control" name="subject" [(ngModel)]="searchColumns.search" #subject="ngModel">
+                        </td>
+                        <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1">
+                          <select required class="form-select" aria-placeholder="Select" title="Condition"
+                            [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                            <option [ngValue]="undefined" disabled selected>Select</option>
+                            <option>AND</option>
+                            <option>OR</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="row p-2" *ngIf="searchError">
+                    <p style="color: red;">*Mandatory to fill all fields.</p>
+                  </div>
+                  <div class="modal-footer ps-0 pe-0">
+                    <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal"
+                      [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+                    <button type="button" class="btn btn-blue" (click)="submitSearch()"
+                      [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- View student Modal -->
+          <div class="modal fade" id="view-course" tabindex="-1" aria-labelledby="view-course" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 900px;">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">View Course Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4 d-flex align-items-center">
+                      <div class="show-entries d-flex mb-3">
+                        <small><span class="result-found"><b>{{ vdt.totalRecords }}</b> Results
+                            Found</span></small>
+                      </div>
+                    </div>
+                    <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                      <div class="search-input w-xs-100 me-2 mb-3">
+                        <input type="text" class="form-control" placeholder="Search"
+                          (input)="vdt.filterGlobal($any($event.target).value, 'contains')">
+                      </div>
+                      <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                        <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                          aria-expanded="false">
+                          Export<i class="las la-angle-down ms-2"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                          <!-- <li>
+                                   <button type="button" pButton pRipple icon="pi pi-file"  class="mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                               </li> -->
+                          <li>
+                            <button type="button" pButton pRipple icon="pi pi-file" title="CSV"
+                              (click)="exportViewCSV()" class="p-button-info ml-auto"
+                              pTooltip="Selection Only" tooltipPosition="bottom"></button>
+                          </li>
+                          <li>
+                            <button type="button" pButton pRipple icon="pi pi-file-excel" title="XLSX"
+                              (click)="exportViewExcel()" class="p-button-success mr-2" pTooltip="XLS"
+                              tooltipPosition="bottom"></button>
+                          </li>
+                          <!-- <li>
+                                    <button type="button" pButton pRipple icon="pi pi-file-pdf" title="PDF" (click)="exportPdf(dt)" class="p-button-warning mr-2"
+                                        pTooltip="PDF" tooltipPosition="bottom"></button>
+                                </li> -->
+                        </ul>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="col-12 scroll-table scrolling-table-div">
+                    <p-table #vdt class="p-table-grid" [columns]="courseViewColumns"
+                      [(selection)]="selectedViewCourseDetails" [value]="names" [paginator]="true"
+                      [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple" [responsive]="true"
+                      [globalFilterFields]="_courseViewFilter">
+                      <ng-template pTemplate="header" let-columns>
+                        <tr>
+                          <th>
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                          </th>
+                          <th *ngFor="let col of columns" [pSortableColumn]="col.field" style="width: 10%">
+                            {{col.header}}
+                            <!-- <p-sortIcon [field]="col.field"></p-sortIcon> -->
+                          </th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-courseDetail let-columns="columns">
+                        <tr>
+                          <td>
+                            <p-tableCheckbox [value]="courseDetail"></p-tableCheckbox>
+                          </td>
+                          <td *ngFor="let col of columns">
+                            <span *ngIf="col.field != 'batchAvgScore'">
+                              {{ courseDetail[col.field] }}
+                            </span>
+                            <!-- {{ courseDetail[col.field] }} -->
+                            <span *ngIf="col.field == 'batchAvgScore'">
+                              {{ courseDetail[col.field] | number:'1.0-1'}}
+                            </span>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                  <div class="modal-footer ps-0 pe-0">
+                    <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

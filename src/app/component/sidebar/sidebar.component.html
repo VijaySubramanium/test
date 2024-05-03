@@ -1,0 +1,62 @@
+<div class="sidemenu">
+  <p-toast *ngIf="toastMsg" [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"></p-toast>
+  <ul class="sidemenu-slim-scroll">
+
+    <li>
+    </li>
+    <!--{{ menus | json}}-->
+    <!-- <li><a [routerLink]="['/dashboard']"><i class="las la-chart-bar"></i> <span class="menu-title">Dashboard</span></a></li> -->
+    <!--<li><a href="#"><i class="las la-laptop"></i> <span class="menu-title">Projects</span></a></li>-->
+    <li *ngFor="let item of menus; let i = index" [attr.data-index]="i" class="nav-item">
+      <a *ngIf="item.menu_url == 'dashboard'" [ngClass]="{'active': item.menu_url === currentPath}"
+        routerLink="/{{ item.menu_url }}" data-bs-toggle="collapse" data-bs-target="#collapseExample2"
+        aria-expanded="false" aria-controls="collapseExample2"><i class="las la-chart-bar"></i> <span
+          class="menu-title">{{ item.menu_display_name }} <b class="caret"></b></span></a>
+      <ul *ngIf="item.menu_url == 'dashboard' && currentPath == 'dashboard'" class="submenu show"
+        [ngClass]="{'collapse': item.menu_url != 'dashboard'}" id="collapseExample2" aria-expanded="false">
+        <li><a href="#/dashboard/register" class="d-flex" [ngClass]="{'active': activeNode === 'register'}"><i
+              class="las la-universal-access"></i> <span class="menu-title">Registrations</span></a> </li>
+        <li><a href="#/dashboard/batch" class="d-flex" [ngClass]="{'active': activeNode === 'batch'}"> <i
+              class="las la-laptop-medical"></i> <span class="menu-title">Batch Creation</span></a></li>
+        <li><a href="#/dashboard/avgbatch" class="d-flex" [ngClass]="{'active': activeNode === 'avgbatch'}"> <i
+              class="las la-file-medical-alt"></i> <span class="menu-title">Average Feedback Score</span>
+          </a></li>
+      </ul>
+
+      <a *ngIf="item.menu_url != 'dashboard'" [ngClass]="{'active': item.menu_url === currentPath}"
+        routerLink="/{{ item.menu_url }}"><i class="{{ item.menu_icon }}"></i> <span class="menu-title">{{
+          item.menu_display_name }}</span></a>
+    </li>
+
+    <!-- <li><a routerLink="/instants" class="d-flex" [ngClass]="{'active': activeNode === 'avgbatch'}"> <i
+          class="las la-file-medical-alt"></i> <span class="menu-title">Instant Url</span>
+      </a></li> -->
+    <!-- <li><a [routerLink]="['/historicaldata']"><i class="las la-university"></i> <span class="menu-title">Historical Data</span></a></li> -->
+    <!--<li><a [routerLink]="['/admincollegedetails']"><i class="las la-university"></i> <span class="menu-title">Admin College Details</span></a></li>
+        <li><a [routerLink]="['/collegeregistration']"><i class="las la-university"></i> <span class="menu-title">College
+                            Registration</span></a></li>
+        <li><a [routerLink]="['/usermanagement']"><i class="las la-user-friends"></i> <span class="menu-title">User
+                            Management</span></a></li>
+        <li><a [routerLink]="['/projectdetails']"><i class="las la-user-friends"></i> <span class="menu-title">Project
+                                Details</span></a></li>
+        <li><a href="#" class="active"><i class="lar la-id-card"></i> <span class="menu-title">Students
+                            Profile</span></a></li>
+        <li><a [routerLink]="['/programdetails']"><i class="las la-clipboard-list"></i><span
+                                class="menu-title">Program Details</span></a></li>
+        <li><a href="#"><i class="las la-clipboard-check"></i> <span class="menu-title">Document
+                            Verification</span></a></li>
+        <li><a [routerLink]="['/batchdetails']"><i class="las la-object-ungroup"></i> <span class="menu-title">Batch
+                            Details</span></a></li>
+        <li><a href="#"><i class="las la-comment"></i> <span class="menu-title">Feedback Module</span></a></li>
+        <li><a href="#"><i class="las la-user-tie"></i> <span class="menu-title">Placement Module</span></a>
+        </li>
+        <li><a href="#"><i class="las la-chart-bar"></i> <span class="menu-title">Analytics and
+                            Reporting</span></a></li>-->
+  </ul>
+
+  <div class="sidebar-logo-optional" id="skillsAlphaId">
+    <a href="#/studentprofile"> <img src="assets/img/logo_opt.png" class="logo-optional"></a>
+  </div>
+
+</div>
+<div class="d-none mobile-sidebar-backdrop"></div>

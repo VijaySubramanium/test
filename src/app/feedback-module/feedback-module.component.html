@@ -1,0 +1,41 @@
+<app-header></app-header>
+
+<div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+        <div class="card">
+            <div class="card-header">
+                <h5>Feedback</h5>
+            </div>
+            <div class="overflow-card-body slim-scroll"
+                *ngIf="loggedInRoleName == 'STUDENT' || loggedInRoleName == 'PROFESSIONAL'">
+                <app-feedback-users></app-feedback-users>
+            </div>
+            <div class="overflow-card-body slim-scroll">
+                <!-- FeedBack Grid -->
+                <p-tabView (onChange)="FeedBackGrid($event)"
+                    *ngIf="loggedInRoleName == 'GTT_ADMIN' || loggedInRoleName == 'L&D' || loggedInRoleName == 'TRAINING_COORDINATOR' || loggedInRoleName == 'PROJECT_MANAGER' || loggedInRoleName == 'PROGRAM_LEAD'">
+                    <!-- Questions Tab -->
+                    <p-tabPanel header="Questions">
+                        <app-feedback-questions [activeProjectList]="activeProjectList"></app-feedback-questions>
+                    </p-tabPanel>
+                    <!-- View Tab -->
+                    <p-tabPanel header="View Form">
+                        <app-feedback-viewforms [activeProjectList]="activeProjectList"></app-feedback-viewforms>
+                    </p-tabPanel>
+                    <!-- Response Tab -->
+                    <p-tabPanel header="Response">
+                        <app-feedback-responses [activeProjectList]="activeProjectList"></app-feedback-responses>
+                    </p-tabPanel>
+                    <!-- Download Tab -->
+                    <p-tabPanel header="Download">
+                        <app-feedback-download [activeProjectList]="activeProjectList"></app-feedback-download>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </div>
+</div>

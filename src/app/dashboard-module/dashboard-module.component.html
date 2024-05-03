@@ -1,0 +1,28 @@
+<app-header></app-header>
+
+<div class="main">
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+        <div class="card">
+            <div class="card-header">
+                <h5>Dashboard
+                    <span *ngIf="activeNode=='register'"> - Registrations</span>
+                    <span *ngIf="activeNode=='batch'"> - Batch Creations</span>
+                    <span *ngIf="activeNode=='avgbatch'"> - Average Feedback Score</span>
+                </h5>
+            </div>
+
+            <div class="dashboard-wrapper">
+              <div class="row">
+                  <div class="col-md-12 mb-3">
+                    <app-registration-dashboard *ngIf="activeNode=='register'"></app-registration-dashboard>
+                    <app-batchcreation-dashboard *ngIf="activeNode=='batch'"></app-batchcreation-dashboard>
+                    <app-averagefeedback-dashboard *ngIf="activeNode=='avgbatch'"></app-averagefeedback-dashboard>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+</div>

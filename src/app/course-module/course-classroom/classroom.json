@@ -1,0 +1,149 @@
+[
+  {
+    "userid": 337,
+    "coursedetails": {
+      "classroom": [
+        {
+          "inprogress": [
+            {
+              "course_id": 1,
+              "skillsaplha_id": 1,
+              "coursename": "Course A",
+              "duration": 5,
+              "version": "1.0",
+              "description": "abc",
+              "completionpercentage": 50,
+              "isactive": 1
+            },
+            {
+              "course_id": 2,
+              "skillsaplha_id": 1,
+              "coursename": "Course C",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 3,
+              "skillsaplha_id": 1,
+              "coursename": "Course K",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            }
+          ],
+          "yettostart": [
+            {
+              "course_id": 4,
+              "skillsaplha_id": 1,
+              "coursename": "Course A",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 5,
+              "skillsaplha_id": 1,
+              "coursename": "Course C",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            }
+          ],
+          "onhold": [
+            {
+              "course_id": 6,
+              "skillsaplha_id": 1,
+              "coursename": "Course A",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 7,
+              "skillsaplha_id": 1,
+              "coursename": "Course C",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 8,
+              "skillsaplha_id": 1,
+              "coursename": "Course L",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            }
+          ],
+          "completed": [
+            {
+              "course_id": 9,
+              "skillsaplha_id": 2,
+              "coursename": "Course G",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 10,
+              "skillsaplha_id": 2,
+              "coursename": "Course N",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 11,
+              "skillsaplha_id": 2,
+              "coursename": "Course M",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 12,
+              "skillsaplha_id": 2,
+              "coursename": "Course Y",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            },
+            {
+              "course_id": 13,
+              "skillsaplha_id": 2,
+              "coursename": "Course Z",
+              "duration": 6,
+              "version": "2.0",
+              "description": "xyz",
+              "completionpercentage": 60,
+              "isactive": 1
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

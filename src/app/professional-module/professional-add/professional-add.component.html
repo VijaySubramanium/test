@@ -1,0 +1,716 @@
+<app-spinner></app-spinner>
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+<form #f="ngForm" name="form" (ngSubmit)="f.form.valid">
+  <!-- <form #f="ngForm" name="form" (ngSubmit)="f.form.valid"></form> -->
+
+  <div class="row">
+    <!-- <div style="text-align: center; height:1.5em; font-size: 18px; font-weight:bold; color:purple;">
+      <div [class.d-none]="successmsg">{{receivedmessage}}</div>
+     </div> -->
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">First Name</label><span class="required"> *</span>
+      <input type="text" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30"
+        (input)="dotAfterCaptilize(userModel.firstName, 'pro_firstname')" class="form-control" name="pfirstName"
+        [(ngModel)]="userModel.firstName" id="pro_firstname" required #pfirstName="ngModel">
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+        <div *ngIf="(f.submitted && pfirstName.untouched) || pfirstName.touched"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pfirstName.errors?.['required']">First Name is required</div>
+        </div>
+        <div *ngIf="pfirstName.touched && pfirstName.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pfirstName.errors?.['pattern']">Enter a valid data</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Last Name</label>
+      <!-- <span class="required"> *</span> -->
+      <!-- pattern="^[a-zA-Z.]+$" maxlength="15" -->
+      <input type="text" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$"
+        (input)="dotAfterCaptilize(userModel.lastName, 'pro_lastname')" class="form-control" id="pro_lastname"
+        name="plastName" [(ngModel)]="userModel.lastName" #plastName="ngModel">
+
+      <div *ngIf="userModel.lastName != null">
+        <div style="height: 4px; display: block;" class="invalid-feedback">
+          <div *ngIf="plastName.touched && plastName.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+            <div *ngIf="plastName.errors?.['pattern']">Enter a valid data
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Gender</label><span class="required"> *</span>
+      <select required class="form-select" [(ngModel)]="userModel.gender" name="gender" #pgendervalue="ngModel">
+        <!-- <option value="" disabled selected hidden>Gender *</option> -->
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Lesbian">Lesbian</option>
+        <option value="Gay">Gay</option>
+        <option value="Bisexual">Bisexual</option>
+        <option value="Transgender">Transgender</option>
+        <option value="Queer">Queer</option>
+        <option value="Other">Other</option>
+      </select>
+      <div *ngIf="(f.submitted && pgendervalue.untouched) || pgendervalue.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pgendervalue.errors?.['required']">Select the above(Gender) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Date of Birth</label><span class="required"> *</span>
+      <p-calendar [(ngModel)]="userModel.dob" placeholder="YYYY-MM-DD" [maxDate]="dateTime"
+        styleClass="prime-slider-override" [required]="true" name="date" class="date-input" dateFormat="yy-mm-dd"
+        #pdateofBirth="ngModel">
+      </p-calendar>
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+
+        <div *ngIf="(f.submitted && pdateofBirth.untouched) || pdateofBirth.touched"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pdateofBirth.errors?.['required']">Date of Birth is required</div>
+        </div>
+        <div *ngIf="pdateofBirth.touched && pdateofBirth.invalid"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pdateofBirth.errors?.['pattern']">Enter a valid data </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Email Id</label><span class="required"> *</span>
+      <input required readonly onfocus="this.removeAttribute('readonly');"
+        pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" type="text"
+        class="form-control email-bg" name="email" [(ngModel)]="userModel.email" #email="ngModel">
+      <div *ngIf="(f.submitted && email.untouched) || email.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="email.errors?.['required']">Email Id is required</div>
+      </div>
+      <div *ngIf="email.touched && email.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="email.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Aadhar Number</label><span class="required"> *</span>
+      <input required pattern="[0-9]{12}" type="text" class="form-control" name="aaadhar"
+        [(ngModel)]="userModel.aadharNumber" #aadhar="ngModel">
+      <div *ngIf="(f.submitted && aadhar.untouched) ||  aadhar.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="aadhar.errors?.['required']">Aadhar Number is required</div>
+      </div>
+      <div *ngIf="aadhar.touched && aadhar.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="aadhar.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Mobile Number</label><span class="required"> *</span>
+      <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="mobile"
+        [(ngModel)]="userModel.mobile" #contact="ngModel">
+      <div *ngIf="(f.submitted && contact.untouched) || contact.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="contact.errors?.['required']">Mobile Number is required</div>
+      </div>
+      <div *ngIf="contact.touched && contact.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="contact.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Whatsapp Number</label><span class="required"> *</span>
+      <input required pattern="^[1-9]{1}[0-9]{9}" type="text" class="form-control" name="whatsapp"
+        [(ngModel)]="userModel.whatsappNumber" #whatsapp="ngModel">
+      <div *ngIf="(f.submitted && whatsapp.untouched) || whatsapp.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="whatsapp.errors?.['required']">Whatsapp Number is required</div>
+      </div>
+      <div *ngIf="whatsapp.touched && whatsapp.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="whatsapp.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Password</label><span class="required"> *</span>
+      <div class="input-group">
+        <input required
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+          [type]="show_button ? 'text' : 'password'" class="form-control" name="paswd" [(ngModel)]="userModel.password"
+          #passwordcontrol="ngModel" id="password">
+        <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()"
+          id="eye"></i>
+      </div>
+      <!-- <i class="las la-eye-slash btn-login" id="eye"></i> -->
+      <div *ngIf="(f.submitted && passwordcontrol.untouched) || passwordcontrol.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="passwordcontrol.errors?.['required']">Password is required</div>
+      </div>
+      <div *ngIf="passwordcontrol.touched && passwordcontrol.invalid"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div class="alert alert-danger" *ngIf="passwordcontrol.errors?.['pattern']">Password must contain
+          atleast 8 characters, 1 upper case letter, 1 lower case letter, 1 number and 1 special character
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Confirm Password</label><span class="required"> *</span>
+      <div class="input-group">
+        <input required
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+          [type]="show_confirmbutton ? 'text' : 'password'" class="form-control" name="cpswd"
+          [(ngModel)]="userModel.confirmPassword" #passwordconfirm="ngModel" id="password">
+        <i [class]="show_confirmeye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+          (click)="showConfirmPassword()" id="eye"></i>
+        <!-- <i class="las la-eye-slash btn-login" id="eye"></i> -->
+      </div>
+
+      <div *ngIf="(f.submitted && passwordconfirm.untouched) || passwordconfirm.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="passwordconfirm.errors?.['required']">Confirm Password is required</div>
+      </div>
+      <div class="help-block" *ngIf="passwordconfirm.dirty && (passwordconfirm.value !== passwordcontrol.value)"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div> Both the Password are not same</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Current State</label><span class="required"> *</span>
+      <select required type="text" class="form-select" (change)="FilterCity($any($event.target).value)"
+        [(ngModel)]="userModel.stateId" name="state" #state="ngModel">
+        <!--<option value="" disabled selected hidden>State *</option> -->
+        <option *ngFor="let x of stateDetails" value="{{x.stateid}}">{{x.state}}</option>
+      </select>
+      <div *ngIf="(f.submitted && state.untouched) || state.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="state.errors?.['required']">Select the above(Current State) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Current Location</label><span class="required"> *</span>
+      <select required type="text" class="form-select" name="location" [(ngModel)]="userModel.currentLocation"
+        #location="ngModel">
+        <option value="" disabled selected hidden> Select location </option>
+        <option *ngFor="let x of filterCityNameList" value="{{x.cityid}}_{{x.cityname}}">{{x.cityname}}</option>
+      </select>
+      <div *ngIf="(f.submitted && location.untouched) || location.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="location.errors?.['required']">Select the above field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Graduated?</label><span class="required"> *</span>
+      <select required class="form-select graduated" (change)="isGraduated($any($event.target).value)"
+        [(ngModel)]="userModel.isGraduated" name="graduated" #graduate="ngModel">
+        <!-- <option value=""  disabled selected hidden>Graduated *</option> -->
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div *ngIf="(f.submitted && graduate.untouched) || graduate.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="graduate.errors?.['required']">Select the above(Graduated) field</div>
+      </div>
+    </div>
+
+
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.isGraduated === 'Yes'">
+      <label class="mb-1">Academic Institution</label><span class="required"> *</span>
+      <p-dropdown [options]="collegeDetails" [required]="true" [(ngModel)]="userModel.academiciInstitutionName"
+        name="college" optionLabel="academic_institution_name" [filter]="true" #college="ngModel"
+        filterBy="academic_institution_name" [showClear]="true" placeholder="Select a College">
+        <ng-template pTemplate="selectedItem">
+          <div class="college-item college-item-value" *ngIf="userModel.academiciInstitutionName">
+            <div>{{ userModel.academiciInstitutionName['academic_institution_name'] }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-college pTemplate="item">
+          <div>{{college.academic_institution_name}}</div>
+        </ng-template>
+      </p-dropdown>
+      <div style="display: block" class="invalid-feedback">
+        <div *ngIf="(f.submitted && !userModel.academiciInstitutionName)" class="error">
+          <div *ngIf="college.errors?.['required']">
+            Select the above(Academic Institution) field
+          </div>
+        </div>
+      </div>
+      <!-- <select type="search" required list="college-name" class="form-select"
+        (change)="getCollegeCity($any($event.target).value)" [(ngModel)]="userModel.academiciInstitutionName"
+        name="collegename" #college="ngModel">
+        <option *ngFor="let x of collegeDetails">{{x.academic_institution_name}}</option>
+      </select>
+
+      <div *ngIf="(f.submitted && college.untouched) || college.touched" class="required">
+        <div *ngIf="college.errors?.['required']">Select the above (Academic Institution) field
+        </div>
+      </div> -->
+    </div>
+
+    <div class="col-md-6 mb-3" *ngIf="userModel.isGraduated == 'Yes'">
+      <label class="mb-1">College City</label><span class="required"> *</span>
+      <select required type="text" class="form-select" [(ngModel)]="userModel.academicInstitutionCity"
+        name="collegecity" #collegeCityControl="ngModel">
+        <!--<option value="" disabled selected hidden> Select City </option> -->
+        <option *ngFor="let x of cityDetails" value="{{x.cityid}}_{{ x.cityname }}">{{x.cityname}}</option>
+      </select>
+      <div *ngIf="(f.submitted && collegeCityControl.untouched) || collegeCityControl.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="collegeCityControl.errors?.['required']">Select the above (College City) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.isGraduated == 'Yes'">
+      <label class="mb-1">Current Educational Qualification</label><span class="required"> *</span>
+      <input required pattern="^[a-zA-Z .]*$" class="form-control" name="qualification"
+        [(ngModel)]="userModel.educationalQualification" #educate="ngModel">
+      <div *ngIf="(f.submitted && educate.untouched) ||educate.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="educate.errors?.['required']">Current Educational Qualification is required</div>
+      </div>
+      <div *ngIf="educate.touched && educate.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="educate.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.isGraduated == 'Yes'">
+      <label class="mb-1">Graduation Passing Year</label><span class="required"> *</span>
+      <input required type="number" min="1950" max="{{currentYear}}" class="form-control" name="year"
+        [(ngModel)]="userModel.graduationPassingYear" #passing="ngModel">
+      <div *ngIf="(f.submitted && passing.untouched) || passing.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="passing.errors?.['required']">Graduation Passing Year is required</div>
+      </div>
+      <div *ngIf="passing.touched && passing.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="passing.errors?.['max'] || passing.errors?.['min']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.isGraduated == 'Yes'">
+      <label class="mb-1">Subject/Stream</label><span class="required"> *</span>
+      <input required pattern="^[a-zA-z]+([\s][a-zA-Z]+)*$" class="form-control" name="sub"
+        [(ngModel)]="userModel.subject" #stream="ngModel">
+      <div *ngIf="(f.submitted && stream.untouched) || stream.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="stream.errors?.['required']">Subject/Stream is required</div>
+      </div>
+      <div *ngIf="stream.touched && stream.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="stream.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Are you pursuing post graduation?</label><span class="required"> *</span>
+      <select required class="form-select" name="postorg" (change)="postGrad($any($event.target).value)"
+        [(ngModel)]="userModel.pursuingPostGraduate" #ppostorg="ngModel">
+        <!-- <option value="" disabled selected hidden>Are you pursuing post graduation?*</option> -->
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div *ngIf="(f.submitted && ppostorg.untouched) || ppostorg.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="ppostorg.errors?.['required']">Select the above field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.pursuingPostGraduate=='Yes'">
+      <label class="mb-1">Post-graduation Academic Institution name?<span class="required"> *</span> </label>
+      <p-dropdown [options]="collegeDetails" [required]="true" [(ngModel)]="userModel.postGraduationInstitution"
+        name="postclgName" optionLabel="academic_institution_name" [filter]="true" #ppostCollegeName="ngModel"
+        filterBy="academic_institution_name" [showClear]="true" placeholder="Select a College">
+        <ng-template pTemplate="selectedItem">
+          <div class="college-item college-item-value" *ngIf="userModel.postGraduationInstitution">
+            <div>{{ userModel.postGraduationInstitution['academic_institution_name'] }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-college pTemplate="item">
+          <div [ngClass]="(college.tpo_status == true) ? 'college_item' : 'college-item' ">
+            <div>{{college.academic_institution_name}}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <div style="display: block" class="invalid-feedback">
+        <div *ngIf="(f.submitted && !userModel.postGraduationInstitution)" class="error">
+          <div *ngIf="ppostCollegeName.errors?.['required']">
+            Select the above(Academic Institution) field
+          </div>
+        </div>
+      </div>
+      <!-- <select type="search" required list="college-name" class="form-select webkit-none"
+        [(ngModel)]="userModel.postGraduationInstitution" name="postclgName" autocomplete="off"
+        #ppostCollegeName="ngModel">
+        <option *ngFor="let x of collegeDetails">{{x.academic_institution_name}}</option>
+      </select>
+      <div *ngIf="(f.submitted && ppostCollegeName.untouched) || ppostCollegeName.touched" class="required">
+        <div *ngIf="ppostCollegeName.errors?.['required']"> Select the above(Academic Institution) field</div>
+      </div> -->
+    </div>
+
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.pursuingPostGraduate=='Yes'">
+      <label class="mb-1">Post-Graduation Qualification? </label><span class="required"> *</span>
+      <input required pattern="^[a-zA-Z .]*$" class="form-control" title="Post-Graduation Qualification?"
+        name="postQualification" [(ngModel)]="userModel.postGraduationQualification"
+        #ppostgraduateQualification="ngModel">
+      <div *ngIf="(f.submitted && ppostgraduateQualification.untouched) || ppostgraduateQualification.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="ppostgraduateQualification.errors?.['required']">Post-Graduation Qualification is required
+        </div>
+      </div>
+      <div *ngIf="ppostgraduateQualification.touched && ppostgraduateQualification.invalid"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="ppostgraduateQualification.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 grad" *ngIf="userModel.pursuingPostGraduate=='Yes'">
+      <label class="mb-1">Passing Year?</label><span class="required"> *</span>
+      <input required type="number" min="1950" max="{{currentYear}}" class="form-control" name="postyear"
+        [(ngModel)]="userModel.postGraduationPassingYear" #postgrad="ngModel">
+      <div *ngIf="(f.submitted && postgrad.untouched) || postgrad.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="postgrad.errors?.['required']">Passing Year is required</div>
+      </div>
+      <div *ngIf="postgrad.touched && postgrad.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="postgrad.errors?.['max'] || postgrad.errors?.['min'] ">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Score</label><span class="required"> *</span>
+      <input required pattern="\d{0,2}(\.\d{1,2})?" type="text" class="form-control" name="pmarkPer"
+        [(ngModel)]="userModel.percentageMarks" #pmarkPer="ngModel">
+      <div *ngIf="(f.submitted && pmarkPer.untouched) || pmarkPer.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pmarkPer.errors?.['required']">Score is required</div>
+      </div>
+      <div *ngIf="pmarkPer.touched && pmarkPer.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pmarkPer.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <!-- <div class="col-md-6 mb-3 prof" *ngIf="userModel.isGraduated == 'No'">
+      <label class="mb-1">Profession</label><span class="required"> *</span>
+      <input required pattern="^[a-zA-z]+([\s][a-zA-Z]+)*$" class="form-control" name="profession"
+        [(ngModel)]="userModel.profession" #profess="ngModel">
+      <div *ngIf="(f.submitted && profess.untouched) || profess.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="profess.errors?.['required']">Profession is required</div>
+      </div>
+      <div *ngIf="profess.touched && profess.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="profess.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div> -->
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Are you placed in any organization?</label><span class="required"> *</span>
+      <select required class="form-select" name="placedorg" (change)="isPlaced($any($event.target).value)"
+        [(ngModel)]="userModel.isPlaced" #placedorg="ngModel">
+        <!-- <option value="" disabled selected hidden>Are you placed in any organization? *</option> -->
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div *ngIf="(f.submitted && placedorg.untouched) ||  placedorg.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="placedorg.errors?.['required']">Select the above (organization) field</div>
+      </div>
+    </div>
+
+
+    <div class="col-md-6 mb-4" *ngIf="userModel.isPlaced == 'Yes'">
+      <label class="mb-2">Current Organization Placed With</label><span class="required"> *</span>
+      <select required type="text" id="addNameOfPlacedOrg" class="form-select"
+        (change)="getSectorName($any($event.target).value)" [(ngModel)]="userModel.placedOrganization" name="org"
+        #org="ngModel">
+        <!-- <option *ngFor="let x of organizationNameList"
+          value="{{ x.placementemployer_id }}_{{ x.placement_employer_name }}">
+          {{x.placement_employer_name}}</option> -->
+      </select>
+      <div *ngIf="(f.submitted && org.untouched) || org.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="org.errors?.['required']">Select the above(Current Organization) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4" *ngIf="userModel.isPlaced == 'Yes'">
+      <label class="mb-2">Sector</label><span class="required">*</span>
+      <input required type="text" readonly class="form-control" id="" [(ngModel)]="userModel.sector" #sector="ngModel"
+        name="sector" />
+    </div>
+
+    <div class="col-md-6 mb-3" *ngIf="userModel.isPlaced=='Yes'">
+      <label class="mb-1">Designation</label>
+      <input type="text" pattern="^[a-z0-9A-Z._\s^%&$#!/~@,-]+$" class="form-control" name="designation"
+        [(ngModel)]="userModel.designation" #des="ngModel">
+      <div *ngIf="des.touched && des.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="des.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3" *ngIf="userModel.isPlaced=='Yes'">
+      <label class="mb-1">Month joining the organization ?</label>
+      <select type="text" class="form-select" name="month" [(ngModel)]="userModel.joiningMonth" #joinmonth="ngModel">
+        <!-- <option value=""  disabled selected hidden>Month joining the organization ?</option> -->
+        <option>JAN</option>
+        <option>FEB</option>
+        <option>MAR</option>
+        <option>APR</option>
+        <option>MAY</option>
+        <option>JUN</option>
+        <option>JUL</option>
+        <option>AUG</option>
+        <option>SEP</option>
+        <option>OCT</option>
+        <option>NOV</option>
+        <option>DEC</option>
+      </select>
+    </div>
+
+    <!-- pattern="^[@&,.\/#&+\w\s]*$" -->
+    <div class="col-md-6 mb-3" *ngIf="userModel.isPlaced=='Yes'">
+      <label class="mb-1">Previous Employer 1</label><span class="required"> *</span>
+      <input type="text" class="form-control" id="" name="pprevEmp1" pattern="^[a-zA-Z0-9._ ^'%&$#!~@,-]*$"
+        [(ngModel)]="userModel.employer1" required #pprevEmp1="ngModel">
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+        <div *ngIf="(f.submitted && pprevEmp1.untouched) || pprevEmp1.touched"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pprevEmp1.errors?.['required']"> Previous Employer 1 is required</div>
+        </div>
+        <div *ngIf="pprevEmp1.touched && pprevEmp1.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pprevEmp1.errors?.['pattern']">Enter a valid data</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pattern="^[@&,.\/#&+\w\s]*$"  -->
+    <div class="col-md-6 mb-3" *ngIf="userModel.isPlaced=='Yes'">
+      <label class="mb-1">Previous Employer 2</label><span class="required"> *</span>
+      <input type="text" class="form-control" id="" name="pprevEmp2" pattern="^[a-zA-Z0-9._ ^'%&$#!~@,-]*$"
+        [(ngModel)]="userModel.employer2" required #pprevEmp2="ngModel">
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+
+        <div *ngIf="(f.submitted && pprevEmp2.untouched) || pprevEmp2.touched"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pprevEmp2.errors?.['required']"> Previous Employer 2 is required</div>
+        </div>
+        <div *ngIf="pprevEmp2.touched && pprevEmp2.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pprevEmp2.errors?.['pattern']">Enter a valid data</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3" *ngIf="userModel.isPlaced=='Yes'">
+      <label class="mb-1">Are you Experienced</label><span class="required"> *</span>
+      <select required class="form-select pExperience" (change)="isExperience($any($event.target).value)"
+        [(ngModel)]="userModel.isExperience" name="pExperience" #pExperience="ngModel">
+        <!-- <option value=""  disabled selected hidden>Experience *</option> -->
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div *ngIf="(f.submitted && pExperience.untouched) || pExperience.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pExperience.errors?.['required']">Select the above(Experience) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3" *ngIf="userModel.isExperience=='Yes'">
+      <label class="mb-1">Year of Experience</label><span class="required"> *</span>
+      <input required pattern="[0-9]{1,2}" type="text" class="form-control" name="pyears"
+        [(ngModel)]="userModel.experienceYears" #pyears="ngModel">
+      <div *ngIf="(f.submitted && pyears.untouched) || pyears.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pyears.errors?.['required']">Year is required</div>
+      </div>
+      <div *ngIf="pyears.touched && pyears.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pyears.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Marital Status</label><span class="required"> *</span>
+      <select required class="form-select" [(ngModel)]="userModel.maritalStatus" name="maritalstatus" #status="ngModel">
+        <!-- <option value="" disabled selected hidden>Marital Status *</option> -->
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Divorced">Divorced</option>
+        <option value="Widowed">Widowed</option>
+      </select>
+      <div *ngIf="(f.submitted && status.untouched) || status.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="status.errors?.['required']"> Select the above (Martial Status) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Father Name</label><span class="required"> *</span>
+      <input required pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30" type="text"
+        id="pro_fathername" (input)="dotAfterCaptilize(userModel.fatherName, 'pro_fathername')" class="form-control"
+        name="pfatherName" [(ngModel)]="userModel.fatherName" #pfatherName="ngModel">
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+
+        <div *ngIf="(f.submitted && pfatherName.untouched) || pfatherName.touched"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pfatherName.errors?.['required']">Father Name is required</div>
+        </div>
+        <div *ngIf="pfatherName.touched && pfatherName.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pfatherName.errors?.['pattern']">Enter a valid data</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Mother Name</label><span class="required"> *</span>
+      <input required pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30" type="text"
+        id="pro_mothername" (input)="dotAfterCaptilize(userModel.motherName, 'pro_mothername')" class="form-control"
+        name="pmotherName" [(ngModel)]="userModel.motherName" #pmotherName="ngModel">
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+
+        <div *ngIf="(f.submitted && pmotherName.untouched) || pmotherName.touched "
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pmotherName.errors?.['required']">Mother Name is required</div>
+        </div>
+        <div *ngIf="pmotherName.touched && pmotherName.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pmotherName.errors?.['pattern']">Enter a valid data</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Guardian Name</label><span class="required"> *</span>
+      <input required type="text" pattern="^(?=.{1,40}$)[a-zA-Z.]+(?:[ ][a-zA-Z.]+)*$" maxlength="30"
+        id="pro_guardianname" (input)="dotAfterCaptilize(userModel.guardianName, 'pro_guardianname')"
+        class="form-control" name="pguardianName" [(ngModel)]="userModel.guardianName" required
+        #pguardianName="ngModel">
+      <div style="height: 4px; display: block;" class="invalid-feedback">
+
+        <div *ngIf="(f.submitted && pguardianName.untouched) || pguardianName.touched"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pguardianName.errors?.['required']">Guardian Name is required</div>
+        </div>
+        <div *ngIf="pguardianName.touched && pguardianName.invalid"
+          style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pguardianName.errors?.['pattern']">Enter a valid data</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Pincode</label><span class="required"> *</span>
+      <input required pattern="[0-9]{6}" type="text" class="form-control" name="ppinCode"
+        [(ngModel)]="userModel.pincode" #ppinCode="ngModel">
+      <div *ngIf="(f.submitted && ppinCode.untouched) || ppinCode.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="ppinCode.errors?.['required']">Pincode is required</div>
+      </div>
+      <div *ngIf="ppinCode.touched && ppinCode.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="ppinCode.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Disability Type</label><span class="required"> *</span>
+      <select required class="form-select" [(ngModel)]="userModel.disabilityType" name="pdisabilityType"
+        #pdisabilityType="ngModel">
+        <!-- <option  value="" disabled selected hidden>Disability Type *</option> -->
+        <option value="Vision Impairment">Vision Impairment</option>
+        <option value="Deaf">Deaf</option>
+        <option value="Physical Disability">Physical Disability</option>
+        <option value="None">None</option>
+      </select>
+      <div *ngIf="(f.submitted && pdisabilityType.untouched) || pdisabilityType.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="pdisabilityType.errors?.['required']">Select the above(Disability Type) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3 prof">
+      <label class="mb-1">Language Known</label><span class="required"> *</span>
+      <ng-multiselect-dropdown [settings]="dropdownSettings" placeholder="You can select more than one language"
+        class="form-multiselect" [(ngModel)]="ddllanguage" #planguageKnown="ngModel" [data]="dropdownList"
+        (onSelect)="onSelectLanguage($event)" (onSelectAll)="onSelectAllLanguage($event)"
+        (onDeSelect)="onDeSelectLanguage($event)" (onDeSelectAll)="onDeSelectAllLanguage($event)" name="language"
+        required="true">
+      </ng-multiselect-dropdown>
+      <div *ngIf="(f.submitted && planguageKnown.untouched) ||planguageKnown.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="planguageKnown.errors?.['required']">Select the above(Language Known) field</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Alternative number </label>
+      <input type="text" pattern="^[1-9]{1}[0-9]{9}" class="form-control" name="paltmobileNumber"
+        [(ngModel)]="userModel.alternateNumber" #paltmobileNumber="ngModel" [disabled]="false">
+      <div *ngIf="paltmobileNumber.touched && paltmobileNumber.invalid"
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="paltmobileNumber.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-2">
+      <label class="mb-1">Caste</label>
+      <input pattern="[a-zA-Z][a-zA-Z\s]+" class="form-control" name="caste" [(ngModel)]="userModel.caste"
+        #castetype="ngModel">
+      <div *ngIf="castetype.touched && castetype.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="castetype.errors?.['pattern']">Enter a valid data</div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="mb-1">Vaccination Status</label><span class="required"> *</span>
+      <select required class="form-select" name="vaccination" [(ngModel)]="userModel.vaccinationStatus"
+        #vaccine="ngModel">
+        <!-- <option value="" disabled selected hidden>Vaccination Status *</option> -->
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div *ngIf="(f.submitted && vaccine.untouched) || vaccine.touched "
+        style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div *ngIf="vaccine.errors?.['required']">Select the above(Vaccination Status) field</div>
+      </div>
+    </div>
+
+    <div [formGroup]="myGroup" class="col-md-12 mb-4" *ngIf="userModel.vaccinationStatus=='Yes'">
+      <!-- <label for="file" class="form-upload mb-2" >Vaccination certificate</label><span style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span> -->
+      <label for="file" class=" mb-1">Vaccination certificate</label>
+      <input formControlName="file" id="file" type="file" class="form-control" (change)="onFileChange($event)">
+      <div style="font-size: 10.5pt; margin-top: 2pt; color:#6b6969;">
+        <div>(Max file size should not exceed 2MB & file format should be Excel, PDF, CSV and JPG )</div>
+      </div>
+      <!-- <div *ngIf="f.submitted && myGroup.untouched" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        <div>Vaccination Certificate is required</div>
+      </div> -->
+      <div style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+        {{message}}
+      </div>
+    </div>
+
+    <div class="col-md-12 mb-4">
+      <div class="form-check">
+        <input required class="form-check-input" type="checkbox" value="" name="checking"
+          [(ngModel)]="userModel.termsAndConditions" #pcheck="ngModel">
+        <label class="form-check-label" for="agree">
+          I agree to <a href="{{ terms_and_conditions_url }}" target="_blank" class="none_underline"
+            [ngStyle]="{'pointer-events': (terms_and_conditions_url == null) ? 'none' : 'inherit'}"> Terms and
+            Conditions </a>
+        </label>
+        <div *ngIf="f.submitted && pcheck.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+          <div *ngIf="pcheck.errors?.['required']">Check this box before submission
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 mb-4">
+      <button type="submit" class="btn btn-blue" [disabled]="disable" (click)="onSubmit(f.form, f)">Register</button>
+    </div>
+
+  </div>
+
+</form>

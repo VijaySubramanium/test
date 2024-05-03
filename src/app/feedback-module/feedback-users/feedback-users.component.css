@@ -1,0 +1,275 @@
+.feedback-profile {
+  display: flex;
+  /* align-items: center; */
+  background-color: #f6f9fb;
+  padding: 8px;
+  border-radius: 10px;
+}
+.feedback-profile .profile-img {
+  margin-right: 10px;
+}
+.feedback-profile .profile-img img {
+  width: 75px;
+  border-radius: 10px;
+}
+.feedback-profile .profile-content .profile-name {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.feedback-profile .profile-content .designation {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: rgb(185 185 185);
+}
+.feedback-profile .profile-content .avg-rating {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: rgb(185 185 185);
+}
+.feedback-profile .profile-content .avg-rating span {
+  color: #6b6969;
+  font-weight: 500;
+}
+.user-feedback {
+  padding: 8px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+.mr-20 {
+  margin-right: 20px;
+}
+.ml-2 {
+  margin-left: 10px;
+}
+.feedback-single-qes {
+  margin-bottom: 15px;
+}
+.user-feedback .feedback-qes {
+  font-size: 14px;
+  color: #767676;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.hr-theme-slash-2 {
+  display: inline-flex;
+  /* align-items: center; */
+}
+.feedback-icon-container {
+  text-align: center;
+  margin-right: 30px;
+}
+
+form#smileys input[type="radio"] {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+}
+
+form#smileys input[type="radio"]::after {
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 28px;
+}
+form#smileys input[type="radio"] {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+}
+
+form#smileys input[type="radio"]::after {
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 28px;
+}
+form#smileys input[type="radio"] {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+}
+form#smileys input[type="radio"].Bad::after {
+  content: "\f556";
+}
+form#smileys input[type="radio"].Average::after {
+  content: "\f119";
+}
+form#smileys input[type="radio"].Better::after {
+  content: "\f119";
+}
+form#smileys input[type="radio"].Satisfactory::after {
+  content: "\f11a";
+}
+form#smileys input[type="radio"].Good::after {
+  content: "\f118";
+}
+form#smileys input[type="radio"].Excellent::after {
+  content: "\f581";
+}
+
+form#smileys input[type="radio"]:checked:after,
+form#smileys input[type="radio"]:hover:after {
+  color: #278ce8;
+}
+form#smileys input[type="radio"]:checked ~ .hr-icon .emotion-name,
+form#smileys input[type="radio"]:hover ~ .hr-icon .emotion-name {
+  color: #278ce8;
+}
+form#smileys input[type="radio"].Single {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+  padding-top: 5px;
+}
+form#smileys input[type="radio"].Single::after {
+  /* content: "\f00c"; */
+  content: "\f111" !important;
+  font-size: 18px !important;
+  font-weight: 500;
+  padding-top: 5px;
+  /* color: transparent; */
+}
+form#smileys input[type="radio"].Single:checked:after,
+form#smileys input[type="radio"].Single:hover:after {
+  color: #278ce8;
+}
+form#smileys input[type="radio"].Single:checked ~ .hr-icon .emotion-name,
+form#smileys input[type="radio"].Single:hover ~ .hr-icon .emotion-name {
+  color: #278ce8;
+}
+
+.hr-icon {
+  position: relative;
+  text-align: center;
+}
+.emotion-name {
+  font-size: 14px;
+}
+.users-answer {
+  width: 1em;
+  height: 1em;
+  margin-top: 0.25em;
+  vertical-align: top;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: unset !important;
+  background-color: #c4c8ff;
+  border-color: #0d6efd !important;
+}
+.users-answer-lable {
+  color: #0d6efd !important;
+}
+
+/* user answered form*/
+
+form#smileyanswer input[type="radio"] {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+}
+
+form#smileyanswer input[type="radio"]::after {
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 28px;
+}
+form#smileyanswer input[type="radio"] {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+}
+
+form#smileyanswer input[type="radio"]::after {
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 28px;
+}
+form#smileyanswer input[type="radio"] {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+}
+form#smileyanswer input[type="radio"].Bad::after {
+  content: "\f556";
+}
+form#smileyanswer input[type="radio"].Average::after {
+  content: "\f119";
+}
+form#smileyanswer input[type="radio"].Better::after {
+  content: "\f119";
+}
+form#smileyanswer input[type="radio"].Satisfactory::after {
+  content: "\f11a";
+}
+form#smileyanswer input[type="radio"].Good::after {
+  content: "\f118";
+}
+form#smileyanswer input[type="radio"].Excellent::after {
+  content: "\f581";
+}
+
+form#smileyanswer input[type="radio"].Single {
+  -webkit-appearance: none !important;
+  border: none;
+  float: none;
+  cursor: pointer;
+  margin-right: 0;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease !important;
+  padding-top: 5px;
+}
+form#smileyanswer input[type="radio"].Single::after {
+  /* content: "\f00c"; */
+  content: "\f111" !important;
+  font-size: 18px !important;
+  font-weight: 500;
+  padding-top: 5px;
+  /* color: transparent; */
+}
+form#smileyanswer input[type="radio"].Single:checked:after,
+form#smileyanswer input[type="radio"].Single:hover:after {
+  color: #cac9c9;
+}
+form#smileyanswer input[type="radio"].Single:checked ~ .hr-icon .emotion-name,
+form#smileyanswer input[type="radio"].Single:hover ~ .hr-icon .emotion-name {
+  color: #cac9c9;
+}
+form#smileyanswer input[type="radio"]:checked:after,
+form#smileyanswer input[type="radio"]:hover:after {
+  color: #cac9c9;
+}
+form#smileyanswer input[type="radio"]:checked ~ .hr-icon .emotion-name,
+form#smileyanswer input[type="radio"]:hover ~ .hr-icon .emotion-name {
+  color: #cac9c9;
+}

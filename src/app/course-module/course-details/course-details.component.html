@@ -1,0 +1,107 @@
+<div>
+  <app-header></app-header>
+  <div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <div class="sidemenu content-sidebar" *ngIf="courseName != undefined">
+      <div class="overflow-course-body slim-scroll">
+        <div class="content-header">
+          <h3>{{courseName}}&nbsp;-&nbsp;Contents</h3>
+          <h4>Introduction</h4>
+        </div>
+        <div class="content-body ">
+          <!-- parent-->
+
+
+          <p-panelMenu [model]="items" #item [multiple]="false" (click)="activeMenu($event)"></p-panelMenu>
+          <!-- <div class="accordion" id="parentaccordionExample">
+
+            <div class="accordion-item parent-accordion-item" *ngFor="let course of courseDetailList; let i = index">
+              <h2 class="accordion-header parent-accordion-header" [id]="'heading'+i">
+                <button class="accordion-button" [ngClass]="{ 'collapsed': i != 0 }" type="button"
+                  data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+i" aria-expanded="true"
+                  [attr.aria-controls]="'collapse'+i">
+                  {{course.learing_resource_name}}
+                </button>
+              </h2>
+              <div [id]="'collapse'+i" class="accordion-collapse collapse" [ngClass]="{ 'show': i == 0 }"
+                [attr.aria-labelledby]="'heading'+i" data-bs-parent="#parentaccordionExample">
+                <div class=" accordion-body child-parent-wrapper">
+                  <div class="content-list">
+                    <ul>
+                      <li [ngStyle]="{'color': LrId==course.learner_resource_id? '#423939' : '#fff'}"
+                        (click)="getCourseURL(course, fileResponse)">
+                        {{course.learing_resource_name}} - {{course.file_type}}
+                      </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content" *ngIf="courseName != undefined">
+      <div class="card">
+        <div class="card-header">
+          <h5>{{courseName}}</h5>
+          <span>
+            <div class="float-end attendance-icon" title="Full Screen" (click)="requestFullScreen()"
+              href="javascript:void(0);">
+              <i class="las la-expand-arrows-alt"></i>
+            </div>
+            <div class="float-end attendance-icon" title="Attendance" href="javascript:void(0);" data-bs-toggle="modal"
+              data-bs-target="#addfields">
+              <i class="lar la-id-card"></i>
+            </div>
+          </span>
+        </div>
+        <div class="card-body" #fullScreen>
+          <div class="main-content-wrapper">
+            <!-- <object data="{{samplePath}}" width="100%" height="700">
+                        </object> -->
+
+            <div *ngIf="currentFileType == 'pdf'">
+              <ngx-extended-pdf-viewer [src]="fileName" [showSidebarButton]="true" [showFindButton]="false"
+                [showPagingButtons]="true" [showDrawEditor]="false" [showStampEditor]="false" [showTextEditor]="false"
+                [showZoomButtons]="true" [showPresentationModeButton]="false" [showOpenFileButton]="false"
+                [showPrintButton]="false" [showDownloadButton]="false" [showSecondaryToolbarButton]="true"
+                [showRotateButton]="false" [showHandToolButton]="false" [showScrollingButton]="false"
+                [showSpreadButton]="false" [showPropertiesButton]="false"></ngx-extended-pdf-viewer>
+            </div>
+            <div *ngIf="currentFileType != 'pdf'">
+              <object width="100%" height="650" [attr.data]="fileName"></object>
+            </div>
+
+            <div *ngIf="recordStatus == 0">
+              <div class="contnent-right-fixed" *ngIf="LrId !== undefined">
+                <div class="float-menu open">
+                  <span class="arrow"></span>
+                  <button class="skill-btn" (click)="getCourseDuration()">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addfields" tabindex="-1" aria-labelledby="addfields" aria-hidden="true">
+  <div class="modal-dialog stud-attendance-model modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Attendance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <app-attendance-student></app-attendance-student>
+      </div>
+    </div>
+  </div>
+</div>

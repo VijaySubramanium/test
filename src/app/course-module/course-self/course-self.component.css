@@ -1,0 +1,173 @@
+.course-status-head h6 {
+  position: relative;
+  z-index: 0;
+  margin: 0 10px;
+}
+.course-status-head h6 span {
+  background-color: white;
+  padding-right: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.course-status-head h6:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* height: 0.5em; */
+  height: 12px;
+  border-top: 1px solid #dee2e6;
+  z-index: -1;
+}
+.swiper .swiper-wrapper .swiper-slide {
+  padding: 0 10px;
+}
+.course-card {
+  overflow: hidden;
+  margin: 10px 0;
+}
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 10%);
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1pxsolidrgba (0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+.course-card .course-card-left {
+  background: linear-gradient(to top, #6041d3 2%, #33c0f0 100%) !important;
+  padding: 10px;
+}
+.course-card .course-card-left h6 {
+  color: #ffffff;
+  font-size: 12px;
+}
+.course-card .course-card-left h5 {
+  color: #ffffff;
+  font-size: 14px;
+}
+.course-badge-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+.course-badge {
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+.course-badge span {
+  font-size: 10px;
+  line-height: 0.8;
+  font-weight: 500;
+}
+.course-card .course-card-right {
+  background-color: #fff;
+  padding: 10px;
+}
+.course-card .course-card-right .assessments {
+  font-size: 10px;
+  color: #000000;
+  margin-bottom: 0;
+}
+.course-card .course-card-right .assessments i {
+  font-size: 12px;
+  color: #000000;
+}
+.course-progress-inner {
+  background-color: #efefef;
+  width: 100%;
+  height: 5px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.course-progress-inner .course-progress {
+  background-color: #278ce8;
+  height: 100%;
+  border-radius: 20px;
+}
+.course-progress-wrapper p {
+  font-size: 10px;
+  margin-top: 2px;
+  margin-bottom: 0;
+  color: #000000;
+}
+.course-card .course-card-right .course-card-obj h6 {
+  font-size: 12px;
+  color: #000000;
+}
+.course-card .course-card-right .course-card-obj p {
+  font-size: 10px;
+  color: #000000;
+}
+.course-card .course-card-right .course-card-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-blue-rounded,
+.btn-blue-rounded:hover {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  background: #278ce8;
+  color: #fff;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+.course-card-btn span:last-child {
+  margin-right: 0;
+}
+.label-orng {
+  color: #fa9e6b;
+  font-size: 10px;
+  cursor: pointer;
+}
+.course-card-btn span {
+  margin-right: 1rem;
+}
+.label-green {
+  color: #2ebb23;
+  font-size: 10px;
+  cursor: pointer;
+}
+.label-blue {
+  color: #278ce8;
+  font-size: 10px;
+  cursor: pointer;
+}
+.swiper .swiper-button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #999999;
+}
+.swiper-button-next {
+  right: 0;
+}
+.swiper-button-prev {
+  left: 0px;
+}
+.swiper .swiper-button-next::after {
+  content: "\f105";
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 10px;
+  color: #000000;
+}
+/* ---------------- */

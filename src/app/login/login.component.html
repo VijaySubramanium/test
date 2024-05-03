@@ -1,0 +1,124 @@
+<app-spinner></app-spinner>
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        <div class="col-md-5">
+            <div class="login-left">
+                <div class="align-self-center">
+                    <h3>"The only thing limiting your aspiration is your imagination."</h3>
+                    <p>- Stephen Richards</p>
+                    <div class="ll-img"><img src="assets/img/login-bg.jpg" class="img-fluid"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="login-right  min-vh-100">
+                <img src="assets/img/logo.png" class="logo">
+                <div class="login-section" [class.d-none]="loginsection">
+                    <h1 class="login-title">Login</h1>
+
+                    <form #loginform="ngForm" name="form" (ngSubmit)="loginform.form.valid">
+                        <div class="formgroup">
+                            <input type="text" readonly onfocus="this.removeAttribute('readonly');" class="form-control" required #usrname="ngModel" id="" placeholder="Email Address" [(ngModel)]="userModel.email" maxlength="320" name="username" pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$">
+                            <div style="height: 4px; display: block;">
+                                <div *ngIf="(loginform.submitted && usrname.untouched) ||  usrname.touched " style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                    <div *ngIf="usrname.errors?.['required']">Email address is required</div>
+                                </div>
+                                <div *ngIf="usrname.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                    <div *ngIf="usrname.errors?.['pattern']">Enter valid email address</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="formgroup" style="margin-top: 20pt;">
+                            <div class="input-group mb-1.9">
+                                <input [type]="show_button ? 'text' : 'password'" class="form-control" required #usrpassword="ngModel" id="upassword" placeholder="Password" (focus)="onFocus()" [(ngModel)]="userModel.password" minlength="8" maxlength="16" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$">
+                                <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'" (click)="showPassword()" id="eye"></i>
+
+
+                            </div>
+                            <div style="height: 30px; display: block; margin-top: 2pt;">
+                                <div *ngIf="(loginform.submitted && usrpassword.untouched) || usrpassword.touched " style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                    <div *ngIf="usrpassword.errors?.['required']">Password is required</div>
+                                </div>
+                                <div *ngIf="usrpassword.touched && usrpassword.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                    <div *ngIf="usrpassword.errors?.['pattern']">Enter valid password</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-white" [disabled]="disable" (click)="onSubmit(loginform.form.valid)">Login</button>
+                        <a class="link-white ms-4" role="button" id="forgot" (click)="forgotpassection();loginform.resetForm()">Forgot Password?</a>
+                    </form>
+                    <div class="or-links">
+                        <!-- Or login with -->
+                        <!-- <div>
+		  <a //class="btn link-white ms-4" href="#" role="button">Facebook</a>
+		  <a class="btn link-white ms-4" href="#" role="button">Google</a>
+		  <a class="btn link-white ms-4" href="#" role="button">Linkedin</a>
+		  </div> -->
+                    </div>
+                    <!-- <div style="text-align: center; height:1.5em; font-size: 18px; font-weight:bold; color:purple;">
+						<div [class.d-none]="successmsg">{{receivedmessage}}</div>
+						<div [class.d-none]="failuremsg">{{receivedmessage}}</div>
+
+					</div> -->
+                    <div>
+                        <a class="btn link-white f-18" routerLink="/register">Register new account</a>
+                    </div>
+                    <div class="login-logo-optional">
+                        <img src="assets/img/logo_opt.png" class="logo-optional">
+                    </div>
+
+                </div>
+                <div class="forgot-section" [class.d-none]="forgotsection">
+                    <h1 class="login-title">Forgot Password</h1>
+                    <!-- <input type="text" class="form-control mb-4" id="" placeholder="Email Address"> -->
+                    <form #loginemail="ngForm" name="form" (ngSubmit)="loginemail.form.valid">
+                        <div class="formgroup">
+                            <input type="text" (focus)="onFocus()" class="form-control" required #fgtusrname="ngModel" id="" placeholder="Email Address" [(ngModel)]="forgotModel.email" maxlength="320" name="fgtusrname" pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$">
+
+                            <!-- 		<input type="text" class="form-control" [class.is-invalid]="fgtusrname.invalid && fgtusrname.touched" required #fgtusrname="ngModel" id="" placeholder="Email Address" [(ngModel)]="forgotModel.email" maxlength="320" name="fgtusrname" pattern="^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$">
+ -->
+                            <div style="height: 35px; display: block; margin-top: 2pt;">
+                                <div *ngIf="(loginemail.submitted &&  fgtusrname.untouched) || fgtusrname.touched" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                    <div *ngIf="fgtusrname.errors?.['required']">Email Address is required</div>
+                                </div>
+                                <div *ngIf="fgtusrname.touched && fgtusrname.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                    <div *ngIf="fgtusrname.errors?.['pattern']">Enter valid email address</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-white" id="forgotSubmit" [disabled]="disable" (click)="forgotsubmit(loginemail.form.valid)">Submit</button>
+                        <!-- <div style="text-align: center; height:1.5em; font-size: 18px; font-weight:bold; color:purple; margin-top: 1em;">
+
+							<div [class.d-none]="successmsgforgot">{{receivedmessageforgot}}</div>
+							<div [class.d-none]="failuremsgforgot">{{receivedmessageforgot}}</div>
+						</div> -->
+                    </form>
+                    <div class="mt-5">
+                        <a class="btn link-white f-18" role="button" id="backLogin" (click)="backtologin();loginemail.resetForm()">Back to Login</a>
+                    </div>
+                    <div class="login-logo-optional">
+                      <img src="assets/img/logo_opt.png" class="logo-optional">
+                  </div>
+                </div>
+                <div class="password-section" [class.d-none]="passwordsection">
+                    <h1 class="login-title">Create New Password</h1>
+                    <div class="formgroup">
+                        <small style="font-size: 10.5pt; margin-top: 2pt; color:red;" [class.d-none]="usrpassword.valid || usrpassword.untouched">Enter password min 8 to max 16 character</small>
+                        <input type="password" class="form-control mb-4" [class.is-invalid]="usrpassword.invalid && usrpassword.touched" required #usrpassword="ngModel" id="" placeholder="New Password" [(ngModel)]="userModel.password" minlength="8" maxlength="16" name="password"
+                            pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,16}$" [class.is-valid]="usrpassword.valid">
+                    </div>
+                    <div class="formgroup">
+                        <small style="font-size: 10.5pt; margin-top: 2pt; color:red;" [class.d-none]="usrpassword.valid || usrpassword.untouched">Enter password min 8 to max 16 character</small>
+                        <input type="password" class="form-control mb-4" [class.is-invalid]="usrpassword.invalid && usrpassword.touched" required #usrpassword="ngModel" id="" placeholder="Confirm New Password" [(ngModel)]="userModel.password" minlength="8" maxlength="16" name="password"
+                            pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,16}$" [class.is-valid]="usrpassword.valid">
+                    </div>
+                    <button type="button" class="btn btn-white" id="passwordSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <app-forgotpassword></app-forgotpassword> -->
+    <!-- <app-register></app-register> -->

@@ -1,0 +1,19 @@
+.gray-on-disabled:disabled {
+    background: #adb5bd;
+    color: black;
+    opacity: 60%
+  }
+
+  .hide_input{
+    display: none;
+  }
+
+  .show_input{
+    display: block;
+  }
+
+  .adisabled{
+    pointer-events: none;;
+  }
+
+

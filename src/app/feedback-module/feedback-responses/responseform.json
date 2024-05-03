@@ -1,0 +1,62 @@
+[
+  {
+    "userid": 6946,
+    "username": "Jothilakshmi Singh",
+    "formid": 76,
+    "quetionsDetails": [
+      {
+        "actiontype": "Single Select",
+        "questionid": 183,
+        "answer": "Good",
+        "questions": "\"Query1\"",
+        "options": ["Good", "Bad"],
+        "optionscore": 5
+      },
+      {
+        "actiontype": "Multi Select",
+        "questionid": 184,
+        "answer": "Bad",
+        "questions": "\"Query2\"",
+        "options": ["Bad", "Good"],
+        "optionscore": 4
+      },
+      {
+        "actiontype": "Text",
+        "questionid": 185,
+        "answer": "Average",
+        "questions": "\"write the review\"",
+        "options": [null]
+      }
+    ]
+  },
+  {
+    "userid": 6939,
+    "username": "Queen Student",
+    "formid": 76,
+    "quetionsDetails": [
+      {
+        "actiontype": "Single Select",
+        "questionid": 183,
+        "answer": "Bad",
+        "questions": "\"Query1\"",
+        "options": ["Good", "Bad"],
+        "optionscore": 4
+      },
+      {
+        "actiontype": "Multi Select",
+        "questionid": 184,
+        "answer": "Good",
+        "questions": "\"Query2\"",
+        "options": ["Bad", "Good"],
+        "optionscore": 5
+      },
+      {
+        "actiontype": "Text",
+        "questionid": 185,
+        "answer": "below average",
+        "questions": "\"write the review\"",
+        "options": [null]
+      }
+    ]
+  }
+]

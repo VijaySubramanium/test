@@ -1,0 +1,244 @@
+<app-header></app-header>
+<div class="main">
+  <app-spinner></app-spinner>
+  <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+  <app-sidebar (listOfRightMenus)=onListOfRightMenus($event)></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>Report management</h5>
+      </div>
+    </div>
+
+    <!-- Analytics and Reporting Grid -->
+    <p-tabView (onChange)="analyticalReports($event)">
+      <!-- Project Summery -->
+      <p-tabPanel header="Project Summary">
+        <ng-container>
+          <div class="row">
+            <div class="col-md-2 d-flex align-items-center">
+              <div class="show-entries d-flex mb-3">
+                <small><span class="result-found"><b>{{ userTotalRecords }}</b> Results
+                    Found</span></small>
+              </div>
+            </div>
+            <div class="col-md-10 d-block d-sm-inline-flex justify-content-end">
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <p-multiSelect [options]="_projectBasedReportColumnHeader" [(ngModel)]="projectBasedRegistrationColumns"
+                  optionLabel="header" (onChange)="projectBasedFilter($event)" selectedItemsLabel="{0} columns selected"
+                  [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+              </div>
+              <!-- <div class="search-input w-xs-100 me-2 mb-3">
+                <select required class="form-select project-manager-list"
+                  (change)="selectedProjectDetails($any($event.target).value)" name="tponame">
+                  <option value="" disabled selected hidden>
+                    Select Project Manager
+                  </option>
+                  <option value="ALL">
+                    All
+                  </option>
+                  <option *ngFor="let x of projectBasedmanager" value="{{ x }}">
+                    {{ x}}
+                  </option>
+                </select>
+              </div> -->
+              <!-- <div class="search-input rangedate w-xs-100 me-2 mb-3">
+                <p-calendar title="Date Filter" [(ngModel)]="rangeDates"  [class.clanedar-check]="inValidRange" placeholder="Date Range" rangeSeparator="-" selectionMode="range"
+                  [readonlyInput]="true" inputId="range" (input)="onSelect($event)"
+                  (onSelect)="onSelect($event)"></p-calendar>
+
+              </div> -->
+
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"
+                  [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''" (click)="searchClose()"
+                  data-bs-toggle="modal" [attr.data-bs-target]="'#reportSearch'" class="mr-2" title="Search"
+                  tooltipPosition="bottom"></button>
+              </div>
+
+              <!-- <div class="search-input w-xs-100 me-2 mb-3">
+                <input type="text" class="form-control" placeholder="Search"
+                  (input)="ct.filterGlobal($any($event.target).value, 'contains')">
+              </div> -->
+              <div class="dropdown float-end more-dropdown report-padding d-flex align-items-center mb-3">
+                <button class="more-btn d-flex" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Export<i class="las la-angle-down ms-2"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="exportReport('CSV')"
+                      class="mr-2" title="CSV" tooltipPosition="bottom"></button>
+                  </li>
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportReport('EXCEL')"
+                      class="p-button-success mr-2" title="XLS" tooltipPosition="bottom"></button>
+                  </li>
+                  <!-- <li>
+                      <button type="button" pButton pRipple icon="pi pi-file-pdf"
+                          (click)="exportProjectBasedPDF(ct)" class="p-button-warning mr-2" title="PDF"
+                          tooltipPosition="bottom"></button>
+                  </li> -->
+                </ul>
+              </div>
+              <!-- <div class="dropdown float-end more-dropdown report-padding d-flex align-items-center mb-3"
+                style="cursor:pointer ; margin-left: 0.5rem;">
+                <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                  aria-expanded="false" (click)="cleardate()">
+                  Reset
+                </button>
+              </div> -->
+            </div>
+          </div>
+          <div class="col-12 scroll-table scrolling-table-div">
+            <p-table #ct class="p-table-grid" [columns]="projectBasedRegistrationColumns"
+              (onFilter)="onFilter($event, ct)" [(first)]="first" [(selection)]="selectedProjectBasedDetail"
+              [value]="finalProjectBasedReports" [paginator]="false" [rows]="userRowNum" sortMode="multiple"
+              [responsive]="true" [globalFilterFields]="_projectBasedFilter" [exportFilename]="exportProjectBased">
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-finalProjectBasedReport let-columns="columns">
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="finalProjectBasedReport"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns">
+                    <span title="{{finalProjectBasedReport[col.field]}}"
+                      *ngIf="col.field !== 'status' && col.field !== 'dob'">
+                      {{ finalProjectBasedReport[col.field] }}
+                    </span>
+                    <span *ngIf="col.field == 'dob'">
+                      {{ finalProjectBasedReport[col.field] | date:'yyyy-MM-dd' }}
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
+
+            <p-paginator [rows]="userRowNum" #customPaginator [totalRecords]="paginationTotalRecords"
+              [rowsPerPageOptions]="[10, 30, 50, 100, 500]" (onPageChange)="paginate($event)"></p-paginator>
+          </div>
+        </ng-container>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal fade" id="reportSearch" tabindex="-1" aria-labelledby="reportSearch" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="clearSearch()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)"
+                [selectionLimit]="mainFieldsLimit" optionLabel="header" [(ngModel)]="_selectedSearchColumns"
+                selectedItemsLabel="{0} columns selected" [style]="{minWidth: '180px'}" placeholder="Choose Columns"
+                [showToggleAll]="false"></p-multiSelect>
+            </div>
+          </div>
+
+          <div class="row p-2">
+
+            <table>
+
+              <tr *ngFor="let searchColumns of _selectedSearchColumns">
+                <td class="w-auto p-2 text-center">
+                  {{searchColumns.header}}
+                </td>
+                <td class="w-auto p-2" *ngIf="searchColumns.header != 'Project Name'">
+                  <input required type="text" [placeholder]="searchHolder(searchColumns.field)" class="form-control"
+                    name="subject" [(ngModel)]="searchColumns.search" #subject="ngModel">
+                </td>
+                <td class="w-auto p-2" *ngIf="searchColumns.header == 'Project Name'" style="max-width:37% !important;">
+                  <select required class="form-select" title="Role" [(ngModel)]="selectedProjects" (change)="changeProjects(searchColumns, selectProject)"
+                    name="selected_project" #selectProject="ngModel">
+                    <option value="" disabled selected hidden>Select Project</option>
+                    <option *ngFor="let project of listOfProjects" [value]="project.project_id + '___' + project.project_name">
+                      {{project.project_name}}
+                    </option>
+                  </select>
+
+                  <input  type="hidden"  class="form-control"
+                  name="project" [(ngModel)]="searchColumns.search" #project="ngModel">
+                </td>
+
+                <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1 || _selectedSearchAdditionalFields.length > 0">
+                  <select required class="form-select" aria-placeholder="Select" title="Condition"
+                    [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                    <option [ngValue]="undefined" disabled selected>Select</option>
+                    <option>AND</option>
+                    <option>OR</option>
+                  </select>
+                </td>
+                <td class="w-auto p-2" *ngIf="searchColumns.header == 'Project Name'">
+                  <button class="btn btn-blue btn-get" [disabled]="selectedProjects.length == 0"
+                    (click)="getAdditionalFields()"><i class="las la la-arrow-right"></i></button>
+                </td>
+              </tr>
+              <tr *ngIf="isSelectedProject == true && selectedProjects.length > 0">
+                <td class="w-auto p-2 text-center">
+                  Additional Fields
+                </td>
+                <td class="w-auto p-2" style="max-width: '100px !important'">
+                  <p-multiSelect [options]="additionalFields" [resetFilterOnHide]="true"
+                    (onChange)="onChangeAdditionalSearchKey($event)" [selectionLimit]="projectAdditionalFieldsLimit" optionLabel="documentFieldName"
+                    [(ngModel)]="_selectedSearchAdditionalFields" selectedItemsLabel="{0} columns selected"
+                    [style]="{minWidth: '180px !important'}" placeholder="Choose Columns" [showToggleAll]="false"></p-multiSelect>
+                </td>
+              </tr>
+              <tr *ngFor="let searchAdditionalColumns of _selectedSearchAdditionalFields, let i = index">
+                <td class="w-auto p-2 text-center">
+                  {{ searchAdditionalColumns.documentFieldName }}
+                </td>
+                <td class="w-auto p-2">
+                  <input required type="text" [placeholder]="searchHolder(searchAdditionalColumns.field)"
+                    class="form-control" name="additionalFields" [(ngModel)]="searchAdditionalColumns.search"
+                    #additionalFields="ngModel">
+                </td>
+                <td class="w-auto p-2" style="width:16% !important;">
+                  <select required class="form-select" aria-placeholder="Select" title="Condition"
+                    [(ngModel)]="searchAdditionalColumns.condition" name="additionalCondition"
+                    #additionalCondition="ngModel">
+                    <option [ngValue]="undefined" disabled selected>Select</option>
+                    <option>AND</option>
+                    <option>OR</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="row p-2" *ngIf="searchError">
+            <p style="color: red;">*Mandatory to fill all fields.</p>
+          </div>
+          <div class="modal-footer ps-0 pe-0">
+            <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal"
+              [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+            <button type="button" class="btn btn-blue" (click)="submitSearch()"
+              [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

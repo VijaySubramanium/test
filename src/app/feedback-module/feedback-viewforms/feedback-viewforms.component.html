@@ -1,0 +1,144 @@
+<form #addfield="ngForm" name="form" (ngSubmit)="(addfield)">
+  <div class="row mt-3">
+
+    <div class="col-lg-2 mb-3">
+      <select required class="form-select w-100" title="Select Project" style="cursor:pointer ;"
+        (change)="getProgramsByProjectId($any($event.target).value)" aria-label="Default select example"
+        [(ngModel)]="addFields.projectName" name="projectName" #projectName="ngModel">
+        <option value="" disabled selected hidden>
+          Select Project
+        </option>
+        <option *ngFor="let x of activeProjectList" value="{{ x.project_id }}_{{ x.project_name }}">
+          {{ x.project_name}}
+        </option>
+      </select>
+      <div *ngIf=" (addfield.submitted && projectName.untouched) || projectName.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+        <div *ngIf="projectName.errors?.['required']">
+          Select Project
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 mb-3">
+      <select required class="form-select w-100" title="Select Program" style="cursor:pointer ;"
+        (change)="getCourseByProjectIdProgramId($any($event.target).value)" aria-label="Default select example"
+        [(ngModel)]="addFields.programName" name="programName" #programName="ngModel">
+        <option value="" disabled selected hidden>
+          Select Program
+        </option>
+        <option *ngFor="let x of programDetails" value="{{ x.programid }}_{{ x.programname }}">
+          {{ x.programname}}
+        </option>
+      </select>
+      <div *ngIf=" (addfield.submitted && programName.untouched) || programName.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+        <div *ngIf="programName.errors?.['required']">
+          Select Program
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 mb-3">
+      <select required class="form-select w-100" title="Select Course" style="cursor:pointer ;"
+        aria-label="Default select example" (change)="getBatchByProjectIdProgramId($any($event.target).value)"
+        [(ngModel)]="addFields.CourseName" name="CourseName" #CourseName="ngModel">
+        <option value="" disabled selected hidden>
+          Select Course
+        </option>
+        <option *ngFor="let x of courseDetails" value="{{ x.courseid }}_{{ x.coursename }}">
+          {{ x.coursename}}
+        </option>
+      </select>
+      <div *ngIf=" (addfield.submitted && CourseName.untouched) || CourseName.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+        <div *ngIf="CourseName.errors?.['required']">
+          Select Course
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 mb-3">
+      <select required class="form-select w-100" title="Select Batch" style="cursor:pointer ;"
+        aria-label="Default select example" (change)="getFormsByBatchId($any($event.target).value)"
+        [(ngModel)]="addFields.BatchName" name="BatchName" #BatchName="ngModel">
+        <option value="" disabled selected hidden>
+          Select Batch
+        </option>
+        <option *ngFor="let x of batchDetails" value="{{ x.batch_id }}_{{ x.batch_code }}">
+          {{ x.batch_code}}
+        </option>
+      </select>
+      <div *ngIf=" (addfield.submitted && BatchName.untouched) || BatchName.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+        <div *ngIf="BatchName.errors?.['required']">
+          Select Batch
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 mb-3">
+      <select required class="form-select w-100" title="Select Form" style="cursor:pointer ;"
+        (change)="getSelectedForm($any($event.target).value)" aria-label="Default select example"
+        [(ngModel)]="addFields.FormName" name="FormName" #FormName="ngModel">
+        <option value="" disabled selected hidden>
+          Select Form
+        </option>
+        <option *ngFor="let x of formDetails" title="{{ x.formName }}" value="{{ x.formId }}_{{ x.formName }}">
+          {{ x.formName.length > 40 ? x.formName.substring(0, 30) + '...' : x.formName }}
+        </option>
+      </select>
+      <div *ngIf=" (addfield.submitted && FormName.untouched) || FormName.touched"
+        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+        <div *ngIf="FormName.errors?.['required']">
+          Select Form
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 d-flex align-items-center mb-3">
+      <button type="submit" [disabled]="disable" (click)="getFormLists(addfield.form)" class="btn btn-blue">
+        Submit
+      </button>
+    </div>
+    <div class="col-lg-1 d-flex align-items-center mb-3" *ngIf="formActive == 'Inactive'">
+      <div class="form-check mb-0">
+        <input class="form-check-input" style="cursor:pointer ;" type="checkbox" value="" [(ngModel)]="formStatus"
+          id="form-activate" (change)="changeStatus()" checked>
+        <label class="form-check-label" for="form-activate">
+          Activate
+        </label>
+      </div>
+    </div>
+
+  </div>
+</form>
+
+<div class="row m-0" *ngIf="formStatus == 'Success'">
+  <div class="col-md-12">
+    <div class="view-form">
+      <div class="row">
+        <div class="col-lg-6 mb-3">
+          <h6>{{displayFormName}}&nbsp;&nbsp;({{formActive}})</h6>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+                    <h6>Status-{{formActive}}</h6>
+                </div> -->
+      </div>
+      <div class="scrollbar" id="style-scroll">
+        <div *ngFor="let questionArray of formDataList">
+          <div class="mb-3">
+            <p>{{questionArray.questions}}</p>
+            <div class="hr-theme-slash-2 justify-content-between"
+              *ngFor="let optionList of questionArray.questionoption">
+              <div class="form-check viewform-radio" *ngIf="questionArray.actiontype != 'Text'">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" disabled>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  {{optionList}}
+                </label>
+              </div>
+            </div>
+            <div *ngIf="questionArray.actiontype == 'Text'">
+              <textarea class="form-control" rows="3" disabled></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

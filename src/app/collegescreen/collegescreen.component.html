@@ -1,0 +1,184 @@
+<form #f="ngForm" name="form" (ngSubmit)="f">
+					<div class="reg-right  min-vh-100">
+						<div class="row">
+
+
+							<!-- Academic Institute Name -->
+							<div class="col-md-12 mb-4">
+								<input required list="college-name" pattern="^[a-zA-Z.\s&]+$" autocomplete="off" placeholder="Academic Institution name"
+								 type="text" class="form-select webkit-none" [(ngModel)]="userModel.academicInstitutionName" #collegename="ngModel" name="college" title="College Name">
+								<datalist id="college-name">
+									<option *ngFor="let x of collegeDetails">{{x.academicInstitutionName}}</option>
+								</datalist>
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && collegename.untouched) ||  collegename.touched" class="error">
+										<div *ngIf="collegename.errors?.['required']">Academic institution name is required</div>
+									</div>
+									<div *ngIf="collegename.touched && collegename.invalid" class="error">
+										<div *ngIf="collegename.errors?.['pattern']">Enter a valid data
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- Address -->
+							<div class="col-md-12 mb-4">
+								<input required pattern="[a-zA-Z0-9-]*+" type="text" title="Address" [(ngModel)]="userModel.address" #address="ngModel" name="address" class="form-control"
+								 id="" placeholder="Address Line">
+								 <div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && address.untouched) ||  address.touched" class="error">
+										<div *ngIf="address.errors?.['required']">Address line is required</div>
+									</div>
+									<div *ngIf="address.touched && address.invalid" class="error">
+										<div *ngIf="address.errors?.['pattern']">Enter a valid data
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- State -->
+							<div class="col-md-6 mb-4">
+								<select required class="form-select" title="State" (change)="FilterCity($any($event.target).value)" [(ngModel)]="userModel.state" #state="ngModel"
+								 name="state">
+									<option value="" disabled selected hidden>State</option>
+									<option *ngFor="let x of stateDetails" value="{{x.stateid}}_{{ x.state }}">{{x.state}}</option>
+								</select>
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && state.untouched) || state.touched" class="error">
+										<div *ngIf="state.errors?.['required']">Select the city field</div>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- City -->
+							<div class="col-md-6 mb-4">
+								<select required class="form-select" title="City" [(ngModel)]="userModel.city" #city="ngModel" name="city">
+									<option value="" disabled selected hidden>City</option>
+									<option *ngFor="let x of cityDetails" value="{{x.cityname}}">{{x.cityname}}</option>
+								</select>
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && city.untouched) || city.touched" class="error">
+										<div *ngIf="city.errors?.['required']">Select the city field</div>
+									</div>
+								</div>
+							</div>
+
+
+
+
+
+							<!-- College Code -->
+							<div class="col-md-6 mb-4">
+								<input required pattern="^(?=.*\d)[a-zA-Z]{4,}\d*" type="text" title="College Code" class="form-control" id="" placeholder="Academic Institution Code"
+								 [(ngModel)]="userModel.code" #collegecode="ngModel" name="collegecode">
+								 <div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && collegecode.untouched) ||  collegecode.touched" class="error">
+										<div *ngIf="collegecode.errors?.['required']">Academic institution code is required</div>
+									</div>
+									<div *ngIf="collegecode.touched && collegecode.invalid" class="error">
+										<div *ngIf="collegecode.errors?.['pattern']">Enter a valid data
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- TOP Name -->
+							<div class="col-md-6 mb-4">
+								<select required class="form-select" title="TPO Name" [(ngModel)]="userModel.tpoUserid" #tponame="ngModel" name="tponame">
+									<option value="" disabled selected hidden>TPO Name</option>
+									<option *ngFor="let x of topNameDetails" value="{{ x.userid }}_{{ x.firstname }}">{{x.firstname}}</option>
+								</select>
+
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && tponame.untouched) || tponame.touched" class="error">
+										<div *ngIf="tponame.errors?.['required']">Select the TPO name field</div>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- TPO Mobile Number -->
+							<div class="col-md-6 mb-4">
+								<input required pattern="^[+0]{0,2}(91)?[0-9]{10}$" title="TPO Mobile" type="text" class="form-control" id="" placeholder="TPO Mobile" [(ngModel)]="userModel.tpoContactNumber"
+								 #tpomobile="ngModel" name="tpomobile">
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && tpomobile.untouched) ||  tpomobile.touched" class="error">
+										<div *ngIf="tpomobile.errors?.['required']">TPO mobile is required</div>
+									</div>
+									<div *ngIf="tpomobile.touched && tpomobile.invalid" class="error">
+										<div *ngIf="tpomobile.errors?.['pattern']">Enter a valid data
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- TPO Email -->
+							<div class="col-md-6 mb-4">
+								<input required type="text" pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" title="TPO Email" class="form-control" id="" placeholder="TPO Email Id"
+								 [(ngModel)]="userModel.tpoEmailId" #email="ngModel" name="email">
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && email.untouched) ||  email.touched" class="error">
+										<div *ngIf="email.errors?.['required']">TPO email id is required</div>
+									</div>
+									<div *ngIf="email.touched && email.invalid" class="error">
+										<div *ngIf="email.errors?.['pattern']">Enter a valid data
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- Instution Code -->
+							<div class="col-md-6 mb-4">
+								<input required type="text" title="Institution Short Name" pattern="[A-Z][A-Z][A-Z]+" class="form-control" id="" placeholder="Academic Institution Short Name"
+								 [(ngModel)]="userModel.academicInstitutionShortName" #collegeshortname="ngModel" name="collegeshortname">
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && collegeshortname.untouched) ||  collegeshortname.touched" class="error">
+										<div *ngIf="collegeshortname.errors?.['required']">Institution short name is required</div>
+									</div>
+									<div *ngIf="collegeshortname.touched && collegeshortname.invalid" class="error">
+										<div *ngIf="collegeshortname.errors?.['pattern']">Enter a valid data
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6 mb-4">
+								<select required class="form-select" title="KAM Name" [(ngModel)]="userModel.kamUserId" #kamname="ngModel" name="kamname">
+									<option value="" disabled selected hidden>KAM Name</option>
+									<option *ngFor="let x of kamNameDetails" value="{{x.userid}}_{{ x.firstname }}">{{x.firstname}}</option>
+								</select>
+								<div style="height: 4px; display: block;" class="invalid-feedback">
+									<div *ngIf="(f.submitted && kamname.untouched) || kamname.touched" class="error">
+										<div *ngIf="kamname.errors?.['required']">KAM name is required</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-12 mb-4">
+								<div class="form-check">
+									<input required class="form-check-input" title="Terms and Conditions" type="checkbox" [(ngModel)]="userModel.agree" value="" #agree="ngModel" id="agree"
+									 name="agree">
+									<label class="form-check-label" for="agree">
+									  I agree to terms and conditions
+									</label>
+
+									<div *ngIf="f.submitted && agree.invalid" class="error">
+										<div *ngIf="agree.errors?.['required']" style="color:red;font-size:13px;">Check this box before submission</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="col-md-12 mb-4">
+								<button type="submit" class="btn btn-blue" (click)="onSubmit(f.form)">Register</button>
+							</div>
+
+
+
+						</div>
+
+					</div>
+				</form>

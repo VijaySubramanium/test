@@ -1,0 +1,268 @@
+<div *ngIf="list_ActiveForm.length != 0">
+    <div class="card-body">
+        <div class="row">
+            <!-- profile section -->
+            <div class="col-md-12">
+
+                <div class="feedback-profile">
+
+                    <div class="profile-img">
+                        <img src="assets/img/user.jpg" alt="profile-image">
+                    </div>
+                    <div class="profile-content">
+                        <h6 class="profile-name">{{ profileName }}&nbsp;{{lastName}}</h6>
+
+                        <p class="avg-rating"><span>Avg rating :</span>&nbsp;{{avgRating}}&nbsp;<i
+                                class="las la-star"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- feedback section -->
+            <div class="col-md-12 scrollbar" id="style-scroll">
+                <form id="smileyanswer" #addfield="ngForm" name="form" (ngSubmit)="(addfield)">
+                    <div class="user-feedback" *ngFor="let questionArray of list_ActiveForm">
+                        <div class="feedback-single-qes">
+                            <div>
+                                <!-- questions type single select-->
+                                <div class="feedback-single-qes"
+                                    *ngIf="questionArray.quetionsDetails[0]?.actiontype == 'Single Select'">
+                                    <p class="feedback-qes">
+                                        {{questionArray.quetionsDetails[0]?.questions.replaceAll('"',
+                                        '')}}</p>
+                                    <div class="hr-theme-slash-2">
+                                        <div class="feedback-single-qes-opt mr-20"
+                                            *ngFor="let optionList of questionArray.quetionsDetails[0]?.options">
+                                            <div class="form-check"
+                                                *ngIf="optionList == questionArray.quetionsDetails[0]?.answer">
+                                                <input class="form-check-input users-answer" type="radio"
+                                                    name="flexRadioDefault" id="flexRadioDefault1" checked>
+                                                <label class="form-check-label users-answer-lable ml-2"
+                                                    for="flexRadioDefault1">
+                                                    {{optionList.replaceAll('"','')}}
+                                                </label>
+                                            </div>
+                                            <div class="form-check"
+                                                *ngIf="optionList !== questionArray.quetionsDetails[0]?.answer">
+                                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                                    id="flexRadioDefault1" disabled>
+                                                <label class="form-check-label ml-2" for="flexRadioDefault1">
+                                                    {{optionList.replaceAll('"','')}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- questions type  multiple select-->
+                                <div class="feedback-single-qes"
+                                    *ngIf="questionArray.quetionsDetails[0]?.actiontype == 'Multi Select'">
+                                    <p class="feedback-qes">
+                                        {{questionArray.quetionsDetails[0]?.questions.replaceAll('"',
+                                        '')}}</p>
+                                    <div class="hr-theme-slash-2">
+                                        <div class="feedback-single-qes-opt mr-20"
+                                            *ngFor="let optionList of questionArray.quetionsDetails[0]?.options">
+                                            <div class="form-check"
+                                                *ngIf="optionList == questionArray.quetionsDetails[0]?.answer">
+                                                <input style="color:#0d6efd !important ;" [ngClass]="optionList === 'Bad' ? 'Bad' :
+                                                optionList ==='Average'?'Average':
+                                                optionList ==='Better'?'Better':
+                                                optionList==='Satisfactory'?'Satisfactory':
+                                                optionList==='Good' ?'Good':
+                                                optionList ==='Excellent'?'Excellent':'Good'" type="radio"
+                                                    name="flexRadioDefault" id="flexRadioDefault1">
+                                                <label class="form-check-label users-answer-lable ml-2"
+                                                    for="flexRadioDefault1">
+                                                    {{optionList.replaceAll('"','')}}
+                                                </label>
+                                            </div>
+                                            <div class="form-check"
+                                                *ngIf="optionList !== questionArray.quetionsDetails[0]?.answer">
+                                                <input style="color:#cac9c9 !important ;" [ngClass]="optionList === 'Bad' ? 'Bad' :
+                                                optionList ==='Average'?'Average':
+                                                optionList ==='Better'?'Better':
+                                                optionList==='Satisfactory'?'Satisfactory':
+                                                optionList==='Good' ?'Good':
+                                                optionList ==='Excellent'?'Excellent':'Good'" type="radio"
+                                                    name="flexRadioDefault" id="flexRadioDefault1" disabled>
+                                                <label style="color:#cac9c9 !important ;" class="form-check-label ml-2"
+                                                    for="flexRadioDefault1">
+                                                    {{optionList.replaceAll('"','')}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- questions type text-->
+                                <div class="feedback-single-qes"
+                                    *ngIf="questionArray.quetionsDetails[0]?.actiontype == 'Text'">
+                                    <p class="feedback-qes">
+                                        {{questionArray.quetionsDetails[0]?.questions.replaceAll('"',
+                                        '')}}</p>
+                                    <textarea class="form-control" rows="3" disabled>{{questionArray.quetionsDetails[0]?.answer.replaceAll('"','')}}
+                                  </textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="list_ActiveForm.length == 0">
+    <div class="card-body">
+        <div class="row">
+            <!-- profile section -->
+            <div class="col-md-12">
+
+                <div class="feedback-profile" *ngIf="formId != undefined">
+
+                    <div class="profile-img">
+                        <img src="assets/img/user.jpg" alt="profile-image">
+                    </div>
+                    <div class="profile-content">
+                        <h6 class="profile-name">{{ profileName }}&nbsp;{{lastName}}</h6>
+
+                        <!-- <p class="avg-rating"><span>Avg rating :</span>{{avg_score}}<i class="las la-star"></i></p> -->
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- feedback section -->
+            <div class="col-md-12" *ngIf="formId != undefined">
+                <form id="smileys" #addfield="ngForm" name="form" (ngSubmit)="(addfield)">
+
+                    <div class="user-feedback" *ngFor="let questionArray of userFormDataList">
+                        <div class="feedback-single-qes">
+                            <div>
+                                <!-- Questions -->
+                                <p class="feedback-qes">{{questionArray.questions}}<span
+                                        *ngIf="questionArray.isrequired == 1" class="required"> *</span></p>
+
+                                <!-- Options double -->
+                                <div *ngIf="questionArray.actiontype == 'Multi Select'">
+                                    <div class="hr-theme-slash-2 justify-content-between"
+                                        *ngFor="let optionList of questionArray.options">
+
+                                        <div class="feedback-icon-container"
+                                            *ngIf="questionArray.options.optionName != ''">
+                                            <div *ngIf="optionList.optionName != 'Agree'
+                                            &&optionList.optionName != 'Strongly agree'
+                                            &&optionList.optionName != 'Neutral'
+                                            &&optionList.optionName != 'Strongly disagree'
+                                            &&optionList.optionName != 'Disagree'">
+                                                <input [(ngModel)]="options[questionArray.questionId]"
+                                                    [checked]="options[questionArray.questionId]" type="radio"
+                                                    [ngClass]="optionList.optionName === 'Bad' ? 'Bad' :
+                                                optionList.optionName ==='Average'?'Average':
+                                                optionList.optionName ==='Better'?'Better':
+                                                optionList.optionName==='Satisfactory'?'Satisfactory':
+                                                optionList.optionName==='Good' ?'Good':
+                                                optionList.optionName ==='Excellent'?'Excellent':'Good'"
+                                                    value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                    name="option{{questionArray.questionId}}">
+                                                <div class="hr-icon">
+                                                    <div class="emotion-name">{{optionList.optionName}}</div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="optionList.optionName == 'Agree'">
+                                                <input [(ngModel)]="options[questionArray.questionId]"
+                                                    [checked]="options[questionArray.questionId]" type="radio"
+                                                    class='Good'
+                                                    value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                    name="option{{questionArray.questionId}}">
+                                                <div class="hr-icon">
+                                                    <div class="emotion-name">{{optionList.optionName}}</div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="optionList.optionName == 'Strongly agree'">
+                                                <input [(ngModel)]="options[questionArray.questionId]"
+                                                    [checked]="options[questionArray.questionId]" type="radio"
+                                                    class='Excellent'
+                                                    value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                    name="option{{questionArray.questionId}}">
+                                                <div class="hr-icon">
+                                                    <div class="emotion-name">{{optionList.optionName}}</div>
+                                                </div>
+                                            </div>
+
+                                            <div *ngIf="optionList.optionName == 'Strongly disagree'">
+                                                <input [(ngModel)]="options[questionArray.questionId]"
+                                                    [checked]="options[questionArray.questionId]" type="radio"
+                                                    class='Bad'
+                                                    value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                    name="option{{questionArray.questionId}}">
+                                                <div class="hr-icon">
+                                                    <div class="emotion-name">{{optionList.optionName}}</div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="optionList.optionName == 'Disagree'">
+                                                <input [(ngModel)]="options[questionArray.questionId]"
+                                                    [checked]="options[questionArray.questionId]" type="radio"
+                                                    class='Better'
+                                                    value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                    name="option{{questionArray.questionId}}">
+                                                <div class="hr-icon">
+                                                    <div class="emotion-name">{{optionList.optionName}}</div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="optionList.optionName == 'Neutral'">
+                                                <input [(ngModel)]="options[questionArray.questionId]"
+                                                    [checked]="options[questionArray.questionId]" type="radio"
+                                                    class='Satisfactory'
+                                                    value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                    name="option{{questionArray.questionId}}">
+                                                <div class="hr-icon">
+                                                    <div class="emotion-name">{{optionList.optionName}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Options single -->
+                                <div *ngIf="questionArray.actiontype == 'Single Select'">
+                                    <div class="hr-theme-slash-2 justify-content-between"
+                                        *ngFor="let optionList of questionArray.options">
+                                        <div class="feedback-icon-container"
+                                            *ngIf="questionArray.options.optionName != ''">
+
+                                            <input [(ngModel)]="options[questionArray.questionId]"
+                                                [checked]="options[questionArray.questionId]" type="radio"
+                                                class='Single' value="{{optionList.optionName}}_{{optionList.optionId}}"
+                                                name="option{{questionArray.questionId}}">
+                                            <label class="hr-icon">
+                                                <div class="emotion-name">{{optionList.optionName}}</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Text -->
+                                <div *ngIf="questionArray.actiontype == 'Text'">
+                                    <textarea class="form-control" rows="3" name="options{{questionArray.questionId}}"
+                                        id="options{{questionArray.questionId}}"
+                                        [(ngModel)]="options[questionArray.questionId]"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" (click)="userFormSubmit()" class="btn btn-blue mt-3">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

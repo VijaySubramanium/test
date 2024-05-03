@@ -1,0 +1,118 @@
+{
+    "code": 200,
+    "data": [
+        {
+            "notificationid": 9,
+            "userid": 7438,
+            "updatedby": 0,
+            "createdby": 0,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.csv?sig=SaiVZKeFcEgBPfZmvOw%2FycQtufstdUKsANGy%2BWPOFvs%3D&st=2023-02-06T14%3A03%3A20Z&se=2023-02-07T14%3A03%3A20Z&sv=2019-02-02&si=DownloadPolicy&sr=b",
+            "module": "User Management",
+            "createddate": "2023-02-06T14:03:20.000+00:00",
+            "updatedate": "2023-02-06T14:03:20.000+00:00",
+            "username": "Ravanan K",
+            "exporttype": "csv"
+        },
+        {
+            "notificationid": 8,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.csv?sig=aQbxSYW5cko4g8InvrNxK9fOUDT06HN97lBeTAaszPk%3D&st=2023-02-06T13%3A57%3A35Z&se=2023-02-07T13%3A57%3A35Z&sv=2019-02-02&si=DownloadPolicy&sr=b",
+            "updatedby": 0,
+            "createdby": 0,
+            "updatedate": "2023-02-06T13:57:36.000+00:00",
+            "userid": 7418,
+            "createddate": "2023-02-06T13:57:36.000+00:00",
+            "module": "User Management",
+            "exporttype": "csv",
+            "username": "Sarvesh A"
+        },
+        {
+            "createddate": "2023-02-06T12:20:29.000+00:00",
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.csv?sig=GQ6ADomE1mzKa60YyqcWbyEZukY%2BVRcvh9ydquhlY%2BU%3D&st=2023-02-06T12%3A20%3A28Z&se=2023-02-07T12%3A20%3A28Z&sv=2019-02-02&si=DownloadPolicy&sr=b",
+            "updatedate": "2023-02-06T12:20:29.000+00:00",
+            "updatedby": 0,
+            "createdby": 0,
+            "userid": 6917,
+            "module": "User Management",
+            "notificationid": 7,
+            "exporttype": "csv",
+            "username": null
+        },
+        {
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.xlsx?sig=NEy5uATBNdvZ8e%2BmhFPO%2FMZ49g6IVpOgmS8uWTCfg2A%3D&st=2023-02-06T12%3A19%3A45Z&se=2023-02-07T12%3A19%3A45Z&sv=2019-02-02&si=DownloadPolicy&sr=b",
+            "updatedby": 0,
+            "createdby": 0,
+            "userid": 6917,
+            "module": "User Management",
+            "updatedate": "2023-02-06T12:19:46.000+00:00",
+            "exporttype": "xlsx",
+            "createddate": "2023-02-06T12:19:46.000+00:00",
+            "notificationid": 6,
+            "username": null
+        },
+        {
+            "updatedby": 0,
+            "createdby": 0,
+            "module": null,
+            "userid": 6917,
+            "exporttype": null,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.xlsx?sig=52huzC0Kjp24c6EfF9eIAWDkYi3n4NNYmMmZtrsMJdc%3D&st=2023-02-06T10%3A45%3A53Z&se=2023-02-07T10%3A45%3A53Z&sv=2019-02-02&si=DownloadPolicy&sr=b",
+            "createddate": "2023-02-06T10:45:53.000+00:00",
+            "notificationid": 5,
+            "updatedate": "2023-02-06T10:45:53.000+00:00",
+            "username": null
+        },
+        {
+            "updatedby": 0,
+            "createdby": 0,
+            "updatedate": "2023-02-06T10:09:52.000+00:00",
+            "module": null,
+            "createddate": "2023-02-06T10:09:52.000+00:00",
+            "userid": 6917,
+            "exporttype": null,
+            "notificationid": 4,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.xlsx",
+            "username": null
+        },
+        {
+            "updatedby": 0,
+            "createdby": 0,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.csv",
+            "module": null,
+            "userid": 6917,
+            "exporttype": null,
+            "notificationid": 3,
+            "updatedate": "2023-02-06T10:02:06.000+00:00",
+            "createddate": "2023-02-06T10:02:06.000+00:00",
+            "username": null
+        },
+        {
+            "updatedate": "2023-02-06T07:39:45.000+00:00",
+            "createddate": "2023-02-06T07:39:45.000+00:00",
+            "updatedby": 0,
+            "createdby": 0,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.csv",
+            "module": null,
+            "notificationid": 2,
+            "userid": 6917,
+            "exporttype": null,
+            "username": null
+        },
+        {
+            "updatedby": 0,
+            "createdby": 0,
+            "module": null,
+            "userid": 6917,
+            "exporttype": null,
+            "updatedate": "2023-02-06T07:31:05.000+00:00",
+            "createddate": "2023-02-06T07:31:05.000+00:00",
+            "notificationid": 1,
+            "s3path": "https://tjmfiles.blob.core.windows.net/tjmfiles/exportedfile/2023-02-06/users_2023-02-06.xlsx",
+            "username": null
+        }
+    ],
+    "status": "Success",
+    "message": "Notification details fetched successfully."
+}
+
+
+

@@ -1,0 +1,315 @@
+<app-header></app-header>
+<div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar (listOfRightMenus)=onListOfRightMenus($event)></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+        <div class="card">
+            <div class="card-header">
+                <h5>Analytics and Reporting</h5>
+            </div>
+        </div>
+
+        <!-- Analytics and Reporting Grid -->
+        <p-tabView (onChange)="analyticalReports($event)">
+
+            <!-- Registration Report -->
+            <p-tabPanel header="Registration Report">
+                <div class="row">
+                    <div class="col-md-4 d-flex align-items-center">
+                        <div class="show-entries d-flex mb-3">
+                            <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results Found</span></small>
+                        </div>
+                    </div>
+                    <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                        <div class="search-input w-xs-100 me-2 mb-3">
+                            <p-multiSelect [options]="_registrationReportColumnHeader"
+                                [(ngModel)]="registrationReportColumns" optionLabel="header"
+                                (onChange)="registrationFilter($event)" selectedItemsLabel="{0} columns selected"
+                                [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+                        </div>
+                        <div class="search-input w-xs-100 me-2 mb-3">
+                            <input type="text" class="form-control" placeholder="Search"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')">
+                        </div>
+                        <div class="search-input w-xs-100 me-2 mb-3">
+                            <p-calendar [(ngModel)]="rangeDates" placeholder="Date range" selectionMode="range"
+                                [readonlyInput]="true" inputId="range" (onSelect)="onSelect()"></p-calendar>
+                        </div>
+                        <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                            <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Export<i class="las la-angle-down ms-2"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li>
+                                    <button type="button" pButton pRipple icon="pi pi-file"
+                                        (click)="dt.exportCSV({selectionOnly:true})" class="mr-2" title="CSV"
+                                        tooltipPosition="bottom"></button>
+                                </li>
+                                <li>
+                                    <button type="button" pButton pRipple icon="pi pi-file-excel"
+                                        (click)="exportRegistrationExcel()" class="p-button-success mr-2" title="XLS"
+                                        tooltipPosition="bottom"></button>
+                                </li>
+                                <!-- <li>
+                                    <button type="button" pButton pRipple icon="pi pi-file-pdf"
+                                        (click)="exportRegistrationPDF(dt)" class="p-button-warning mr-2" title="PDF"
+                                        tooltipPosition="bottom"></button>
+                                </li> -->
+                            </ul>
+                        </div>
+                        <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3"
+                            style="cursor:pointer ; margin-left: 0.5rem;">
+                            <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                aria-expanded="false" (click)="resetRegistrationReport()">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 scroll-table scrolling-table-div">
+                    <p-table #dt class="p-table-grid" [columns]="registrationReportColumns"
+                        [(selection)]="selectedUserDetails" [value]="userDetails" [paginator]="true"
+                        [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple" [responsive]="true"
+                        [globalFilterFields]="_registrationReportFilter" [exportFilename]="exportRegistrationReport">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th>
+                                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                </th>
+                                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                    {{col.header}}
+                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                </th>
+
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-userDetail let-columns="columns">
+                            <tr>
+                                <td>
+                                    <p-tableCheckbox [value]="userDetail"></p-tableCheckbox>
+                                </td>
+                                <td *ngFor="let col of columns">
+                                    {{ userDetail[col.field] }}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </p-tabPanel>
+
+            <!-- Project Based Registration Reports -->
+            <p-tabPanel header="Project Based Registration Reports">
+                <ng-container *ngIf="loading">
+                    Loading...
+                </ng-container>
+                <ng-container *ngIf="!loading">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="show-entries d-flex mb-3">
+                                <small><span class="result-found"><b>{{ ct.totalRecords }}</b> Results
+                                        Found</span></small>
+                            </div>
+                        </div>
+                        <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <p-multiSelect [options]="_projectBasedReportColumnHeader"
+                                    [(ngModel)]="projectBasedRegistrationColumns" optionLabel="header"
+                                    (onChange)="projectBasedFilter($event)" selectedItemsLabel="{0} columns selected"
+                                    [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+                            </div>
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <select required class="form-select project-manager-list"
+                                    (change)="getProjectBasedRegistrationReport($any($event.target).value)"
+                                    name="tponame">
+                                    <option value="" disabled selected hidden>
+                                        -- Select Project Manager--
+                                    </option>
+                                    <option value="ALL">
+                                        All
+                                    </option>
+                                    <option *ngFor="let x of projectBasedmanager" value="{{ x }}">
+                                        {{ x}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <input type="text" class="form-control" placeholder="Search"
+                                    (input)="ct.filterGlobal($any($event.target).value, 'contains')">
+                            </div>
+                            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                                <button class="more-btn" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Export<i class="las la-angle-down ms-2"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file"
+                                            (click)="ct.exportCSV({selectionOnly:true})" class="mr-2" title="CSV"
+                                            tooltipPosition="bottom"></button>
+                                    </li>
+                                    <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file-excel"
+                                            (click)="exportProjectBasedExcel()" class="p-button-success mr-2"
+                                            title="XLS" tooltipPosition="bottom"></button>
+                                    </li>
+                                    <!-- <li>
+                                            <button type="button" pButton pRipple icon="pi pi-file-pdf"
+                                                (click)="exportProjectBasedPDF(ct)" class="p-button-warning mr-2" title="PDF"
+                                                tooltipPosition="bottom"></button>
+                                        </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 scroll-table scrolling-table-div">
+                        <p-table #ct class="p-table-grid" [columns]="projectBasedRegistrationColumns"
+                            [(selection)]="selectedProjectBasedDetail" [value]="finalProjectBasedReports"
+                            [paginator]="true" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10"
+                            sortMode="multiple" [responsive]="true" [globalFilterFields]="_projectBasedFilter"
+                            [exportFilename]="exportProjectBased">
+
+
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th>
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                        {{col.header}}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-finalProjectBasedReport let-columns="columns">
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="finalProjectBasedReport"></p-tableCheckbox>
+                                    </td>
+                                    <td *ngFor="let col of columns">
+                                        <span title="{{finalProjectBasedReport[col.field]}}"
+                                            *ngIf="col.field !== 'status' && col.field !== 'dob'">
+                                            {{ finalProjectBasedReport[col.field] }}
+                                        </span>
+                                        <span *ngIf="col.field == 'dob'">
+                                            {{ finalProjectBasedReport[col.field] | date:'yyyy-MM-dd' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </p-table>
+                    </div>
+                </ng-container>
+            </p-tabPanel>
+
+            <!-- Project Assign Reports -->
+            <p-tabPanel header="Project Assign Reports">
+                <ng-container *ngIf="loading">
+                    Loading...
+                </ng-container>
+                <ng-container *ngIf="!loading">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="show-entries d-flex mb-3">
+                                <small><span class="result-found"><b>{{ at.totalRecords }}</b> Results
+                                        Found</span></small>
+                            </div>
+                        </div>
+                        <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <p-multiSelect [options]="_projectAssignReportColumnHeader"
+                                    [(ngModel)]="projectAssignedColumns" optionLabel="header"
+                                    (onChange)="projectAssignFilter($event)" selectedItemsLabel="{0} columns selected"
+                                    [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+                            </div>
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <select required class="form-select project-manager-list"
+                                    (change)="getProjectAssignRegistrationReport($any($event.target).value)"
+                                    name="tponame">
+                                    <option value="" disabled selected hidden>
+                                        -- Select Project Manager--
+                                    </option>
+                                    <option value="ALL">
+                                        All
+                                    </option>
+                                    <option *ngFor="let x of projectBasedmanager" value="{{ x }}">
+                                        {{ x}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <input type="text" class="form-control" placeholder="Search"
+                                    (input)="at.filterGlobal($any($event.target).value, 'contains')">
+                            </div>
+                            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                                <button class="more-btn" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Export<i class="las la-angle-down ms-2"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file"
+                                            (click)="at.exportCSV({selectionOnly:true})" class="mr-2" title="CSV"
+                                            tooltipPosition="bottom"></button>
+                                    </li>
+                                    <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file-excel"
+                                            (click)="exportProjectAssignExcel()" title="XLSX"
+                                            class="p-button-success mr-2" pTooltip="XLS"
+                                            tooltipPosition="bottom"></button>
+                                    </li>
+                                    <!-- <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file-pdf"
+                                            (click)="exportProjectAssignPDF(at)" title="PDF" class="p-button-warning mr-2"
+                                            pTooltip="PDF" tooltipPosition="bottom"></button>
+                                    </li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 scroll-table scrolling-table-div">
+                        <p-table #at class="p-table-grid" [columns]="projectAssignedColumns"
+                            [(selection)]="selectedProjectAssignDetails" [value]="finalProjectAssignReports"
+                            [paginator]="true" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10"
+                            sortMode="multiple" [responsive]="true" [globalFilterFields]="_projectAssignFilter"
+                            [exportFilename]="exportProjectAssign">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th>
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                        {{col.header}}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-finalProjectAssignReport let-columns="columns">
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="finalProjectAssignReport"></p-tableCheckbox>
+                                    </td>
+                                    <td *ngFor="let col of columns">
+                                        <span *ngIf="col.field !== 'status' && col.field !== 'dob'">
+                                            {{ finalProjectAssignReport[col.field] }}
+                                        </span>
+                                        <span *ngIf="col.field == 'dob'">
+                                            {{ finalProjectAssignReport[col.field] | date:'yyyy-MM-dd' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-container>
+            </p-tabPanel>
+
+        </p-tabView>
+    </div>
+</div>

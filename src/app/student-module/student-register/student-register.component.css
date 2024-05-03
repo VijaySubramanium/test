@@ -1,0 +1,13 @@
+.email-bg {
+  background-color: white;
+}
+.overflow-studentcard {
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 0;
+}
+
+.margin-top-20{
+  margin-top: 20px;;
+}

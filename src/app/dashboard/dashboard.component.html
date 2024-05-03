@@ -1,0 +1,408 @@
+<app-header></app-header>
+
+<div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <!-- <div class="container-fluid"> -->
+    <div class="content page-content">
+        <div class="card">
+            <div class="card-header">
+                <h5>Dashboard</h5>
+            </div>
+            <div class="dashboard-wrapper">
+                <div class="row">
+                    <!-- <div class="col-md-12">
+                        <h4 class="dashboard-heading">Dashboard</h4>
+                    </div> -->
+                    <!--Bar chart  -->
+                    <div class="col-md-12 mb-3">
+                        <div class="dashboard-card-wrapper">
+
+                            <div class="dashboard-label">
+
+                                <h2>Registrations</h2>
+                                <div class="d-flex">
+                                    <select class="form-select me-2" #selectList
+                                        (change)="setValue(selectList.value,'reg')">
+                                        <option value="last7days">Last 7days</option>
+                                        <option value="curmon">Current month</option>
+                                        <option value="curyear">Current year</option>
+                                        <option value="last5years">Last 5years</option>
+                                        <option value="cusdate">Custom date</option>
+                                    </select>
+                                    <!-- <button class="btn btn-blue" type="button">
+                                Download
+                              </button> -->
+                                    <p-calendar *ngIf="isRegDate" style="margin-right: 10px;" title="Date Filter"
+                                        [(ngModel)]="rangeReg" placeholder="Date range" selectionMode="range"
+                                        [readonlyInput]="true" inputId="range" [maxDate]="maxDateValue" #regCalendar
+                                        (onSelect)="onSelect($event.target,'reg')">
+                                        <p-footer>
+                                            <button class="p-2" pButton type="button" label="Close"
+                                                (click)="regCalendar.hideOverlay()">
+                                            </button>
+                                        </p-footer>
+                                    </p-calendar>
+
+                                    <button class="download-btn" data-tooltip="Registration Download" type="button"
+                                        (click)="downloadPDF('reg')">
+                                        <i class="las la-file-download"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+
+
+                            <div class="canvas-inner-wrapper">
+                                <!-- <div class="left-text">
+                                    <h4>Number of Registrations</h4>
+                                </div> -->
+                                <div class="canvas-wrapper mx-auto w-100">
+                                    <div class="canvas-inner">
+                                        <highcharts-chart id="barChart" class="mychart" [Highcharts]="Highcharts"
+                                            [options]="regChart" style="width: 100%; height: 500; display: block;">
+                                        </highcharts-chart>
+                                        <!-- <canvas class="mychart" id="barChart" width="1000" height="500"></canvas> -->
+                                    </div>
+                                    <!-- <div class="bottom-text">
+                                        <h4>Registrations</h4>
+                                    </div> -->
+                                </div>
+
+                            </div>
+                            <!-- <canvas class="mychart" id="myChart" width="1000" height="500"></canvas> -->
+
+                        </div>
+
+
+                    </div>
+                    <!-- Line chart -->
+                    <div class="col-md-12 mb-3">
+                        <div class="dashboard-card-wrapper">
+                            <div class="dashboard-label">
+
+                                <h2>Batches Conduct</h2>
+                                <div class="d-flex">
+                                    <select class="form-select me-2" #selectList1
+                                        (change)="setValue(selectList1.value,'bat')">
+                                        <option value="last7days">Last 7days</option>
+                                        <option value="curmon">Current month</option>
+                                        <option value="curyear">Current year</option>
+                                        <option value="last5years">Last 5years</option>
+                                        <option value="cusdate">Custom date</option>
+                                    </select>
+                                    <!-- <button class="btn btn-blue" type="button">
+                                Download
+                              </button> -->
+                                    <p-calendar *ngIf="isBatDate" style="margin-right: 10px;" title="Date Filter"
+                                        [(ngModel)]="rangeBat" placeholder="Date range" selectionMode="range"
+                                        [readonlyInput]="true" inputId="range" [maxDate]="maxDateValue" #batCalendar
+                                        (onSelect)="onSelect($event.target,'bat')">
+                                        <p-footer>
+                                            <button class="p-2" pButton type="button" label="Close"
+                                                (click)="batCalendar.hideOverlay()">
+                                            </button>
+                                        </p-footer>
+                                    </p-calendar>
+                                    <button class="download-btn" data-tooltip="Batch-Conduct Download" type="button"
+                                        (click)="downloadPDF('bat')">
+                                        <i class="las la-file-download"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+
+
+                            <div class="canvas-inner-wrapper">
+                                <!-- <div class="left-text">
+                                    <h4>Number of batches</h4>
+                                </div> -->
+                                <div class="canvas-wrapper mx-auto w-100">
+                                    <div class="canvas-inner">
+                                        <highcharts-chart id="lineChart" class="mychart" [Highcharts]="Highcharts"
+                                            [options]="batChart" style="width: 100%; height: 500; display: block;">
+                                        </highcharts-chart>
+                                        <!-- <canvas class="mychart" id="lineChart" width="1000" height="500"></canvas> -->
+                                    </div>
+                                    <!-- <div class="bottom-text">
+                                        <h4>Batches conduct</h4>
+                                    </div> -->
+                                </div>
+
+                            </div>
+                            <!-- <canvas class="mychart" id="myChart" width="1000" height="500"></canvas> -->
+
+                        </div>
+
+
+                    </div>
+                    <!--Single line Bar chart  -->
+                    <div class="col-md-12 mb-3">
+                        <div class="dashboard-card-wrapper">
+                            <div class="dashboard-label">
+
+                                <h2>Avg. Score</h2>
+                                <div class="d-flex">
+                                    <!-- <select class="form-select me-2" id="range-select"
+                                        (change)="getTrainerByProjectId($any($event.target).value)">
+                                        <option value="" disabled selected hidden>
+                                            Select Project
+                                        </option>
+                                        <option *ngFor="let x of activeProjectList"
+                                            value="{{ x.project_id }}_{{ x.project_name }}">
+                                            {{ x.project_name}}
+                                        </option>
+                                    </select>
+
+                                    <select class="form-select me-2" id="range-select"
+                                        (change)="getBatchByProjTrainerId($any($event.target).value)">
+                                        <option value="" disabled selected hidden>
+                                            Select Trainer
+                                        </option>
+                                        <option *ngFor="let x of trainerDetails"
+                                            value="{{ x.trainerid }}_{{ x.trainer_name }}">
+                                            {{ x.trainer_name}}
+                                        </option>
+                                    </select>
+
+                                    <select class="form-select me-2" id="range-select"
+                                        (change)="getBatchId($any($event.target).value)">
+                                        <option value="" disabled selected hidden>
+                                            Select Batch
+                                        </option>
+                                        <option *ngFor="let x of batchDetails"
+                                            value="{{ x.batchid }}_{{ x.batchcode }}">
+                                            {{ x.batchcode}}
+                                        </option>
+                                    </select>
+                                    <p-calendar style="margin-right: 10px;" title="Date Filter" [(ngModel)]="rangeScore"
+                                        placeholder="Date range" selectionMode="range" [readonlyInput]="true"
+                                        [maxDate]="maxDateValue" inputId="range" (onSelect)="onSelect('fb')">
+                                    </p-calendar> -->
+                                    <button class="btn filter-btn btn-get me-2 p-2" data-tooltip="Filter"
+                                        [ngClass]="addFilter ? 'btn-blue' : 'no-filter'" href="javascript:void(0);"
+                                        data-bs-toggle="modal" [attr.data-bs-target]="'#filter'" (click)="onFilter(addFilter)"><i
+                                            class="las la fa-filter"></i></button>
+                                    <!-- <button class="btn btn-get me-2 p-2" href="javascript:void(0);"
+                                        data-bs-toggle="modal" [attr.data-bs-target]="'#filter'"><i
+                                            class="las la fa-filter"></i></button> -->
+                                    <!-- <button class="btn btn-blue btn-get me-2 p-2" (click)="goFb()"><i
+                                            class="las la la-arrow-right"></i></button> -->
+                                    <!-- <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a> -->
+                                    <button class="download-btn" data-tooltip="Batch-Score Download" type="button"
+                                        (click)="downloadPDF('fb')">
+                                        <i class="las la-file-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <div class="canvas-inner-wrapper">
+                                <!-- <div class="left-text">
+                                    <h4>Avg. score</h4>
+                                </div> -->
+                                <div class="canvas-wrapper mx-auto w-100">
+                                    <div class="canvas-inner">
+                                        <highcharts-chart id="singlebarChart" class="mychart" *ngIf="fbData?.length>0"
+                                            (click)="onPointSelect($event)" [Highcharts]="Highcharts"
+                                            [options]="fbChart" style="width: 100%; height: 500; display: block;">
+                                        </highcharts-chart>
+                                        <div class="p-4 text-center"
+                                            style="width: 100%; display: block; font-weight: 500;"
+                                            *ngIf="fbData?.length==0">No data found for this graph</div>
+                                        <!-- <canvas class="mychart" id="singlebarChart" width="1000" height="500"></canvas> -->
+                                    </div>
+                                    <!-- <div class="bottom-text">
+                                        <h4>Batches</h4>
+                                    </div> -->
+                                </div>
+
+                            </div>
+                            <!-- <canvas class="mychart" id="myChart" width="1000" height="500"></canvas> -->
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="dashboard-card-wrapper">
+                            <div class="dashboard-label">
+                                <h2>Year-wise Average Score</h2>
+                                <div class="d-flex">
+                                    <select class="form-select me-2" #selectList2
+                                        (change)="yearFilter(selectList2.value)">
+                                        <option *ngFor="let x of yearArray" value="{{x}}">Year - {{x}}</option>
+                                    </select>
+                                    <button class="download-btn" data-tooltip="Year-Score Download" type="button"
+                                        (click)="downloadPDF('yfb')">
+                                        <i class="las la-file-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="canvas-inner-wrapper">
+                                <div class="canvas-wrapper mx-auto w-100">
+                                    <div class="canvas-inner">
+                                        <highcharts-chart id="singlebarChart2" class="mychart" *ngIf="fbYearData?.length>0"
+                                            (click)="onPointSelect($event)" [Highcharts]="Highcharts"
+                                            [options]="fbYearChart2" style="width: 100%; height: 500; display: block;">
+                                        </highcharts-chart>
+                                        <div class="p-4 text-center"
+                                            style="width: 100%; display: block; font-weight: 500;"
+                                            *ngIf="fbYearData?.length==0">No data found for this graph</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filter" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Filters</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- <form #filters="ngForm" name="form" (ngSubmit)="(filters)"> -->
+
+                    <div>
+                        <div class="row m-4 justify-content-around">
+                            <div class="col-lg-6 respon">
+                                <!-- [(ngModel)]="projectsName"   -->
+                                <!-- <select class="form-select me-2 " title="Select Project" id="projectsName"
+                                    [(ngModel)]="projectsName" name="projectsName" aria-label="Default select example"
+                                    (change)="getTrainerByProjectId($any($event.target).value)">
+                                    <option value="" disabled selected hidden>
+                                        Select Project
+                                    </option>
+                                    <option *ngFor="let x of activeProjectList"
+                                        value="{{ x.project_id }}_{{ x.project_name }}">
+                                        {{ x.project_name}}
+                                    </option>
+                                </select> -->
+
+                                <div class="d-flex mt-1">
+                                    <p-multiSelect class="min-width" #multiProjects [options]="activeProjectList" [(ngModel)]="_selectedProjects" optionLabel="project_name"
+                                        (onChange)="columnFilter($event,'projects')" placeholder="Select Projects" [showToggleAll]="false" > 
+                                    </p-multiSelect>
+                                      <!-- selectedItemsLabel="{0} projects selected" -->
+                                    <button class="btn btn-blue btn-get" [disabled]="!isProjectSelect" (click)="getTrainersByProjectId()"><i
+                                            class="las la la-arrow-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 respon">
+                                <!-- [(ngModel)]="trainerName"  -->
+                                <!-- <select class="form-select me-2 " title="Select Trainer" id="trainerName"
+                                    [(ngModel)]="trainerName" name="trainerName" aria-label="Default select example"
+                                    (change)="getBatchByProjTrainerId($any($event.target).value)">
+                                    <option value="" disabled selected hidden>
+                                        Select Trainer
+                                    </option>
+                                    <option *ngFor="let x of trainerDetails"
+                                        value="{{ x.trainerid }}_{{ x.trainer_name }}">
+                                        {{ x.trainer_name}}
+                                    </option>
+                                </select> -->
+                                <div class="d-flex mt-1">
+                                    <p-multiSelect class="min-width" #multiTrainers [options]="trainerDetails" [(ngModel)]="_selectedTrainer" optionLabel="trainer_name"
+                                        (onChange)="columnFilter($event,'trainers')" defaultLabel="Select Trainers" [disabled]="!trainerDetails" [showToggleAll]="false" ></p-multiSelect>
+                                    <button class="btn btn-blue btn-get" [disabled]="!isTrainerSelect" (click)="getBatchsByProjTrainerId()"><i
+                                            class="las la la-arrow-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row m-4 justify-content-around">
+                            <div class="col-lg-6 respon">
+                                <!-- [(ngModel)]="BatchName"  -->
+                                <!-- <select class="form-select me-2 " title="Select Batch" id="BatchName"
+                                    [(ngModel)]="BatchName" name="BatchName" aria-label="Default select example"
+                                    (change)="getBatchId($any($event.target).value)">
+                                    <option value="" disabled selected hidden>
+                                        Select Batch
+                                    </option>
+                                    <option *ngFor="let x of batchDetails" value="{{ x.batchid }}_{{ x.batchcode }}">
+                                        {{ x.batchcode}}
+                                    </option>
+                                </select> -->
+
+                                <div class="d-flex mt-1">
+                                    <p-multiSelect class="min-width" #multiBatches [options]="batchDetails" [(ngModel)]="_selectedBatches" optionLabel="batchcode"
+                                        (onChange)="columnFilter($event,'batches')" placeholder="Select Batches" [disabled]="!batchDetails" [showToggleAll]="false" ></p-multiSelect>
+                                    
+                                </div>
+                                <span class="text-danger p-1" *ngIf="isMandBatch">Batch is mandatory with trainer*</span>
+                            </div>
+                            <div class="col-lg-6 respon">
+                                <!-- <div class="d-flex" *ngIf="selRange==undefined">
+                                    <div class="align-items-center w-100">
+                                        <button type="submit" style="border-radius: 6px 0px 0px 6px !important;width: -webkit-fill-available;" (click)="onTabSelection('date')"
+                                            class="btn btn-grey btn-text">
+                                            Date
+                                        </button>
+                                    </div>
+                                    <div class="align-items-center w-100">
+                                        <button type="submit" style="border-radius: 0px 6px 6px 0px !important;width: -webkit-fill-available;" (click)="onTabSelection('year')"
+                                            class="btn btn-grey btn-text">
+                                            Year
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="d-flex" *ngIf="selRange=='date'"> -->
+                                    <p-calendar class="dashboard-calendar" title="Date Filter" [(ngModel)]="rangeScore"
+                                        placeholder="Date range" selectionMode="range" [readonlyInput]="true"
+                                        [maxDate]="maxDateValue" #fbCalendar inputId="range"
+                                        (onSelect)="onSelect($event.target,'fb')">
+                                        <p-footer>
+                                            <button class="p-1" pButton type="button" label="Close"
+                                                (click)="fbCalendar.hideOverlay()">
+                                            </button>
+                                        </p-footer>
+                                    </p-calendar>
+                                    <!-- <button class="btn btn-grey" type="button" label="Close" (click)="closePicker()"><i
+                                            class="las la la-close"></i></button>
+                                </div>
+                                <div class="d-flex" *ngIf="selRange=='year'">
+                                    <p-calendar class="dashboard-calendar" title="Date Filter" [(ngModel)]="rangeScore"
+                                        placeholder="Year range" selectionMode="range" [readonlyInput]="true"
+                                        [maxDate]="maxDateValue" #fbCalendar2 inputId="range" view="year" dateFormat="yy" yearRange="2000:2030" 
+                                        (onSelect)="onSelect($event.target,'fb')">
+                                        <p-footer>
+                                            <button class="p-1" pButton type="button" label="Close"
+                                                (click)="fbCalendar2.hideOverlay()">
+                                            </button>
+                                        </p-footer>
+                                    </p-calendar>
+                                    <button class="btn btn-grey" type="button" label="Close" (click)="closePicker()"><i
+                                            class="las la la-close"></i></button>
+                                </div> -->
+
+                            </div>
+                        </div>
+                        <div class="row m-4 justify-content-end">
+                            <div class="col-lg-6 d-flex justify-content-end mt-4">
+                                <button class="btn btn-red btn-get me-3 ps-2 pe-2" data-bs-dismiss="modal"
+                                    aria-label="Close" (click)="clearFilter()">Clear Filters</button>
+                                <button class="btn btn-blue btn-get ps-4 pe-4"  (click)="goFb('filter')">Apply</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- </form> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
