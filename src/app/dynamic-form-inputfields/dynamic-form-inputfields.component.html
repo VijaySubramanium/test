@@ -1,0 +1,19 @@
+<div [formGroup]="form">   
+    <div [ngSwitch]="question.controlType">
+  
+      <input *ngSwitchCase="'textbox'"  class="form-control" [formControlName]="question.key"
+              [id]="question.key" [type]="question.type">
+  
+      <select [id]="question.key"   class="form-control" *ngSwitchCase="'dropdown'" [formControlName]="question.key">
+        <option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>
+      </select>
+      <input *ngSwitchCase="'fileupload'" class="form-control"     
+              [id]="question.key" 
+              [type]="question.type"
+              [formControlName]="question.key"
+              (change)="onFileChange($event)">
+  
+    </div>
+  
+    <!-- <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div> -->
+  </div>

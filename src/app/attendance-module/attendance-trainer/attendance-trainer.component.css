@@ -1,0 +1,256 @@
+.highlight {
+  background: #dedede;
+}
+.trainer-batch-duration h6 {
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+.trainer-batch {
+  font-weight: 500;
+  font-size: 14px;
+}
+.trainer-startdate {
+  font-weight: 500;
+  margin-left: 1rem;
+}
+.trainer-enddate {
+  font-weight: 500;
+  margin-left: 1rem;
+}
+/* ---------------------- */
+table,
+tr,
+th,
+td {
+  border: 1px solid rgba(110, 100, 100, 0.596);
+}
+table {
+  width: 100%;
+  /* border-collapse: collapse; */
+  border-collapse: inherit;
+  /* margin: 2rem; */
+  text-align: center;
+  overflow: hidden;
+}
+.course1 {
+  background-color: #278ce8;
+  color: white;
+  padding: 5px !important;
+}
+.course2 {
+  background-color: #115c49;
+  color: white;
+  padding: 5px !important;
+}
+.light {
+  margin: 0 !important;
+  width: 100%;
+  padding: 20px;
+  border: none;
+  background-color: white !important;
+}
+.light:active {
+  border: none !important;
+}
+.light:after {
+  border: none !important;
+}
+.modal-dialog {
+  border-radius: 16px;
+  width: 90rem;
+  top: 12rem;
+  box-shadow: -2px 0px 4px 5px rgb(0 0 0 / 6%), 0px 0px 3px rgb(0 0 0 / 6%);
+}
+.modal {
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.034);
+}
+tbody {
+  border-top: 1px solid rgba(105, 97, 97, 0.192) !important;
+}
+
+.modal-header {
+  padding-left: 10px;
+  padding-bottom: 0;
+}
+.subbtn {
+  margin-left: 27px;
+}
+
+.tablehead {
+  color: black;
+  font-weight: 800;
+}
+#today {
+  color: white;
+  width: 90px;
+  background-color: royalblue;
+  border-radius: 4px;
+  padding: 10px;
+  border-radius: 4px;
+  border: none !important;
+}
+#pre {
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  width: 50px;
+  border-radius: 4px;
+  border: none !important;
+  background-color: royalblue;
+  padding: 10px;
+  color: white;
+}
+#next {
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  width: 50px;
+  border-radius: 4px;
+  border: none !important;
+  background-color: royalblue;
+  padding: 10px;
+  color: white;
+}
+.present {
+  background-color: #6ee53c;
+  color: white;
+  border-radius: 10px;
+  width: 16px;
+  padding: 3px 16px;
+}
+.absent {
+  background-color: rgb(217, 101, 101);
+  color: white;
+  border-radius: 10px;
+  width: 16px;
+  padding: 3px 16px;
+}
+.stud {
+  padding: 20px;
+  font-weight: 800;
+}
+@media only screen and (max-width: 1276px) {
+  #date-button {
+    width: 50%;
+  }
+  .date-btn {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 535px) {
+  #date-button {
+    width: 30%;
+  }
+  .date-btn {
+    width: 70%;
+  }
+}
+
+@media only screen and (max-width: 414px) {
+  #date-button {
+    width: 30%;
+  }
+  .date-btn #today {
+    width: 60px;
+  }
+}
+/* ------------------------------- */
+.batch-duration h6 {
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+.batch-duration h6 span {
+  margin-left: 10px;
+  font-size: 12px;
+}
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 10%);
+}
+
+.product-item-content {
+  border: 1px solid var(--surface-d);
+  border-radius: 3px;
+  margin: 0.3rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.product-image {
+  width: 50%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+.program-name {
+  border-bottom: 1px solid var(--surface-d);
+  font-weight: 600;
+  font-size: 14px;
+}
+.program-name-border {
+  background-color: transparent;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+.student-namet {
+  font-weight: 600;
+  font-size: 14px;
+}
+.today-position {
+  float: right !important;
+  margin: 0 0 16px;
+}
+.today-position-prev {
+  float: right !important;
+  margin: 0 0 16px;
+  margin-left: 0.5rem;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.today-position-next {
+  float: right !important;
+  margin: 0 0 16px;
+  margin-left: 0.5rem;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+.product-item-content {
+  border: 1px solid var(--surface-d);
+  border-radius: 0px !important;
+  margin: 0rem;
+  text-align: center;
+  padding: 1rem 0 !important;
+}
+.date-border {
+  border-bottom: 1px solid var(--surface-d);
+  font-weight: 600;
+  font-size: 14px;
+}
+.course-border-one {
+  background-color: #278ce8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+.course-border-two {
+  background-color: #115c49;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-present {
+  background-color: #6ee53c;
+  color: white;
+  border-radius: 10px;
+  width: 16px;
+  padding: 3px 16px;
+}
+.status-absent {
+  background-color: rgb(217, 101, 101);
+  color: white;
+  border-radius: 10px;
+  width: 16px;
+  padding: 3px 16px;
+}

@@ -1,0 +1,923 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+  <p-toast [breakpoints]="{'920px': { height: '200px', width: '100%', right: '0', left: '0' }}"></p-toast>
+  <app-sidebar (listOfRightMenus)="onListOfRightMenus($event)"></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>DOCUMENT VERIFICATION</h5>
+        <!--<div class="dropdown float-end header-links">
+                    <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="las la-ellipsis-v"></i>
+						</button>
+                    <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+                         <li><a class="dropdown-item" href="#">Download</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#change-status">Change Status</a></li>
+                    </ul>
+                </div>-->
+      </div>
+
+      <p-tabView (onChange)="getDocumentTab($event)">
+
+        <p-tabPanel header="Atos Syntel">
+          <div class="row">
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="show-entries d-flex mb-3">
+                <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results
+                    Found</span></small>
+              </div>
+            </div>
+            <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <p-multiSelect [options]="cols" [(ngModel)]="_selectedAtosColumns" optionLabel="header"
+                  (onChange)="onAtosMultiSelect($event)" selectedItemsLabel="{0} columns selected"
+                  [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+              </div>
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <input type="text" class="form-control" placeholder="Search"
+                  (input)="dt.filterGlobal($any($event.target).value, 'contains')">
+              </div>
+              <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Export<i class="las la-angle-down ms-2"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV({selectionOnly:true})"
+                      class="mr-2" title="CSV" tooltipPosition="bottom"></button>
+                  </li>
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAtosExcel()"
+                      class="p-button-success mr-2" title="XLS" tooltipPosition="bottom"></button>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 scroll-table scrolling-table-div">
+            <p-table #dt class="p-table-grid" [columns]="selectedAtosColumns" [paginator]="true"
+              [value]="documentDetails" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple"
+              [exportFilename]="exportAtos" [(selection)]="selectedAtosDetails" [responsive]="true"
+              [globalFilterFields]="atosGlobalFilter">
+
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" *ngIf="col.field != 'action'"></p-sortIcon>
+                  </th>
+                  <th>Action</th>
+
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-documentDetail let-columns="columns">
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="documentDetail"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns">
+                    <span *ngIf="col.field !==  '10th marksheet(Original)' &&
+                                                   col.field !==  '12th marksheet(Original)' &&
+                                                   col.field !==  'Graduation consolidated marksheet(Original)' &&
+                                                   col.field !==  'Aadhar/Pan Document(Original)' &&
+                                                   col.field !==  'Income Proof(Ration Card/Income Certificate/Self Declaration)(Original)' &&
+                                                   col.field !==  'Passport size photo(Original)' &&
+                                                   col.field !==  'Updated Resume(Original)' &&
+                                                   col.field !== 'action'">
+                      {{ documentDetail[col.field] }}
+                    </span>
+
+                    <div *ngFor="let uploadLabels of uploadedATOSCertificate">
+                      <span *ngIf="(col.field == uploadLabels && !atosWithoutFileUpload.includes(uploadLabels))">
+                        {{ dbStatus.includes(documentDetail[col.field]) &&
+                        documentDetail[col.field] != null ? "Uploaded" : "Not uploaded" }}
+                      </span>
+                    </div>
+
+                  </td>
+                  <td>
+                    <span *ngIf="documentDetail['action'] == 'true'">
+                      <a href="javascript:void(0);" (click)="viewAtosdocument(documentDetail, 'atos syntel')" class="mr-5"><i
+                          class="las la-eye"></i></a>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+        <!-- <p-tabPanel header="RBL-GTTF">
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="show-entries d-flex mb-3">
+                                <small><span class="result-found"><b>{{ rblGttf.totalRecords }}</b> Results
+                                        Found</span></small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <p-multiSelect optionLabel="header" [options]="rblGttfCols"
+                                    [(ngModel)]="_selectedRblGttfColumns" selectedItemsLabel="{0} columns selected"
+                                    (onChange)="onRblGttfMultiSelect($event)" [style]="{minWidth: '180px'}"
+                                    placeholder="Choose Columns"></p-multiSelect>
+                            </div>
+                            <div class="search-input w-xs-100 me-2 mb-3">
+                                <input type="text" class="form-control" placeholder="Search"
+                                    (input)="rblGttf.filterGlobal($any($event.target).value, 'contains')">
+                            </div>
+                            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                                <button class="more-btn" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Export<i class="las la-angle-down ms-2"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file"
+                                            (click)="rblGttf.exportCSV({selectionOnly:true})" class="mr-2" title="CSV"
+                                            tooltipPosition="bottom"></button>
+                                    </li>
+                                    <li>
+                                        <button type="button" pButton pRipple icon="pi pi-file-excel"
+                                            (click)="rblGttfExportExcel()" class="p-button-success mr-2" title="XLS"
+                                            tooltipPosition="bottom"></button>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 scroll-table scrolling-table-div">
+                        <p-table #rblGttf class="p-table-grid" [columns]="selectedRblGttfColumns" [paginator]="true"
+                            [(selection)]="selectedRblGttfDetails" [value]="documentRblGttfDetails"
+                            [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple"
+                            [globalFilterFields]="rblGttfGlobalFilter" [exportFilename]="exportRblGttf">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th>
+                                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                    </th>
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                        {{col.header}}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+                                    <th>Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-documentrblGttfDetail let-columns="columns">
+                                <tr>
+                                    <td>
+                                        <p-tableCheckbox [value]="documentrblGttfDetail"></p-tableCheckbox>
+                                    </td>
+                                    <td *ngFor="let col of columns">
+                                        <span *ngIf="col.field !== 'Father Name' && col.field !== 'Mother Name' && col.field !== '12th Marksheet' && col.field !== 'Updated Resume' &&
+                                                   col.field !==  'Pan Number' &&
+                                                   col.field !==  'Religion' &&
+                                                   col.field !==  'Address' &&
+                                                   col.field !== 'action'">
+                                            {{ documentrblGttfDetail[col.field] }}
+                                        </span>
+
+                                        <div *ngFor="let uploadLabels of uploadedRBLCertificate">
+                                            <span *ngIf="col.field == uploadLabels">
+                                                {{ dbStatus.includes(documentrblGttfDetail[col.field]) &&
+                                                documentrblGttfDetail[col.field] != null ? "Uploaded" : "Not uploaded"
+                                                }}
+                                            </span>
+                                        </div>
+
+
+                                    </td>
+                                    <td>
+                                        <span *ngIf="documentrblGttfDetail['action'] == 'true'">
+                                            <a href="javascript:void(0);"
+                                                (click)="viewAtosdocument(documentrblGttfDetail, 'rbl-gttf')"
+                                                class="mr-5"><i class="las la-eye"></i></a>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-tabPanel> -->
+
+        <p-tabPanel header="RBL-NES">
+          <div class="row">
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="show-entries d-flex mb-3">
+                <small><span class="result-found"><b>{{ ct.totalRecords }}</b> Results
+                    Found</span></small>
+              </div>
+            </div>
+
+            <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <p-multiSelect optionLabel="header" [options]="rblcols" [(ngModel)]="_selectedRblColumns"
+                  selectedItemsLabel="{0} columns selected" (onChange)="onRblMultiSelect($event)"
+                  [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+              </div>
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <input type="text" class="form-control" placeholder="Search"
+                  (input)="ct.filterGlobal($any($event.target).value, 'contains')">
+              </div>
+              <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Export<i class="las la-angle-down ms-2"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="rblExportCSV()" class="mr-2"
+                      title="CSV" tooltipPosition="bottom"></button>
+                  </li>
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="rblExportExcel()"
+                      class="p-button-success mr-2" title="XLS" tooltipPosition="bottom"></button>
+                  </li>
+                  <!--<li>
+                                        <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportRblPdf(dt)" class="p-button-warning mr-2" title="PDF"
+                                            tooltipPosition="bottom"></button>
+                                    </li>-->
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+
+          <div class="col-12 scroll-table scrolling-table-div">
+            <p-table #ct class="p-table-grid" [columns]="selectedRblColumns" [paginator]="true"
+              [(selection)]="selectedRblDetails" [value]="documentrblDetails"
+              [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple"
+              [globalFilterFields]="rblGlobalFilter" [exportFilename]="exportRbl">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                  <th>Action</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-documentrblDetail let-columns="columns">
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="documentrblDetail"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns">
+                    <span *ngIf="col.field !== 'Address' &&
+                                                   col.field !== 'Aadhar/Pan Document(Original)' &&
+                                                   col.field !== 'Income Proof(Ration Card/Income Certificate/Self Declaration)(Original)' &&
+                                                   col.field !== 'Caste Proof(Leaving Certificate/Caste Certificate)(Original)' &&
+                                                   col.field !==  'Certification Date' &&
+                                                   col.field !==  'Testimonials' &&
+                                                   col.field !==  'Religion' &&
+                                                   col.field !==  'Caste /Category' &&
+                                                   col.field !== 'action'">
+                      {{ documentrblDetail[col.field] }}
+                    </span>
+
+                    <div *ngFor="let uploadLabels of uploadedRBLCertificate">
+                      <span *ngIf="col.field == uploadLabels">
+                        {{ dbStatus.includes(documentrblDetail[col.field]) &&
+                        documentrblDetail[col.field] != null ? "Uploaded" : "Not uploaded" }}
+                      </span>
+                    </div>
+
+
+                  </td>
+                  <td>
+                    <span *ngIf="documentrblDetail['action'] == 'true'">
+                      <a href="javascript:void(0);" (click)="viewAtosdocument(documentrblDetail, 'rbl-nes')"
+                        class="mr-5"><i class="las la-eye"></i></a>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+
+        <p-tabPanel header="Infosys">
+          <div class="row">
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="show-entries d-flex mb-3">
+                <small><span class="result-found"><b>{{ dtInfosys.totalRecords }}</b> Results
+                    Found</span></small>
+              </div>
+            </div>
+            <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <p-multiSelect [options]="infosysCols" [(ngModel)]="_selectedInfosysColumns" optionLabel="header"
+                  (onChange)="onInfosysMultiSelect($event)" selectedItemsLabel="{0} columns selected"
+                  [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+              </div>
+              <div class="search-input w-xs-100 me-2 mb-3">
+                <input type="text" class="form-control" placeholder="Search"
+                  (input)="dtInfosys.filterGlobal($any($event.target).value, 'contains')">
+              </div>
+              <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Export<i class="las la-angle-down ms-2"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="exportInfosysCSV()" class="mr-2"
+                      title="CSV" tooltipPosition="bottom"></button>
+                  </li>
+                  <li>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportInfosysExcel()"
+                      class="p-button-success mr-2" title="XLS" tooltipPosition="bottom"></button>
+                  </li>
+                  <!--<li>
+                                        <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportAtosPdf(dt)" class="p-button-warning mr-2" title="PDF"
+                                            tooltipPosition="bottom"></button>
+                                    </li>-->
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 scroll-table scrolling-table-div">
+            <p-table #dtInfosys class="p-table-grid" [columns]="selectedInfosysColumns" [paginator]="true"
+              [value]="documentInfosysDetails" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10"
+              sortMode="multiple" [exportFilename]="exportInfosys" [(selection)]="selectedInfosysDetails"
+              [responsive]="true" [globalFilterFields]="infosysGlobalFilter">
+
+
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" *ngIf="col.field != 'action'"></p-sortIcon>
+                  </th>
+                  <th>Action</th>
+
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-documentInfosysDetail let-columns="columns">
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="documentInfosysDetail"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns">
+                    <span *ngIf="col.field !== 'Updated Resume(Original)' &&
+                                                   col.field !== 'Aadhar/Pan Document' &&
+                                                   col.field !== 'Passport size photo(Original)' &&
+                                                   col.field !== 'Signature(Original)' &&
+                                                   col.field !== '10th marksheet(Original)' &&
+                                                   col.field !== '10th board certificate(Original)' &&
+                                                   col.field !== '12th marksheet(Original)' &&
+                                                   col.field !== '12th board certificate' &&
+                                                   col.field !== 'Graduation consolidated marksheet(Original)' &&
+                                                   col.field !== 'Graduation professional degree certificate' &&
+                                                   col.field !== 'PG consolidated marksheet(Original)' &&
+                                                   col.field !== 'PG provisional degree certificate(Original)' &&
+                                                   col.field !== 'LOI Document(Original)' &&
+                                                   col.field !== 'action'">
+                      {{ documentInfosysDetail[col.field] }}
+                    </span>
+
+                    <div *ngFor="let uploadLabels of uploadedInfosysCertificate">
+                      <span *ngIf="col.field == uploadLabels">
+                        {{ dbStatus.includes(documentInfosysDetail[col.field]) &&
+                        documentInfosysDetail[col.field] != null ? "Uploaded" : "Not uploaded"
+                        }}
+                      </span>
+                    </div>
+
+                  </td>
+                  <td>
+                    <span *ngIf="documentInfosysDetail['action'] == 'true'">
+                      <a href="javascript:void(0);" (click)="viewAtosdocument(documentInfosysDetail, 'infosys')"
+                        class="mr-5"><i class="las la-eye"></i></a>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</div>
+<!-- </div> -->
+
+
+<div class="modal fade" id="atosview" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">ATOS Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #atosdt class="table table-bordered table-sm" [(selection)]="selectedview" [value]="names"
+            [paginator]="true" [rowsPerPageOptions]="[5, 10, 50, 100]" [rows]="10" sortMode="multiple"
+            [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th>S.No</th>
+                <th>Document Name</th>
+                <th>Validation status</th>
+                <th>Uploaded file(Reupload)</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowdata="rowData" let-i="rowIndex" let-documentviewDetail>
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="documentviewDetail"></p-tableCheckbox>
+                </td>
+                <td>{{i+1}}</td>
+                <td>
+                  {{ documentviewDetail.document_field_name }}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusAtosRadio_{{ i }}" name="status_atos_{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusAtosRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusAtosRadio_{{ i }}" name="status_atos_{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusAtosRadio_{{ i }}">Not
+                        Valid</label>
+                    </div>
+                  </div>
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusAtosRadio_{{ i }}" name="status_atos_{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'Yes'">
+                      <label class="form-check-label" for="statusAtosRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusAtosRadio_{{ i }}" name="status_atos_{{ i }}">
+                      <label class="form-check-label" for="statusAtosRadio_{{ i }}">Not
+                        Valid</label>
+                    </div>
+                  </div>
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusAtosRadio_{{ i }}"
+                        name="status_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'Yes', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="Yes">
+                      <label class="form-check-label" for="statusAtosRadio_{{ i }}">Valid</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusAtosRadio_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="documentviewDetail.verification_Status" name="status_atos_{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'No'">
+                      <label class="form-check-label" for="statusAtosRadio_{{ i }}">Not
+                        Valid</label>
+                    </div>
+                  </div>
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  {{documentviewDetail.document_value}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'" target="_blank">
+                  {{documentviewDetail.document_value}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <input class="form-control" type="file" id="{{ documentviewDetail.document_detail_id }}"
+                    name="{{ documentviewDetail.document_field_name }}"
+                    (change)="selectFiles($event, documentviewDetail.verification_Status, documentviewDetail.document_value)">
+                </td>
+                <td>
+                  <div class="d-flex" *ngIf="documentviewDetail.verification_Status != 'No'">
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.document_url }}" target="_blank"
+                      *ngIf="showLogout(documentviewDetail.document_type)" class="mr-5"><i class="las la-eye"></i></a>
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.download_path }}" target="_blank"
+                      class="mr-5"><i class="las la-file-download"></i></a>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <!-- <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button> -->
+          <button type="button" class="btn btn-blue" (click)="downloadRblView()" [disabled]="selectedview.length == 0">Bulk Download</button>
+          <button type="button" class="btn btn-blue" (click)="onAtosFileUpload()" [disabled]="this.withoutValidationFile.length > 0">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="rblgttfview" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">RBL-GTTF-Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="table table-bordered table-sm" [(selection)]="selectedview" [value]="names"
+            [paginator]="true" [rowsPerPageOptions]="[5, 10, 25, 100]" [rows]="10" sortMode="multiple"
+            [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableCheckbox></p-tableCheckbox>
+                </th>
+                <th>S.No</th>
+                <th>Document Name</th>
+                <th>Validation status</th>
+                <th>Uploaded file(Reupload)</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowdata="rowData" let-i="rowIndex" let-documentviewDetail>
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="documentviewDetail"></p-tableCheckbox>
+                </td>
+                <td>{{i+1}}</td>
+                <td>
+                  {{ documentviewDetail.document_field_name}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblGttfRadio_{{ i }}" name="status_rbl_gttf{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusRblGttfRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblGttfRadio_{{ i }}" name="status_rbl_gttf{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusRblGttfRadio_{{ i }}">Not Valid</label>
+                    </div>
+                  </div>
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblGttfRadio_{{ i }}" name="status_rbl_gttf{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'Yes'">
+                      <label class="form-check-label" for="statusRblGttfRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblGttfRadio_{{ i }}" name="status_rbl_gttf{{ i }}">
+                      <label class="form-check-label" for="statusRblGttfRadio_{{ i }}">Not Valid</label>
+                    </div>
+                  </div>
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusRblGttfRadio_{{ i }}"
+                        name="status_rbl_gttf{{ i }}"
+                        (change)="onChangeFilesNo($event, 'Yes', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="Yes">
+                      <label class="form-check-label" for="statusRblGttfRadio_{{ i }}">Valid</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusRblGttfRadio_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="documentviewDetail.verification_Status" name="status_rbl_gttf{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'No'">
+                      <label class="form-check-label" for="statusRblGttfRadio_{{ i }}">Not Valid</label>
+                    </div>
+                  </div>
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  {{documentviewDetail.document_value}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'">
+                  {{documentviewDetail.document_value}}
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <input class="form-control" type="file" id="{{ documentviewDetail.document_detail_id }}"
+                    name="{{ documentviewDetail.document_field_name }}"
+                    (change)="selectFiles($event, documentviewDetail.verification_Status, documentviewDetail.document_value)">
+                </td>
+                <td>
+                  <div class="d-flex" *ngIf="documentviewDetail.verification_Status != 'No'">
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.document_url }}" target="_blank"
+                      *ngIf="showLogout(documentviewDetail.document_type)" class="mr-5"><i class="las la-eye"></i></a>
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.download_path }}" target="_blank"
+                      class="mr-5"><i class="las la-file-download"></i></a>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <!-- <i class="fa fa-download" aria-hidden="true"></i> -->
+          <button type="button" class="btn btn-blue" (click)="downloadRblView()">Download</button>
+          <button type="button" class="btn btn-blue" (click)="onRblGttfFileUpload()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="rblview" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">RBL Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="table table-bordered table-sm" [(selection)]="selectedview" [value]="names"
+            [paginator]="true" [rowsPerPageOptions]="[5, 10, 25, 100]" [rows]="10" sortMode="multiple"
+            [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableCheckbox></p-tableCheckbox>
+                </th>
+                <th>S.No</th>
+                <th>Document Name</th>
+                <th>Validation status</th>
+                <th>Uploaded file(Reupload)</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowdata="rowData" let-i="rowIndex" let-documentviewDetail>
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="documentviewDetail"></p-tableCheckbox>
+                </td>
+                <td>{{i+1}}</td>
+                <td>
+                  {{ documentviewDetail.document_field_name}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblRadio_{{ i }}" name="status_{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusRblRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblRadio_{{ i }}" name="status_{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusRblRadio_{{ i }}">Not Valid</label>
+                    </div>
+                  </div>
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblRadio_{{ i }}" name="status_{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'Yes'">
+                      <label class="form-check-label" for="statusRblRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusRblRadio_{{ i }}" name="status_{{ i }}">
+                      <label class="form-check-label" for="statusRblRadio_{{ i }}">Not Valid</label>
+                    </div>
+                  </div>
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusRblRadio_{{ i }}"
+                        name="status_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'Yes', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="Yes">
+                      <label class="form-check-label" for="statusRblRadio_{{ i }}">Valid</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusRblRadio_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="documentviewDetail.verification_Status" name="status_{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'No'">
+                      <label class="form-check-label" for="statusRblRadio_{{ i }}">Not Valid</label>
+                    </div>
+                  </div>
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  {{documentviewDetail.document_value}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'">
+                  {{documentviewDetail.document_value}}
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <input class="form-control" type="file" id="{{ documentviewDetail.document_detail_id }}"
+                    name="{{ documentviewDetail.document_field_name }}"
+                    (change)="selectFiles($event, documentviewDetail.verification_Status, documentviewDetail.document_value)">
+                </td>
+                <td>
+                  <div class="d-flex" *ngIf="documentviewDetail.verification_Status != 'No'">
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.document_url }}" target="_blank"
+                      *ngIf="showLogout(documentviewDetail.document_type)" class="mr-5"><i class="las la-eye"></i></a>
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.download_path }}" target="_blank"
+                      class="mr-5"><i class="las la-file-download"></i></a>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <!-- <i class="fa fa-download" aria-hidden="true"></i> -->
+          <button type="button" class="btn btn-blue" (click)="downloadRblView()">Download</button>
+          <button type="button" class="btn btn-blue" [disabled]="this.withoutValidationFile.length > 0"
+            (click)="onRblFileUpload()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="infosysview" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Infosys Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #infosysdt class="table table-bordered table-sm" [(selection)]="selectedview" [value]="names"
+            [paginator]="true" [rowsPerPageOptions]="[5, 10, 50, 100]" [rows]="10" sortMode="multiple"
+            [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th>S.No</th>
+                <th>Document Name</th>
+                <th>Validation status</th>
+                <th>Uploaded file(Reupload)</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowdata="rowData" let-i="rowIndex" let-documentviewDetail>
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="documentviewDetail"></p-tableCheckbox>
+                </td>
+                <td>{{i+1}}</td>
+                <td>
+                  {{ documentviewDetail.document_field_name }}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusInfosysRadio_{{ i }}" name="status_infosys_{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusInfosysRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusInfosysRadio_{{ i }}" name="status_infosys_{{ i }}" [checked]="false">
+                      <label class="form-check-label" for="statusInfosysRadio_{{ i }}">Not
+                        Valid</label>
+                    </div>
+                  </div>
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'Yes', i,  documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusInfosysRadio_{{ i }}" name="status_infosys_{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'Yes'">
+                      <label class="form-check-label" for="statusInfosysRadio_{{ i }}">Valid</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        id="statusInfosysRadio_{{ i }}" name="status_infosys_{{ i }}">
+                      <label class="form-check-label" for="statusInfosysRadio_{{ i }}">Not
+                        Valid</label>
+                    </div>
+                  </div>
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusInfosysRadio_{{ i }}"
+                        name="status_infosys_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'Yes', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="Yes">
+                      <label class="form-check-label" for="statusInfosysRadio_{{ i }}">Valid</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                      <input class="file-upload-radio form-check-input" type="radio" id="statusInfosysRadio_{{ i }}"
+                        (change)="onChangeFilesNo($event, 'No', i, documentviewDetail.document_detail_id, documentviewDetail.document_field_name, documentviewDetail.document_value)"
+                        value="documentviewDetail.verification_Status" name="status_infosys_{{ i }}"
+                        [checked]="documentviewDetail.verification_Status == 'No'">
+                      <label class="form-check-label" for="statusInfosysRadio_{{ i }}">Not
+                        Valid</label>
+                    </div>
+                  </div>
+                </td>
+
+                <td *ngIf="documentviewDetail.verification_Status == 'Yet to verify'">
+                  {{documentviewDetail.document_value}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'Yes'" target="_blank">
+                  {{documentviewDetail.document_value}}
+                </td>
+                <td *ngIf="documentviewDetail.verification_Status == 'No'">
+                  <input class="form-control" type="file" id="{{ documentviewDetail.document_detail_id }}"
+                    name="{{ documentviewDetail.document_field_name }}"
+                    (change)="selectFiles($event, documentviewDetail.verification_Status, documentviewDetail.document_value)">
+                </td>
+                <td>
+                  <div class="d-flex" *ngIf="documentviewDetail.verification_Status != 'No'">
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.document_url }}" target="_blank"
+                      *ngIf="showLogout(documentviewDetail.document_type)" class="mr-5"><i class="las la-eye"></i></a>
+                    <a href="javascript:void(0);" href="{{ documentviewDetail.download_path }}" target="_blank"
+                      class="mr-5"><i class="las la-file-download"></i></a>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <!-- <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button> -->
+          <button type="button" class="btn btn-blue" (click)="downloadRblView()"
+            [disabled]="selectedview.length == 0">Bulk Download</button>
+          <button type="button" class="btn btn-blue" [disabled]="this.withoutValidationFile.length > 0"
+            (click)="onInfosysFileUpload()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

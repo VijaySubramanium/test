@@ -1,0 +1,9 @@
+.overflow-card-body {
+  max-height: 72vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+}
+
+

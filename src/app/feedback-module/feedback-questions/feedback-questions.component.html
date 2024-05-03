@@ -1,0 +1,642 @@
+<div class="tab-content  feedback-tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="questions" role="tabpanel" aria-labelledby="questions-tab">
+
+    <div class="d-flex">
+      <div class="align-items-center">
+        <button type="submit" style="border-radius: 6px 0px 0px 6px !important;" [ngClass]="{'btn-clr': !isAddForm}"
+          (click)="onTabSelection('AF')" class="btn btn-blue btn-text">
+          New Form
+        </button>
+      </div>
+      <div class="align-items-center">
+        <button type="submit" style="border-radius: 0px 6px 6px 0px !important;" [ngClass]="{'btn-clr': isAddForm}"
+          (click)="onTabSelection('MF')" class="btn btn-blue btn-text">
+          Assign Form
+        </button>
+      </div>
+    </div>
+
+
+    <div *ngIf="!isAddForm">
+      <div class="row mt-2">
+        <div class="col-lg-4 mb-3">
+          <label [style.visibility]="isProjectSelect? 'visible': 'hidden'">Projects</label>
+          <div class="d-flex mt-1">
+            <p-multiSelect class="min-width" id="multiProjects" [options]="activeProjectList"
+              [(ngModel)]="_selectedProjects" optionLabel="project_name" (onChange)="columnFilter($event,'projects')"
+              placeholder="Select Projects" selectedItemsLabel="{0} projects selected">
+            </p-multiSelect>
+            <button class="btn btn-blue btn-get" [disabled]="!isProjectSelect" (click)="getProgramsByProjectId()"><i
+                class="las la la-arrow-right"></i></button>
+          </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+                    <label [style.visibility]="addFields.projectName? 'visible': 'hidden'">Project Name</label>
+                    <select required class="form-select w-100 mt-1" title="Select Project" style="cursor:pointer ;"
+                        (change)="getProgramsByProjectId($any($event.target).value)" aria-label="Default select example"
+                        [(ngModel)]="addFields.projectName" name="projectName" #projectName="ngModel">
+                        <option value="" disabled selected hidden>
+                            Select Project
+                        </option>
+                        <option *ngFor="let x of activeProjectList" value="{{ x.project_id }}_{{ x.project_name }}">
+                            {{ x.project_name}}
+                        </option>
+                    </select>
+                    <div *ngIf=" (addfield.submitted && projectName.untouched) || projectName.touched"
+                        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                        <div *ngIf="projectName.errors?.['required']">
+                            Select Project
+                        </div>
+                    </div>
+                </div> -->
+        <div class="col-lg-4 mb-3">
+          <label [style.visibility]="isProgramSelect? 'visible': 'hidden'">Programs</label>
+          <div class="d-flex mt-1">
+            <p-multiSelect class="min-width" #multiPrograms [options]="programDetails" [(ngModel)]="_selectedPrograms"
+              optionLabel="programname" (onChange)="columnFilter($event,'programs')" placeholder="Select Programs"
+              [disabled]="!programDetails" selectedItemsLabel="{0} programs selected"></p-multiSelect>
+            <button class="btn btn-blue btn-get" [disabled]="!isProgramSelect"
+              (click)="getCourseByProjectIdProgramId()"><i class="las la la-arrow-right"></i></button>
+          </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+                    <label [style.visibility]="addFields.programName? 'visible': 'hidden'">Program Name</label>
+
+                    <select required class="form-select w-100 mt-1" title="Select Program" style="cursor:pointer ;"
+                        (change)="getBatchByProjectIdProgramId($any($event.target).value)"
+                        aria-label="Default select example" [(ngModel)]="addFields.programName" name="programName"
+                        #programName="ngModel">
+                        <option value="" disabled selected hidden>
+                            Select Program
+                        </option>
+                        <option *ngFor="let x of programDetails" value="{{ x.programid }}_{{ x.programname }}">
+                            {{ x.programname}}
+                        </option>
+                    </select>
+                    <div *ngIf=" (addfield.submitted && programName.untouched) || programName.touched"
+                        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                        <div *ngIf="programName.errors?.['required']">
+                            Select Program
+                        </div>
+                    </div>
+                </div> -->
+        <div class="col-lg-4 mb-3">
+          <label [style.visibility]="isCourseSelect? 'visible': 'hidden'">Courses</label>
+          <div class="d-flex mt-1">
+            <p-multiSelect class="min-width" #multiCourses [options]="courseDetails" [(ngModel)]="_selectedCourses"
+              optionLabel="coursename" (onChange)="columnFilter($event,'courses')" defaultLabel="Select Courses"
+              [disabled]="!courseDetails" selectedItemsLabel="{0} courses selected"></p-multiSelect>
+            <button class="btn btn-blue btn-get" [disabled]="!isCourseSelect" (click)="getBatchByCourseId()"><i
+                class="las la la-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- <div class="col-lg-2 mb-3">
+                    <label [style.visibility]="addFields.BatchName? 'visible': 'hidden'">Batch Name</label>
+
+                    <select required class="form-select w-100 mt-1" title="Select Batch" style="cursor:pointer ;"
+                        aria-label="Default select example" (change)="getCourseByBatchId($any($event.target).value)"
+                        [(ngModel)]="addFields.BatchName" name="BatchName" #BatchName="ngModel">
+                        <option value="" disabled selected hidden>
+                            Select Batch
+                        </option>
+                        <option *ngFor="let x of batchDetails" value="{{ x.batch_id }}_{{ x.batch_code }}">
+                            {{ x.batch_code}}
+                        </option>
+                    </select>
+                    <div *ngIf=" (addfield.submitted && BatchName.untouched) || BatchName.touched"
+                        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                        <div *ngIf="BatchName.errors?.['required']">
+                            Select Batch
+                        </div>
+                    </div>
+                </div> -->
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-4 mb-3">
+          <label [style.visibility]="isBatchSelect? 'visible': 'hidden'">Batches</label>
+          <div class="d-flex mt-1">
+            <p-multiSelect class="min-width" #multiBatches [options]="batchDetails" [(ngModel)]="_selectedBatches"
+              optionLabel="batch_code" (onChange)="columnFilter($event,'batches')" placeholder="Select Batches"
+              [disabled]="!batchDetails" selectedItemsLabel="{0} batches selected"></p-multiSelect>
+            <button class="btn btn-blue btn-get" [disabled]="!isBatchSelect" (click)="getFeedbackForms()"><i
+                class="las la la-arrow-right"></i></button>
+          </div>
+        </div>
+        <!-- <div class="col-lg-2 mb-3">
+                    <label [style.visibility]="addFields.CourseName? 'visible': 'hidden'">Course Name</label>
+
+                    <select required class="form-select w-100 mt-1" title="Select Course" style="cursor:pointer ;"
+                        (change)="getSelectedCourse($any($event.target).value)" aria-label="Default select example"
+                        [(ngModel)]="addFields.CourseName" name="CourseName" #CourseName="ngModel">
+                        <option value="" disabled selected hidden>
+                            Select Course
+                        </option>
+                        <option *ngFor="let x of courseDetails" value="{{ x.course_id }}_{{ x.coursename }}">
+                            {{ x.coursename}}
+                        </option>
+                    </select>
+                    <div *ngIf=" (addfield.submitted && CourseName.untouched) || CourseName.touched"
+                        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                        <div *ngIf="CourseName.errors?.['required']">
+                            Select Course
+                        </div>
+                    </div>
+                </div> -->
+        <!-- <div class="col-lg-4 mb-3">
+                    <label [style.visibility]="isFormSelect? 'visible': 'hidden'">Forms</label>
+                    <div class="d-flex mt-1">
+                        <p-multiSelect class="min-width" #multiForms [options]="formDetails" [(ngModel)]="_selectedForms" optionLabel="formName"
+                            (onChange)="columnFilter($event,'forms')" placeholder="Select Forms" [disabled]="!formDetails"
+                            selectedItemsLabel="{0} forms selected"></p-multiSelect>
+                    </div>
+                </div> -->
+        <div class="col-lg-3 mb-3">
+          <label [style.visibility]="formname? 'visible': 'hidden'">Form Name</label>
+
+          <select required class="form-select w-100 mt-1" title="Select Form" style="cursor:pointer ;"
+            (change)="getSelectedForm($any($event.target).value)" aria-label="Default select example" name="formname"
+            ng-model="formname" id="formname">
+            <option value="" disabled selected hidden>
+              Select Form
+            </option>
+            <option *ngFor="let x of formDetails" title="{{ x.form_name  }}" value="{{ x.form_id }}_{{ x.form_name }}">
+              {{ x.form_name.length > 40 ? x.form_name.substring(0, 30) + '...' : x.form_name }}
+            </option>
+          </select>
+          <!-- <div *ngIf=" (addfield.submitted && formName.untouched) || formName.touched"
+                        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                        <div *ngIf="formName.errors?.['required']">
+                            Select Form
+                        </div>
+                    </div> -->
+        </div>
+
+      </div>
+
+    </div>
+    <!-- Filter Headers -->
+    <form #addfield="ngForm" name="form" (ngSubmit)="(addfield)">
+
+      <div class="row mt-2" *ngIf="!isAddForm">
+        <div class="col-md-12 pl-3" *ngIf="addfield.form.valid">
+          <div class="row d-flex justify-content-between m-0">
+            <div class="form-check mb-1 w-auto" [style.visibility]="formname? 'visible': 'hidden'">
+              <input class="form-check-input" style="cursor:pointer ;" type="checkbox" value="" id="form-activate"
+                (change)="duplicateStatus(isDuplicate)" [checked]="isDuplicate">
+              <label class="form-check-label" for="form-activate">
+                Duplicate form
+              </label>
+            </div>
+
+            <div class="col-lg-3 d-flex justify-content-end mb-3">
+              <button type="submit" *ngIf="!isDuplicate" [disabled]="formname == undefined"
+                (click)="onQuestionSubmit(addfield.form,'assignForm')" class="btn btn-blue">
+                Assign
+              </button>
+              <button type="submit" *ngIf="isDuplicate"
+                [disabled]="!(addfield.form.valid && formname && (quesTextArr.controls.length >0))"
+                (click)="onQuestionSubmit(addfield.form,'saveForm')" class="btn btn-blue">
+                Save
+              </button>
+            </div>
+          </div>
+
+
+          <div class="col-lg-4  mb-3" *ngIf="isDuplicate">
+            <label [style.visibility]="NewFormName? 'visible': 'hidden'">New Form Name</label>
+
+            <div class="w-xs-100 mt-1">
+              <input pattern=".*[a-zA-Z0-9]+.*" type="text" title="Form Name" style="cursor:pointer ;"
+                class="form-control" maxlength="100" (change)="addFields.NewFormName=addFields.NewFormName.trim()"
+                placeholder="Form name" [(ngModel)]="addFields.NewFormName" name="NewFormName" #NewFormName="ngModel">
+              <div style="font-size: 8.5pt; margin-top: 1pt; color: rgb(148, 144, 144)">Name contains atleast one
+                alphabet or number</div>
+
+              <div *ngIf=" (addfield.submitted && addFields.NewFormName == '')"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <!-- <div *ngIf="(NewFormName.errors?.['required'] || NewFormName.hasError('whitespace'))"> -->
+                Form Name is required
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="feedback-inner-head" *ngIf="isDuplicate">
+            <button class="question-btn" (click)="addQuestion()" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-plus-circle"></i> Add Question
+              </div>
+            </button>
+            <button class="question-btn" (click)="addText()" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-align-justify"></i> Add text field
+              </div>
+            </button>
+          </div> -->
+
+
+          <div class="feedback-inner-head" *ngIf="isDuplicate">
+            <button class="question-btn" (click)="addFormQuestion('select')" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-plus-circle"></i> Add Question
+              </div>
+            </button>
+            <button class="question-btn" (click)="addFormQuestion('text')" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-align-justify"></i> Add text field
+              </div>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="row mt-2" *ngIf="isAddForm">
+        <div class="d-flex justify-content-between">
+          <div class="col-lg-6  mb-3">
+            <label [style.visibility]="addFields.CreateFormName? 'visible': 'hidden'">Form
+              Name</label>
+            <!-- ~[^a-zA-z0-9 ]+~ -->
+            <!-- [^a-zA-Z0-9]+ -->
+            <!-- ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$!#%*?&]{8,16}$ -->
+            <div class="w-xs-100 mt-1">
+              <input pattern=".*[a-zA-Z0-9]+.*" type="text" title="Enter Form Name" style="cursor:pointer ;"
+                class="form-control" maxlength="100" placeholder="Enter form name" [(ngModel)]="addFields.CreateFormName"
+                (change)="addFields.CreateFormName=addFields.CreateFormName.trim()" name="CreateFormName"
+                #CreateFormName="ngModel" [required]="isAddForm ? '' : null">
+              <div style="font-size: 8.5pt; margin-top: 1pt; color: rgb(148, 144, 144)">Name contains atleast one
+                alphabet or number</div>
+              <div *ngIf=" (addfield.submitted && CreateFormName.untouched) || CreateFormName.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="(CreateFormName.errors?.['required'] || CreateFormName.hasError('whitespace'))">
+                  Form Name is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2 d-flex align-items-center mb-3 mt-4">
+            <button type="submit" [disabled]="!(addfield.form.valid && (quesTextArr.controls.length > 0 ))"
+              (click)="onQuestionSubmit(addfield.form,'newForm')" class="btn btn-blue">
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-12 p-0">
+          <!-- *ngIf="addfield.form.valid" -->
+          <!-- <div class="feedback-inner-head">
+            <button class="question-btn" (click)="addQuestion()" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-plus-circle"></i> Add Question
+              </div>
+            </button>
+            <button class="question-btn" (click)="addText()" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-align-justify"></i> Add text field
+              </div>
+            </button>
+          </div> -->
+
+
+          <div class="feedback-inner-head">
+            <button class="question-btn" (click)="addFormQuestion('select')" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-plus-circle"></i> Add Question
+              </div>
+            </button>
+            <button class="question-btn" (click)="addFormQuestion('text')" type="button">
+              <div class="feedback-add-label">
+                <i class="las la-align-justify"></i> Add text field
+              </div>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Question area -->
+
+      <div [formGroup]="quesTextStackForm" class="scrollbar" id="style-scroll">
+        <div formArrayName="quesTextArr">
+          <div class="row pb-3 m-0">
+            <div class="col-lg-6 card-lg-custom-padd d-flex mb-3" [formGroupName]="i"
+              *ngFor="let w of quesTextArr.controls; let i=index">
+              <div class="card feedback-card d-flex justify-content-between w-100 p-2">
+                <div class="row" *ngIf="w.get('action_type').value != 'Text'">
+                  <div div class="col-md-7 pe-md-0 mb-3">
+                    <input class="form-control question-input" id="{{'companyId' + i}}" type="text"
+                      placeholder="Question Name" formControlName="questions" required>
+                    <div
+                      *ngIf="((addfield.submitted && w.get('questions').errors?.['required']) || (addfield.submitted &&  w.get('questions').hasError('whitespace')))"
+                      style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      Question Name is required
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <select required class="form-select" style="cursor:pointer ;" id="{{'positionId' + i}}"
+                      title="Select" formControlName="action_type" name="select" aria-label="Default select example"
+                      (change)="getFormType($any($event.target).value)">
+                      <option value="" disabled selected hidden>
+                        Select Type
+                      </option>
+                      <option value="Single Select">Single Select</option>
+                      <option value="Multi Select">Single Select&nbsp;(smiley)</option>
+                    </select>
+                    <div *ngIf="addfield.submitted && w.get('action_type').errors?.['required']"
+                      style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      Action type is required
+                    </div>
+                  </div>
+
+                  <div class="col-md-12" *ngIf="formType !== 'text'">
+                    <div formArrayName="options">
+                      <div class="feedback-options" *ngFor="let hg of options('quesTextArr',i); let j=index;">
+                        <div class="row" [formGroupName]="j">
+                          <div class="col-md-11">
+                            <input class="form-control" id="optionname" name="optionname" type="text"
+                              placeholder="Option Name" formControlName="optionname" required>
+                            <div
+                              *ngIf="((addfield.submitted && hg.get('optionname').errors?.['required']) || (addfield.submitted && hg.get('optionname').hasError('whitespace')))"
+                              style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                              Option Name is required
+                            </div>
+
+                            <input class="form-control" id="{{'scoreid' + j}}" type="number" placeholder="Option Score"
+                              formControlName="optionscore" required min="0" max="100">
+
+                            <div *ngIf="addfield.submitted && hg.get('optionscore').errors?.['required']"
+                              style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                              Option Score is required
+                            </div>
+                            <div *ngIf="hg.get('optionscore').errors?.['min'] || hg.get('optionscore').errors?.['max']"
+                              style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                              Option Score in between 0 to 10.
+                            </div>
+                            <!-- <input type="text" formControlName="optionorder" value="{{j}}"> -->
+                          </div>
+                          <div class="col-md-1">
+                            <span class="option-close" (click)="deleteOptions('quesTextArr',i,j)">
+                              <i class="las la-times"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="feedback-card-footer">
+                      <div class="feedback-footer-icons" title="Add option" (click)="addHighlights('quesTextArr',i)"
+                        *ngIf="formType !== 'text'">
+                        <i class="las la-plus-circle"></i>
+                      </div>
+                      <div class="feedback-footer-icons" title="Delete question" (click)="deleteQuestion(i)">
+                        <i class="las la-trash-alt"></i>
+                      </div>
+
+                      <div class="feedback-footer-icons">
+                        <div class="form-check">
+                          <input class="form-check-input" style="cursor:pointer ;" type="checkbox" id="flexCheckChecked"
+                            formControlName="isrequired" checked>
+                          <label class="form-check-label" for="flexCheckChecked">
+                            Required
+                          </label>
+                        </div>
+                      </div>
+                      <!-- <div class="feedback-footer-icons">
+                              <div class="form-check">
+                                  <input class="form-check-input" style="cursor:pointer ;" type="checkbox"
+                                      id="ques-activate-1" formControlName="activate_flag" checked>
+                                  <label class="form-check-label" for="ques-activate-1">
+                                      Activate
+                                  </label>
+                              </div>
+                          </div> -->
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="w.get('action_type').value == 'Text'">
+                  <div class="row">
+                    <div class="col-md-12 mb-3">
+                      <input class="form-control question-input" id="{{'text'+i}}" type="text" placeholder="Text Name"
+                        formControlName="questions">
+                      <div
+                        *ngIf="((addfield.submitted && w.get('questions').errors?.['required']) || (addfield.submitted && w.get('questions').hasError('whitespace')))"
+                        style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                        Text Name is required
+                      </div>
+                    </div>
+
+                    <div class="col-md-12 justify-content-end">
+                      <div class="feedback-card-footer " style="margin-top:auto">
+                        <div class="feedback-footer-icons" title="Delete Text Field" (click)="deleteText(i)">
+                          <i class="las la-trash-alt"></i>
+                        </div>
+
+                        <div class="feedback-footer-icons">
+                          <div class="form-check">
+                            <input class="form-check-input" style="cursor:pointer ;" type="checkbox" value=""
+                              id="flexCheckChecked" formControlName="isrequired" checked>
+                            <label class="form-check-label" for="flexCheckChecked">
+                              Required
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- <div [formGroup]="stackForm">
+                <div formArrayName="work">
+                    <div class="row pb-3 m-0">
+                        <div class="col-lg-6 card-lg-custom-padd d-flex mb-3" [formGroupName]="i"
+                            *ngFor="let w of work.controls; let i=index">
+                            <div class="card feedback-card d-flex justify-content-between w-100 p-2">
+                                <div class="row">
+
+                                    <div div class="col-md-7 pe-md-0 mb-3">
+                                        <input class="form-control question-input" id="{{'companyId' + i}}" type="text"
+                                            placeholder="Question Name" formControlName="questions" required>
+                                        <div *ngIf="((addfield.submitted && w.get('questions').errors?.['required']) || (addfield.submitted &&  w.get('questions').hasError('whitespace')))"
+                                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                            Question Name is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select required class="form-select" style="cursor:pointer ;"
+                                            id="{{'positionId' + i}}" title="Select" formControlName="action_type"
+                                            name="select" aria-label="Default select example"
+                                            (change)="getFormType($any($event.target).value)">
+                                            <option value="" disabled selected hidden>
+                                                Select Type
+                                            </option>
+                                            <option value="Single Select">Single Select</option>
+                                            <option value="Multi Select">Single Select&nbsp;(smiley)</option>
+                                        </select>
+                                        <div *ngIf="addfield.submitted && w.get('action_type').errors?.['required']"
+                                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                            Action type is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" *ngIf="formType !== 'text'">
+                                        <div formArrayName="options">
+                                            <div class="feedback-options"
+                                                *ngFor="let hg of options('work',i); let j=index;">
+                                                <div class="row" [formGroupName]="j">
+                                                    <div class="col-md-11">
+                                                        <input class="form-control" id="optionname" name="optionname"
+                                                            type="text" placeholder="Option Name"
+                                                            formControlName="optionname" required>
+                                                        <div *ngIf="((addfield.submitted && hg.get('optionname').errors?.['required']) || (addfield.submitted && hg.get('optionname').hasError('whitespace')))"
+                                                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                                            Option Name is required
+                                                        </div>
+
+                                                        <input class="form-control" id="{{'scoreid' + j}}" type="number"
+                                                            placeholder="Option Score" formControlName="optionscore"
+                                                            required min="0" max="100">
+
+                                                        <div *ngIf="addfield.submitted && hg.get('optionscore').errors?.['required']"
+                                                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                                            Option Score is required
+                                                        </div>
+                                                        <div *ngIf="hg.get('optionscore').errors?.['min'] || hg.get('optionscore').errors?.['max']"
+                                                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                                            Option Score in between 0 to 10.
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <span class="option-close" (click)="deleteOptions('work',i,j)">
+                                                            <i class="las la-times"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="feedback-card-footer">
+                                            <div class="feedback-footer-icons" title="Add option"
+                                                (click)="addHighlights('work',i)" *ngIf="formType !== 'text'">
+                                                <i class="las la-plus-circle"></i>
+                                            </div>
+                                            <div class="feedback-footer-icons" title="Delete question"
+                                                (click)="deleteQuestion(i)">
+                                                <i class="las la-trash-alt"></i>
+                                            </div>
+
+                                            <div class="feedback-footer-icons">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="cursor:pointer ;"
+                                                        type="checkbox" id="flexCheckChecked"
+                                                        formControlName="isrequired" checked>
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Required
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div formArrayName="textwork">
+                    <div class="row pb-3 m-0">
+                        <div class="col-lg-6 card-lg-custom-padd d-flex mb-3" [formGroupName]="k"
+                            *ngFor="let t of textwork.controls; let k = index;">
+                            <div class="card feedback-card d-flex justify-content-between w-100 p-2">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <input class="form-control question-input" id="{{'text'+k}}" type="text"
+                                            placeholder="Text Name" formControlName="questions">
+                                        <div *ngIf="((addfield.submitted && t.get('questions').errors?.['required']) || (addfield.submitted && t.get('questions').hasError('whitespace')))"
+                                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                                            Text Name is required
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="feedback-card-footer">
+                                            <div class="feedback-footer-icons" title="Delete Text Field"
+                                                (click)="deleteText(k)">
+                                                <i class="las la-trash-alt"></i>
+                                            </div>
+
+                                            <div class="feedback-footer-icons">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" style="cursor:pointer ;"
+                                                        type="checkbox" value="" id="flexCheckChecked"
+                                                        formControlName="isrequired" checked>
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Required
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+    </form>
+
+
+    <div class="row m-0" *ngIf="formViewStatus == 'Success' && !isDuplicate && !isAddForm">
+      <div class="col-md-12">
+        <div class="view-form">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <h3>{{displayFormName}}</h3>
+            </div>
+            <!-- &nbsp;&nbsp;({{formActive}}) -->
+            <!-- <div class="col-lg-2 mb-3">
+                            <h6>Status-{{formActive}}</h6>
+                        </div> -->
+          </div>
+          <div class="scrollbar" id="style-scroll">
+            <div *ngFor="let questionArray of formDataList">
+              <div class="mb-3">
+                <p>{{questionArray.questions}}</p>
+                <div class="hr-theme-slash-2 justify-content-between"
+                  *ngFor="let optionList of questionArray.questionoption">
+                  <div class="form-check viewform-radio" *ngIf="questionArray.actiontype != 'Text'">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                      disabled>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      {{optionList}}
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="questionArray.actiontype == 'Text'">
+                  <textarea class="form-control" rows="3" disabled></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

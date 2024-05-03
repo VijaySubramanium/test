@@ -1,0 +1,37 @@
+{
+  "attendancename": " 'Java Spring-Student Attendance'",
+  "ProgramName": "Java Spring",
+  "batch": "Batch 1",
+  "startdate": "2022-05-29",
+  "enddate": "2022-06-11",
+  "courses": [
+    {
+      "coursename": "aaaaaaa",
+      "startdate": "2022-05-29",
+      "enddate": " 2022-06-09",
+      "timeperiod": ""
+    }
+  ],
+  "attendance": [
+    {
+      "studentname": "Vinoth",
+      "dates": [
+        { "status": 1 },
+        { "status": 2 },
+        { "status": 2 },
+        { "status": 1 },
+        { "status": 2 },
+        { "status": 2 },
+        { "status": 1 },
+        { "status": 0 },
+        { "status": 0 },
+        { "status": 0 },
+        { "status": 0 },
+        { "status": 0 },
+        { "status": 0 },
+        { "status": 0 },
+        { "status": 0 }
+      ]
+    }
+  ]
+}

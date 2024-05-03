@@ -1,0 +1,823 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+
+  <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+  <app-sidebar (listOfRightMenus)=onListOfRightMenus($event)></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>Program Management</h5>
+        <span *ngFor="let subMenu of rightSideMenus">
+          <div class="dropdown float-end header-links" *ngIf="!notAccessRoleNames.includes(loggedInRoleName)">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+                <div *ngIf="subMenuAction.action_url.trim() != 'changestatus'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#'+ subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+                <div
+                  *ngIf="subMenuAction.action_url.trim() == 'changestatus' && loggedInRoleName == 'GTT_ADMIN' && selectedProgramDetails.length > 0">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#' + subMenuAction.action_url.trim()">{{
+                    subMenuAction.action_name }}</a>
+                </div>
+              </li>
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view">View</a></li> -->
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit">Edit</a></li> -->
+              <!--<li><a class="dropdown-item" href="javascript:void(0);"
+                                    *ngIf="selectedProgramDetails.length > 0" data-bs-toggle="modal"
+                                    data-bs-target="#change-status">Change Status</a></li>-->
+              <!-- <li><a class="dropdown-item" href="#">Download</a></li> -->
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete">Delete Program</a></li> -->
+            </ul>
+          </div>
+        </span>
+      </div>
+
+
+      <div class="card-body">
+        <ul class="nav nav-tabs card-nav" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="userManagement-tab" data-bs-toggle="tab"
+              data-bs-target="#userManagement" type="button" role="tab" aria-controls="userManagement"
+              aria-selected="true">Program</button>
+          </li>
+        </ul>
+
+        <div class="tab-content card-tab-content" id="myTabContent">
+          <div class="tab-pane fade active show" id="userManagement" role="tabpanel"
+            aria-labelledby="userManagement-tab">
+            <div class="row">
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="show-entries d-flex mb-3">
+                  <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results
+                      Found</span></small>
+                </div>
+              </div>
+              <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <p-multiSelect optionLabel="header" placeholder="" [options]="cols" optionLabel="header"
+                    [(ngModel)]="_selectedColumns" (onChange)="columnFilter($event)"
+                    selectedItemsLabel="{0} columns selected" [style]="{minWidth: '180px'}"
+                    placeholder="Choose Columns"></p-multiSelect>
+                </div>
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"
+                    [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''" (click)="searchClose()"
+                    data-bs-toggle="modal" [attr.data-bs-target]="'#programSearch'" class="mr-2" title="Search"
+                    tooltipPosition="bottom"></button>
+                  <!-- <input type="text" class="form-control" placeholder="Search"
+                    (input)="dt.filterGlobal($any($event.target).value, 'contains')"> -->
+                </div>
+
+                <!-- <div class="search-input w-xs-100 me-2 mb-3">
+                  <input type="text" class="form-control" placeholder="Search"
+                    (input)="dt.filterGlobal($any($event.target).value, 'contains')">
+                </div> -->
+                <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                  <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Export<i class="las la-angle-down ms-2"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <!-- <li>
+                                           <button type="button" pButton pRipple icon="pi pi-file"  class="mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                                       </li> -->
+                    <li>
+                      <button type="button" pButton pRipple icon="pi pi-file" title="CSV"
+                        (click)="exportToCsv()" class="p-button-info ml-auto"
+                        pTooltip="Selection Only" tooltipPosition="bottom"></button>
+                    </li>
+                    <li>
+                      <button type="button" pButton pRipple icon="pi pi-file-excel" title="XLSX" (click)="exportExcel()"
+                        class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                    </li>
+                    <!-- <li>
+                                            <button type="button" pButton pRipple icon="pi pi-file-pdf" title="PDF" (click)="exportPdf(dt)" class="p-button-warning mr-2"
+                                                pTooltip="PDF" tooltipPosition="bottom"></button>
+                                        </li> -->
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12 scroll-table scrolling-table-div">
+              <p-table #dt class="p-table-grid" [columns]="selectedColumns" [(selection)]="selectedProgramDetails"
+                [value]="programDetails" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10"
+                sortMode="multiple" [responsive]="true" [globalFilterFields]="programSearchFilter"
+                [exportFilename]="exportProgramName">
+
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th>
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                      {{col.header}}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th>Action</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-userDetail let-columns="columns">
+                  <tr>
+                    <td>
+                      <p-tableCheckbox [value]="userDetail"></p-tableCheckbox>
+                    </td>
+                    <td *ngFor="let col of columns" [ngClass]="{'text-center': col.align === 'center'? true : false}"
+                      style="text-align:left;">
+
+                      <div *ngIf="col.field == 'course_name'" class="text-center">
+                        {{ userDetail['course_name'] }}
+                      </div>
+
+                      <div *ngIf="col.field == 'project_name'" class="text-center">
+                        {{ userDetail[col.field] }}
+                      </div>
+
+                      <div *ngIf="col.field == 'project_manager_name'" class="text-center">
+                        {{ userDetail[col.field] }}
+                      </div>
+
+                      <span
+                        *ngIf="col.field != 'project_manager_name' && col.field != 'file_name' && col.field != 'project_name' && col.field != 'course_name' && col.field != 'program_status' && col.field != 'start_date' && col.field != 'end_date'">
+                        {{ userDetail[col.field] }}
+                      </span>
+
+                      <span *ngIf="col.field == 'program_status'">
+                        {{(userDetail[col.field] == 'Active') ? "Active" :"Inactive" }}
+                      </span>
+
+                      <span *ngIf="col.field == 'start_date'">
+                        {{ userDetail[col.field] }}
+                      </span>
+                      <span *ngIf="col.field == 'end_date'">
+                        {{ userDetail[col.field] }}
+                      </span>
+                      <span *ngIf="col.field == 'file_name'">
+                        <a href="{{ userDetail['file_url'] }}" target="_blank">{{ userDetail[col.field] }}</a>
+                      </span>
+                    </td>
+
+                    <td>
+                      <a href="javascript:void(0);" data-bs-toggle="modal"
+                        *ngIf="!notAccessRoleNames.includes(loggedInRoleName)" (click)="editProgramDetails(userDetail)"
+                        title="Edit" data-bs-target="#edit_user_details"><i class="las la-pen"></i></a>
+                      <a href="javascript:void(0);"
+                        *ngIf="loggedInRoleName == 'GTT_ADMIN' || loggedInRoleName == 'TRAINER' || loggedInRoleName == 'TRAINING_COORDINATOR' || loggedInRoleName == 'L&D'"
+                        data-bs-toggle="modal" title="View" (click)="viewProgram(userDetail)"><i
+                          class="las la-eye"></i></a>
+                      <!-- <a href="javascript:void(0);" data-bs-toggle="modal"(click)="deleteCurrentProgram(userDetail)"  data-bs-target="#delete"><i class="las la-trash-alt"></i></a> -->
+
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Search Modal -->
+<div class="modal fade" id="programSearch" tabindex="-1" aria-labelledby="programSearch" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="clearSearch()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)" [selectionLimit]="5" optionLabel="header"
+              [(ngModel)]="_selectedSearchColumns" selectedItemsLabel="{0} columns selected"
+              [style]="{minWidth: '180px'}" placeholder="Choose Columns" [showToggleAll]="false"></p-multiSelect>
+          </div>
+        </div>
+
+        <div class="row p-2">
+          <table>
+            <tr *ngFor="let searchColumns of _selectedSearchColumns">
+              <td class="w-auto p-2 text-center">
+                {{searchColumns.header}}
+              </td>
+              <td class="w-auto p-2">
+                <input required type="text" [placeholder]="searchHolder(searchColumns.field)" class="form-control"
+                  name="subject" [(ngModel)]="searchColumns.search" #subject="ngModel">
+              </td>
+              <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1">
+                <select required class="form-select" aria-placeholder="Select" title="Condition"
+                  [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                  <option [ngValue]="undefined" disabled selected>Select</option>
+                  <option>AND</option>
+                  <option>OR</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row p-2" *ngIf="searchError">
+          <p style="color: red;">*Mandatory to fill all fields.</p>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal"
+            [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+          <button type="button" class="btn btn-blue" (click)="submitSearch()"
+            [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Program -->
+<div class="modal fade" id="addprogram" tabindex="-1" aria-labelledby="addprogram" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="resetProgram(p, edit)"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+            value="single" checked>
+          <label class="form-check-label" for="inlineRadio1">Single</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+            value="bulk">
+          <label class="form-check-label" for="inlineRadio2">Bulk</label>
+        </div>
+        <!-- single -->
+        <div class="row file-upload mt-3" id="show-single">
+          <form #p="ngForm" name="form" (ngSubmit)="p">
+            <div class="">
+              <div class="row">
+
+
+                <div class="col-md-6 mb-2">
+                  <label class="mb-2">Program Name</label><span class="required"> *</span><br />
+                  <p-dropdown [options]="programDropDownDetails" [required]="true" (onChange)="changeProgram($event, p)"
+                    (onClear)="clearEvent(p)" [(ngModel)]="selectedProgram" #programname="ngModel" name="programname"
+                    optionLabel="program_name" [filter]="true" filterBy="program_name" [showClear]="true"
+                    placeholder="Select a Program">
+                    <ng-template pTemplate="selectedItem">
+                      <div class="college-item college-item-value" *ngIf="selectedProgram">
+                        <div>{{selectedProgram.program_name}}</div>
+                      </div>
+                    </ng-template>
+                    <ng-template let-program pTemplate="item">
+                      <div>
+                        <div>{{program.program_name}}</div>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                  <div style="display: block" class="invalid-feedback">
+                    <div *ngIf="(p.submitted && !selectedProgram)" class="error">
+                      <div *ngIf="programname.errors?.['required']">
+                        Program name is required
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--Program name -->
+                <div class="col-md-6 mb-3" *ngIf="selectedProgram != null && selectedProgram.program_id == 0">
+                  <label class="mb-2">Program Name</label><span class="required"> *</span>
+                  <input required pattern="[0-9a-zA-Z\s]+" type="text" [(ngModel)]="addProgram.programName"
+                    #otherprogramname="ngModel" name="othercollegename" class="form-control" id="othercollegename" />
+                  <div style="display: block" class="invalid-feedback">
+                    <div *ngIf="(p.submitted && otherprogramname.untouched) || otherprogramname.touched" class="error">
+                      <div *ngIf="otherprogramname.errors?.['required']">
+                        Program name is required
+                      </div>
+                    </div>
+                    <div *ngIf="otherprogramname.touched && otherprogramname.invalid" class="error">
+                      <div *ngIf="otherprogramname.errors?.['pattern']">
+                        Enter a valid data
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="col-md-6 mb-4">
+                  <label class="mb-2">Project Name</label><span class="required"> *</span>
+                  <select required type="text" class="form-select"
+                    (change)="getprojectBasedRecords($any($event.target).value, 'add')"
+                    [(ngModel)]="addProgram.projectName" name="projectname" #projectname="ngModel">
+                    <option *ngFor="let x of projectddl" value="{{ x.project_id }}__{{ x.project_name }}">
+                      {{ x.project_name }}
+                    </option>
+                  </select>
+                  <div *ngIf="(p.submitted && projectname.untouched) || projectname.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="projectname.errors?.['required']">
+                      Select the project field
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- <div class="col-md-6 mb-4">
+                                    <label class="form-check-label mb-1">Project Name</label><span style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                                    <ng-multiselect-dropdown required type="text" (onSelect)="getprojectBasedRecords($event, 'add')" (onDeSelect)="getprojectBasedRecords($event, 'remove')"
+                                        [settings]="projectdropdownSettings" [data]="projectddl" class="form-multiselect" [(ngModel)]="addProgram.projectName"
+                                        name="projectname" #projectname="ngModel" required>
+                                    </ng-multiselect-dropdown>
+                                    <div *ngIf="(p.submitted && projectname.untouched) || projectname.touched" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                                        <div *ngIf="projectname.errors?.['required']">Project Name is required</div>
+                                    </div>
+                                </div> -->
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Course Name</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                  <select required type="text" class="form-select" [(ngModel)]="addProgram.courses" name="Course"
+                    #course="ngModel" required>
+                    <option value="" disabled selected hidden> </option>
+                    <option *ngFor="let x of courseddl">{{x.coursename}}</option>
+                    <!-- <option value="Completed">Completed</option>
+								<option value="In progress">In progress</option>
+								<option value="Yet to start">Yet to start</option> project_name-->
+                  </select>
+                  <div *ngIf="(p.submitted && course.untouched) || course.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="course.errors?.['required']">Select the above(Course Name) field
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Project Manager Name</label><span class="required"> *</span>
+                  <input type="text" class="form-control" name="projectmgr" [(ngModel)]="addProgram.projectManagerName"
+                    #projectmgr="ngModel" disabled>
+                  <!-- <option  *ngFor="let x of projectmanagerddl"> {{ x.firstname }} {{x.lastname}}</option>
+                                    </select> -->
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Start Date</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                  <p-calendar [(ngModel)]="addProgram.startDate" placeholder="YYYY-MM-DD" type="text" name="start"
+                    class="date-input" dateFormat="yy-mm-dd" #start="ngModel" [required]="true">
+                  </p-calendar>
+                  <div *ngIf="(p.submitted && start.untouched) || start.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="start.errors?.['required']">Start date is required </div>
+                  </div>
+                  <!-- <div *ngIf="startdate.touched && startdate.invalid"
+                              style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                              <div *ngIf="startdate.errors?.['pattern']">Enter a valid data</div>
+                            </div> -->
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">End Date</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                  <p-calendar [(ngModel)]="addProgram.endDate" placeholder="YYYY-MM-DD" type="date" name="end"
+                    [minDate]="addProgram.startDate" class="date-input" dateFormat="yy-mm-dd" #end="ngModel"
+                    [required]="true">
+                  </p-calendar>
+                  <div *ngIf="(p.submitted && end.untouched) || end.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="end.errors?.['required']">End date is required </div>
+                  </div>
+                  <!-- <div *ngIf="enddate.touched && enddate.invalid"
+                              style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                              <div *ngIf="enddate.errors?.['pattern']">Enter a valid data</div>
+                            </div> -->
+                </div>
+
+                <div [formGroup]="myGroup" class="col-md-6 mb-4">
+                  <label for="file" class=" mb-1">Program Outline</label><span class="required"> *</span>
+                  <input formControlName="file" id="file" type="file" class="form-control"
+                    (change)="onAddFileChange($event)" #program_outline_value value="addProgram.programOutline">
+                  <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                    <div>(Max file size should not exceed 2MB & file format should be pdf, xls, csv, jpg, jpeg, ppt,
+                      docx)</div>
+                  </div>
+
+                  <div *ngIf="(p.submitted && myGroup.untouched) || (p.submitted && myGroup.touched && message == null)"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div>Program outline file is required</div>
+                  </div>
+
+                  <div *ngIf="message != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    {{message}}
+                  </div>
+                </div>
+
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Program Status</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                  <select required class="form-select" [(ngModel)]="addProgram.programStatus" name="status"
+                    #status="ngModel" required>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                  <div *ngIf="(p.submitted && status.untouched) || status.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="status.errors?.['required']">Select the above(Status) field
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+                <!-- <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Program Outline</label><span class="required">
+                    *</span>
+                  <input required pattern="[a-zA-Z\s]+" type="text"
+                    oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                    class="form-control" name="programoutline" [(ngModel)]="addProgram.programOutline"
+                    #programoutline="ngModel">
+                  <div *ngIf="(p.submitted && programoutline.untouched) ||  programoutline.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="programoutline.errors?.['required']">Program Outline is required
+                    </div>
+                  </div>
+                  <div *ngIf="programoutline.touched && programoutline.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="programoutline.errors?.['pattern']">Enter a valid data</div>
+                  </div>
+                </div> -->
+
+                <div class="modal-footer ps-0 pe-0">
+                  <!-- <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button> -->
+                  <button type="submit" (click)="onAddProgram(p.form,p)" class="btn btn-blue">Register</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!--## single ##-->
+
+        <!-- bulk -->
+
+        <div class="row file-upload mt-3" id="show-bulk">
+          <div class="col-md-6 offset-md-6">
+            <div class="d-flex justify-content-end">
+              <a target="_self" style="text-decoration:none;" class="f-green"
+                href="assets/template/Program Bulk Template.xlsx">Download Template</a>
+              <!--<label style="cursor: pointer;" (click)="downloadTemplate()" class="f-green">Download
+                                                Template</label>-->
+            </div>
+          </div>
+          <div class="col-md-12 mb-3">
+            <div class="modal-bulk">
+              <div class="bulkupload">
+                <input id="file" #programFileInput (change)="onProgramBulkUploadChange($event)" type="file"
+                  class="form-control">
+              </div>
+              <div *ngIf="programBulkUploadMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Please upload valid file</div>
+              </div>
+            </div>
+
+          </div>
+          <!--## bulk ##-->
+          <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-blue" (click)="onProgramBulkUpload()">Upload</button>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit_user_details" tabindex="-1" aria-labelledby="edit_user_details" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="resetProgram(p, edit)"></button>
+      </div>
+      <div class="modal-body">
+
+        <form #edit="ngForm" name="editform" (ngSubmit)="edit">
+          <div class="">
+            <div class="row">
+
+              <!-- Academic Institute Name -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">Program Name</label><span class="required"> *</span><br />
+                <p-dropdown [options]="programDropDownDetails" [required]="true"
+                  (onChange)="changeEditProgram($event, edit)" (onClear)="clearEvent(edit)"
+                  [(ngModel)]="selectedEditProgram" #editprogramname="ngModel" name="editprogramname"
+                  optionLabel="program_name" [filter]="true" filterBy="program_name" [showClear]="true"
+                  placeholder="Select a Program">
+                  <ng-template pTemplate="selectedItem">
+                    <div class="college-item college-item-value" *ngIf="selectedEditProgram">
+                      <div>{{selectedEditProgram.program_name}}</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-program pTemplate="item">
+                    <div>
+                      <div>{{program.program_name}}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(edit.submitted && !selectedEditProgram)" class="error">
+                    <div *ngIf="editprogramname.errors?.['required']">
+                      Program name is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!--Program name -->
+              <div class="col-md-6 mb-3" *ngIf="selectedEditProgram != null && selectedEditProgram.program_id == 0">
+                <label class="mb-2">Program Name</label><span class="required"> *</span>
+                <input required pattern="[0-9a-zA-Z\s]+" type="text" [(ngModel)]="editProgram.programName"
+                  #editotherprogramname="ngModel" name="editotherprogramname" class="form-control"
+                  id="editotherprogramname" />
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(edit.submitted && editotherprogramname.untouched) || editotherprogramname.touched"
+                    class="error">
+                    <div *ngIf="editotherprogramname.errors?.['required']">
+                      Program name is required
+                    </div>
+                  </div>
+                  <div *ngIf="editotherprogramname.touched && editotherprogramname.invalid" class="error">
+                    <div *ngIf="editotherprogramname.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-4">
+                <label class="mb-2">Project Name</label><span class="required"> *</span>
+                <select required class="form-select" (change)="getprojectBasedRecords($any($event.target).value, 'add')"
+                  [(ngModel)]="editProgram.projectName" name="editprojectname" #editprojectname="ngModel">
+                  <option *ngFor="let x of projectddl" value="{{ x.project_id }}__{{ x.project_name }}">
+                    {{ x.project_name }}
+                  </option>
+                </select>
+                <div *ngIf="(edit.submitted && editprojectname.untouched) || editprojectname.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  <div *ngIf="editprojectname.errors?.['required']">
+                    Select the program field
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Course Name</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                <select required type="text" class="form-select" [(ngModel)]="editProgram.courseName" name="editcourse"
+                  #editcourse="ngModel" required>
+                  <option value="" disabled selected hidden> </option>
+                  <option *ngFor="let x of courseddl" value="{{ x.course_id }}__{{ x.coursename }}">{{x.coursename}}
+                  </option>
+                </select>
+                <div *ngIf="(edit.submitted && editcourse.untouched) || editcourse.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editcourse.errors?.['required']">Select the above(Course Name) field
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Project Manager Name</label><span class="required">
+                  *</span>
+                <input type="text" class="form-control" name="editprojectmanager"
+                  [(ngModel)]="editProgram.projectManagerName" #editprojectmanager="ngModel" disabled>
+                <!-- <option  *ngFor="let x of projectmanagerddl"> {{ x.firstname }} {{x.lastname}}</option>
+                                </select> -->
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Start Date</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                <p-calendar [(ngModel)]="editProgram.startdate" type="date" name="editstartdate" class="date-input"
+                  dateFormat="yy-mm-dd" #editstartdate="ngModel">
+                </p-calendar>
+                <div *ngIf="(edit.submitted && editstartdate.untouched) || editstartdate.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editstartdate.errors?.['required']">Start Date is required </div>
+                </div>
+                <div *ngIf="editstartdate.touched && editstartdate.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editstartdate.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">End Date</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                <p-calendar [(ngModel)]="editProgram.enddate" type="date" name="editenddate" class="date-input"
+                  [minDate]="editProgram.startdate" dateFormat="yy-mm-dd" #editenddate="ngModel">
+                </p-calendar>
+                <div *ngIf="(edit.submitted && editenddate.untouched) || editenddate.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editenddate.errors?.['required']">End Date is required </div>
+                </div>
+                <div *ngIf="editenddate.touched && editenddate.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editenddate.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <label class="mb-2">Program Outline</label><span class="required">
+                  *</span>
+                <div class="input-group file-group" *ngIf="uploadOption == true">
+                  <input type="text" class="form-control" name="programUpload"
+                    [value]="(editProgram.programOutline != undefined && editProgram.programOutline != null) ? editProgram.programOutline : ''"
+                    disabled>
+                  <button class="btn" type="button" (click)="UploadCerticate(false)"><i
+                      class="las la-times-circle"></i></button>
+                </div>
+
+                <div class="input-group file-group" *ngIf="uploadOption == false">
+                  <input type="file" class="form-control" name="editprogramoutline" (change)="onEditFileChange($event)">
+                  <button class="btn" type="button" (click)="UploadCerticate(true)"
+                    [disabled]="uploadOption == false"><i class="las la-times-circle"></i></button>
+                </div>
+
+                <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                  <div>(Max file size should not exceed 2MB & file format should be pdf, xls, csv, jpg, jpeg, ppt, docx)
+                  </div>
+                </div>
+                <div
+                  *ngIf="(edit.submitted && editMyGroup.untouched && editMessage == null && editProgram.programOutline == null) || (edit.submitted && editMyGroup.touched && editProgram.programOutline == null && editMessage == null) || (edit.submitted && editMessage == '' && uploadOption == false)"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div>Program outline file is required</div>
+                </div>
+                <div *ngIf="editMessage != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  {{editMessage}}
+                </div>
+              </div>
+
+              <!-- <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Program Outline</label><span class="required">
+                  *</span>
+                <input required pattern="[a-zA-Z\s]+" type="text"
+                  oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                  class="form-control" name="editprogramoutline" [(ngModel)]="editProgram.programOutline"
+                  #editprogramoutline="ngModel">
+                <div *ngIf="(edit.submitted && editprogramoutline.untouched) ||  editprogramoutline.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editprogramoutline.errors?.['required']">Program Outline is required
+                  </div>
+                </div>
+                <div *ngIf="editprogramoutline.touched && editprogramoutline.invalid"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editprogramoutline.errors?.['pattern']">Enter a valid data</div>
+                </div>
+              </div> -->
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Program Status</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                <select required class="form-select" [(ngModel)]="editProgram.status" name="editstatus"
+                  #editstatus="ngModel" required>
+
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <div *ngIf="(edit.submitted && editstatus.untouched) || editstatus.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="editstatus.errors?.['required']">Select the above(Status) field</div>
+                </div>
+              </div>
+
+              <!-- <div class="col-md-6 mb-4">
+                            <label class="form-check-label mb-1">Project Manager</label><span style="font-size: 10.5pt; margin-top: 2pt; color:red;"> *</span>
+                            <select required class="form-select" title="Project Manager" [(ngModel)]="addProject.project_manager_id" name="Project Manager" #projectmanager="ngModel" required>
+                              <option *ngFor="let x of projectmanagerddl" value="{{x.user_id}}" >{{x.project_manager_firstname}}</option>
+                            </select>
+                            <div *ngIf="(p.submitted && projectmanager.untouched) || projectmanager.touched" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                               <div *ngIf="projectmanager.errors?.['required']">Select the above(Project Manager) field</div>
+                            </div>
+                        </div> -->
+
+            </div>
+          </div>
+
+          <div class="modal-footer ps-0 pe-0">
+            <button type="button" class="btn btn-red" data-bs-dismiss="modal"
+              (click)="resetProgram(p, edit)">Close</button>
+            <button type="submit" (click)="onSubmitUpdateProgram(edit.form, edit)" class="btn btn-blue">Update</button>
+          </div>
+
+
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="view" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="p-table-grid" [value]="names" [paginator]="true" [rowsPerPageOptions]="[5,10]" [rows]="10"
+            sortMode="multiple" [responsive]="true">
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Student Name</th>
+                <th>Email Id</th>
+                <th>Mobile Number</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-userDetail>
+              <tr>
+                <td>
+                  {{userDetail.firstName}}
+                </td>
+                <td>
+                  {{userDetail.email}}
+                </td>
+                <td>
+                  {{userDetail.mobile}}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" (click)="downloadView()" class="btn btn-blue"> Download </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Change Status Modal -->
+<div class="modal fade" id="changestatus" tabindex="-1" aria-labelledby="changestatus" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" value="Active" type="radio" id="programstatusactive"
+                name="programstatus">
+              <label class="form-check-label" for="programstatusactive">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" value="Inactive" type="radio" id="programstatusinactive"
+                name="programstatus">
+              <label class="form-check-label" for="programstatusinactive">Inactive</label>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue" (click)="onchangeStatus(dt)">Update</button>
+          <!-- <pre>{{userDetails}}</pre> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

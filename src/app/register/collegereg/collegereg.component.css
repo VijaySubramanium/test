@@ -1,0 +1,29 @@
+
+
+.error{
+	font-size: 13px; 
+	margin-top: 2pt; 
+	color: red;
+}
+
+.p-toast {
+    position: fixed;
+    width: 19rem !important;
+}
+
+invalid-feedback {
+    width: 100%;
+    margin-top: .25rem;
+    color: red;
+    font-size: 12px !important;
+}
+
+
+datalist#college-name > option{
+    color: red;
+}
+
+
+
+
+

@@ -1,0 +1,1060 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+  <!--<app-spinner></app-spinner>-->
+  <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"></p-toast>
+  <app-sidebar></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>Profile management</h5>
+      </div>
+      <div class="card-body">
+        <p-tabView>
+          <p-tabPanel header="Profile">
+            <form #profile="ngForm" name="form" (ngSubmit)="profile.form.valid">
+              <div class="row overflow-card-body slim-scroll">
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">First Name</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.firstName"
+                    name="firstName" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Last Name</label>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.lastName"
+                    name="lastName" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Gender</label><span class="required"> *</span>
+                  <input type="text" class="form-control" name="gender" [(ngModel)]="userModel.gender" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Date of Birth</label><span class="required"> *</span>
+                  <input type="date" class="form-control date-input" name="dob" data-date="" data-date-format="DD-MM-YYYY"  [(value)]="userModel.dob" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" [hidden]="userModel.roleId == '3'">
+                  <label class="mb-2">Marital Status</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" name="maritalStatus" disabled
+                    [(ngModel)]="userModel.maritalStatus">
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Email Id</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" name="email" [(ngModel)]="userModel.email" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Mobile Number</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" name="mobile" [(ngModel)]="userModel.mobile" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Whatsapp Number</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" name="whatsappNumber"
+                    [(ngModel)]="userModel.whatsappNumber" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Password</label><span class="required"> *</span>
+                  <!-- <input type="password" class="form-control" id="" placeholder="Password"> -->
+                  <div class="input-group">
+                    <input required
+                      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                      [type]="show_button ? 'text' : 'password'" name="pswd" class="form-control" name="password"
+                      [(ngModel)]="userModel.password" #passwordcontrol="ngModel">
+                    <i [class]="show_eye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                      (click)="showPassword()" id="eye"></i>
+                  </div>
+
+                  <div *ngIf="profile.submitted && passwordcontrol.untouched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+
+                    <div *ngIf="passwordcontrol.errors?.['required']">This field is required
+                    </div>
+                  </div>
+                  <div *ngIf="passwordcontrol.touched && passwordcontrol.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div class="alert alert-danger" *ngIf="passwordcontrol.errors?.['pattern']">
+                      Password must contain
+                      atleast 8 characters, 1 upper case letter, 1 lower
+                      case letter, 1 number and 1 special character</div>
+                  </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                  <label class="mb-2">Confirm Password</label><span class="required"> *</span>
+                  <div class="input-group">
+                    <input required
+                      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$!%&'()*+,-/<=>?@[\]^_{|}])[A-Za-z\d#$!%&'()*+,-/<=>?@[\]^_{|}]{8,16}$"
+                      [type]="show_confirmbutton ? 'text' : 'password'" class="form-control" name="cpswd"
+                      [(ngModel)]="userModel.confirmPassword" #passwordconfirm="ngModel">
+                    <i [class]="show_confirmeye ? 'las la-eye btn-login' : 'las la-eye-slash btn-login'"
+                      (click)="showConfirmPassword()" id="confirmeye"></i>
+                  </div>
+
+
+                  <div *ngIf="profile.submitted && passwordconfirm.untouched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="passwordconfirm.errors?.['required']">This field is required
+                    </div>
+                  </div>
+
+                  <div class="help-block"
+                    *ngIf="passwordconfirm.dirty && passwordconfirm.value != '' && passwordconfirm.value !== passwordcontrol.value"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    Password doesnot match
+                  </div>
+
+                  <div *ngIf="passwordconfirm.touched " style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="passwordconfirm.errors?. ['required']">This field is
+                      required
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14' || userModel.roleId == '3'">
+                  <label class="mb-2">Graduated</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" name="isGraduated" disabled
+                    [(ngModel)]="userModel.isGraduated">
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14' || userModel.roleId == '3'">
+                  <label class="mb-2">State</label><span class="required"> *</span>
+                  <input required type="text" class="form-control" [(ngModel)]="userModel.stateName" name="state"
+                    disabled>
+                </div>
+
+
+                <div class="col-md-4 mb-4 grad" *ngIf="userModel.isGraduated === 'Yes'">
+                  <label class="mb-2">College City</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" name="collegeCity" disabled
+                    [(ngModel)]="userModel.collegeCity">
+                </div>
+                <div class="col-md-4 mb-4 grad" *ngIf="userModel.isGraduated === 'Yes'">
+                  <!-- <select class="form-select" [(ngModel)]="userModel.collegeName" name="collegeName">
+                                                    <option selected>College Name</option>
+                                                    <option value="1">NMN College</option>
+                                                    <option value="2">Nirup College</option>
+                                                    <option value="3">Adarsh College</option>
+                                                </select> -->
+                  <label class="mb-2">Academic Institution</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control capitalize" id="" name="collegeName" placeholder="College Name"
+                    [(ngModel)]="userModel.collegeName" disabled>
+                </div>
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14' || userModel.roleId =='3'">
+                  <label class="mb-2">Aadhaar Number</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.aadharNumber" name="aadharNumber"
+                    disabled>
+                </div>
+                <!-- <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14' || userModel.roleId == '3'">
+                                            <label class="mb-2">Pan Number</label><span class="required"> *</span>
+                                            <input type="text" class="form-control" id="" [(ngModel)]="userModel.panNumber" name="panNumber" disabled>
+                                        </div> -->
+                <div class="col-md-4 mb-4 grad" *ngIf="userModel.isGraduated === 'Yes'">
+                  <!-- <select class="form-select" [(ngModel)]="userModel.educationalQualification" name="educationalQualification">
+                                                    <option selected>Current Educational Qualification</option>
+                                                    <option value="1"></option>
+                                                    <option value="2"></option>
+                                                    <option value="3"></option>
+                                                </select> -->
+                  <label class="mb-2">Current Educational Qualification</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control capitalize" id="" name="educationalQualification"
+                    [(ngModel)]="userModel.educationalQualification" disabled>
+                </div>
+                <div class="col-md-4 mb-4 grad" *ngIf="userModel.isGraduated === 'Yes'">
+                  <!-- <select class="form-select" [(ngModel)]="userModel.graduationPassingYear" name="graduationPassingYear">
+                                                    <option selected>Graduation Passing Year</option>
+                                                    <option value="1"></option>
+                                                    <option value="2"></option>
+                                                    <option value="3"></option>
+                                                </select> -->
+                  <label class="mb-2">Graduation Passing Year?</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control" id="" name="graduationPassingYear"
+                    placeholder="Graduation Passing Year?" [(ngModel)]="userModel.graduationPassingYear" disabled>
+                </div>
+                <div class="col-md-4 mb-4 grad" style="display: none">
+                  <!-- <select class="form-select" [(ngModel)]="userModel.subject" name="subject">
+                                                    <option selected>Subject/Stream</option>
+                                                    <option value="1"></option>
+                                                    <option value="2"></option>
+                                                    <option value="3"></option>
+                                                </select> -->
+                  <label class="mb-2">Subject/Stream</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" name="subject"
+                    [(ngModel)]="userModel.subject" disabled>
+                </div>
+
+
+                <!-- <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                                            <label class="mb-2">Postal Address</label><span class="required"> *</span>
+                                            <input type="text" class="form-control" id="" [(ngModel)]="userModel.postalAddress" name="postalAddress" disabled>
+
+                                        </div> -->
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Father Name</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.fatherName"
+                    name="fathersName" disabled>
+                  <!-- <div *ngIF = "userModel.roleId == '2'" ></div> -->
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Mother Name</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.motherName"
+                    name="mothersName" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Guardian Name</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.guardianName"
+                    name="guardianName" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Pincode</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.pincode" name="pincode" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Disability Type</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.disabilityType"
+                    name="disabilityType" disabled>
+                </div>
+
+                <!-- <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                                            <label class="mb-2">Disability %</label><span class="required"> *</span>
+                                            <input type="text" class="form-control" id="" [(ngModel)]="userModel.disabilityPercent" name="disabilityPercent" disabled>
+                                        </div> -->
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Marks %</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.percentageMarks"
+                    name="percentageMarks" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Language Known</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.languageKnown"
+                    name="languageKnown" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Experience</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.isExperience" name="isExperience"
+                    disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.isExperience == 'Yes' && userModel.roleId == '14'">
+                  <label class="mb-2">Years</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.experienceYears"
+                    name="experienceYears" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.isPlaced == 'Yes' && userModel.roleId == '14'">
+                  <label class="mb-2">Name of Previous Employer 1</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.employer1"
+                    name="employer1" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.isPlaced == 'Yes' && userModel.roleId == '14'">
+                  <label class="mb-2">Name of Previous Employer 2</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.employer2"
+                    name="employer2" disabled>
+                </div>
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Alternative Number</label>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.alternateNumber"
+                    name="alternateNumber" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.pursuingPostGraduate == 'Yes' && userModel.roleId == '14'">
+                  <label class="mb-2">Passing Year?</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.postgraduationPassingyear"
+                    name="postgraduationPassingyear" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14'">
+                  <label class="mb-2">Are you pursuing post graduate?</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.pursuingPostGraduate"
+                    name="pursuingPostGraduate" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.pursuingPostGraduate == 'Yes' && userModel.roleId == '14'">
+                  <label class="mb-2">Post-graduation Academic Institution Name?</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel.postgraduationInstitution"
+                    name="postgraduationInstitution" disabled>
+                </div>
+
+                <div class="col-md-4 mb-4" *ngIf="userModel.pursuingPostGraduate == 'Yes' && userModel.roleId == '14'">
+                  <label class="mb-2">Post Graduation Qualification?</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control" id="" [(ngModel)]="userModel. postqraduationQualification"
+                    name=" postqraduationQualification" disabled>
+                </div>
+
+
+
+                <div class="col-md-4 mb-4 prof" *ngIf="userModel.isGraduated == 'No' && userModel.roleId == '14'">
+                  <!-- <select class="form-select" [(ngModel)]="userModel.profession" name="profession">
+                                                    <option selected>Profession</option>
+                                                    <option value="1"></option>
+                                                    <option value="2"></option>
+                                                    <option value="3"></option>
+                                                </select> -->
+                  <label class="mb-2">Profession</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" name="profession"
+                    [(ngModel)]="userModel.profession" disabled>
+                </div>
+                <div class="col-md-4 mb-4 prof" *ngIf="userModel.isGraduated == 'No'">
+                  <label class="mb-2">Current Location</label><span class="required"> *</span>
+                  <input type="text" class="form-control capitalize" id="" [(ngModel)]="userModel.currentLocation"
+                    name="currentLocation" disabled>
+                </div>
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14' || userModel.roleId =='3'">
+                  <!-- <select class="form-select" disabled [(ngModel)]="userModel.isPlaced" name="isPlaced">
+                                                    <option>Are you placed in any organization?</option>
+                                                    <option value="1" selected>Yes</option>
+                                                    <option value="2">No</option>
+                                                </select> -->
+                  <label class="mb-2">Are you placed in any organization?</label><span class="required"> *</span>
+                  <input type="text" class="form-control" id="" name="isPlaced" [(ngModel)]="userModel.isPlaced"
+                    disabled>
+                </div>
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '14' || userModel.roleId =='3'">
+                  <!-- <select class="form-select" disabled [(ngModel)]="userModel.caste" name="caste">
+                                                    <option selected>Caste</option>
+                                                    <option value="1"></option>
+                                                    <option value="2"></option>
+                                                </select> -->
+                  <label class="mb-2">Caste</label>
+                  <input type="text" class="form-control capitalize" id="" name="caste" [(ngModel)]="userModel.caste"
+                    disabled>
+                </div>
+                <div class="col-md-4 mb-4"
+                  *ngIf="userModel.isPlaced == 'Yes' && userModel.roleId == '14' || userModel.roleId =='3'">
+                  <label class="mb-2">Name of Placed Organization?</label>
+                  <input type="text" class="form-control" id="" name="placedOrganization"
+                    [(ngModel)]="userModel.placedOrganization" disabled>
+                </div>
+                <div class="col-md-4 mb-4"
+                  *ngIf="userModel.isPlaced == 'Yes' && userModel.roleId == '14' || userModel.roleId =='3'">
+                  <label class="mb-2">Designation</label>
+                  <input type="text" class="form-control" id="" name="designation" [(ngModel)]="userModel.designation"
+                    disabled>
+                </div>
+                <div class="col-md-4 mb-4"
+                  *ngIf="userModel.isPlaced == 'Yes' && userModel.roleId == '14' || userModel.roleId =='3'">
+                  <label class="mb-2">Month joining the organization?</label>
+                  <input type="text" class="form-control" id="" name="joiningMonth" [(ngModel)]="userModel.joiningMonth"
+                    disabled>
+                </div>
+                <div class="col-md-4 mb-4" *ngIf="userModel.roleId == '3' || userModel.roleId =='14'">
+                  <!-- <select class="form-select" disabled [(ngModel)]="userModel.vaccinationStatus" name="vaccinationStatus">
+                                                    <option selected>Vaccination Status</option>
+                                                    <option value="1">First dose Taken</option>
+                                                    <option value="2">Both the doses Taken</option>
+                                                    <option value="2">Not taken a single dose</option>
+                                                </select> -->
+                  <label class="mb-2">Vaccination Status</label><span class="required">
+                    *</span>
+                  <input type="text" class="form-control" id="" name="vaccinationStatus"
+                    [(ngModel)]="userModel.vaccinationStatus" disabled>
+                </div>
+                <div class="col-md-4 mb-4"
+                  *ngIf="(userModel.vaccinationStatus=='Yes' && userModel.roleId == '3') || (userModel.vaccinationStatus=='Yes' && userModel.roleId =='14')">
+                  <label class="mb-2">Vaccination Certificate</label><span class="required">
+                    *</span>
+                  <div class="input-group file-group" *ngIf="uploadOption == true">
+                    <input type="text" class="form-control" name="upload"
+                      [value]="userModel.vaccinationcertificatefilename" disabled>
+                    <!-- <button class="btn" type="button" (click)="UploadCerticate(false)"><i
+                        class="las la-times-circle"></i></button> -->
+                  </div>
+
+                  <!-- <div class="input-group file-group" *ngIf="uploadOption == false">
+                    <input type="file" class="form-control" name="upload" (change)="onFileChange($event)"
+                      [value]="userModel.vaccinationcertificatefilename">
+                    <button class="btn" type="button" (click)="UploadCerticate(true)"><i
+                        class="las la-times-circle"></i></button>
+                  </div> -->
+
+                  <!-- <div style="font-size: 10.5pt; margin-top: 2pt; color:#6b6969;">
+                    <div>(Max file size should not exceed 2MB & file format should be Excel,Pdf and JPG )
+                    </div>
+                  </div> -->
+                  <div
+                    *ngIf="profile.submitted && myGroup.untouched && userModel.vaccinationcertificatefilename == '' && userModel.vaccinationcertificatefilename == null"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div>Vaccination Certificate is required</div>
+                  </div>
+                  <div style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    {{message}}
+                  </div>
+                </div>
+                <div class="col-md-12 mb-4">
+                  <div class="form-check">
+                    <!-- <input class="form-check-input" type="checkbox" value="" id="agree"> -->
+                    <input class="form-check-input" type="checkbox" value="userModel.termsAndConditions" name="agree"
+                      [(ngModel)]="userModel.termsAndConditions" #checkbox="ngModel">
+                    <label class="form-check-label" for="agree">
+                      I agree to <a href="{{ terms_and_conditions_url }}" target="_blank" class="none_underline"
+                        [ngStyle]="{'pointer-events': (terms_and_conditions_url == null) ? 'none' : 'inherit'}"> Terms
+                        and Conditions </a>
+                    </label>
+                    <div *ngIf="profile.submitted && checkbox.invalid"
+                      style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div *ngIf="checkbox.errors?.['required']">Check this box before
+                        submission
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-12 mb-4">
+                  <!-- <button type="button" class="btn btn-blue">Register</button> -->
+                  <button type="submit" class="btn btn-blue" [disabled]="!profile.form.valid"
+                    (click)="onSubmit(profile.form.valid)">Change Password</button>
+                </div>
+                <!-- </form> -->
+
+              </div>
+            </form>
+          </p-tabPanel>
+          <p-tabPanel header="Additional Fields" *ngIf="additionalScreen.includes(loggedInRoleName)">
+            <div>
+              <ng-container *ngIf="!loading && userAdditionalFields > 0">
+                <app-dynamic-form [questions]="questions$" [currentProjectId]="currentProjectId"
+                  [currentProjectName]="currentProjectName" [terms_and_conditions_url]="pro_terms_and_conditions_url" [terms_and_conditions_url_status]="pro_terms_and_conditions_url_status">
+                </app-dynamic-form>
+              </ng-container>
+              <ng-container *ngIf="loading && userAdditionalFields > 0">
+                Loading...
+              </ng-container>
+              <ng-container *ngIf="userAdditionalFields == 0">
+                No projects mapped for this user.
+              </ng-container>
+            </div>
+
+
+            <div *ngIf="!loading">
+              <div *ngIf="projectsData.length > 1" class="col-md-3 pull-right" style="margin-top:-60px;position:relative">
+                <select  class="form-select" (change)="NextProject($any($event.target).value)">
+                  <option *ngFor="let pro of projectsData" [selected]="pro.projectId == currentProjectId" value="{{ pro.projectId }}">
+                    {{pro.projectname}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- <ngb-carousel >
+            <ng-template ngbSlide *ngFor="let pro of projectsData">
+                <div *ngIf="!loading">
+                  <div *ngIf="projectsData.length > 1">
+                      <button style="margin-left: 75%;" class="btn btn-primary gray-on-disabled"
+                        (click)="NextProject(pro.projectId)">Go To
+                        {{pro.projectname}}</button>
+                  </div>
+                </div>
+            </ng-template>
+
+          </ngb-carousel> -->
+
+
+
+          </p-tabPanel>
+        </p-tabView>
+
+
+        <!--<ul class="nav nav-tabs card-nav" id="myTab" role="tablist">
+                            <li *ngFor="let subMenu of rightSideMenus" class="nav-item" role="presentation">
+
+                                <div *ngIf="subMenu.sub_menu_url == 'profile'">
+                                    <button [ngClass]="subMenu.sub_menu_url == 'profile' ? 'nav-link active': 'nav-link'" id="subMenu.sub_menu_url-tab" data-bs-toggle="tab"
+                                        [attr.data-bs-target]="'#'+ subMenu.sub_menu_url.trim()" type="button" role="tab" aria-controls="subMenu.sub_menu_url"
+                                        aria-selected="true">{{ subMenu.sub_menu_name
+                                    }}</button>
+                                </div>
+
+                                <div *ngIf="subMenu.sub_menu_url != 'profile' && additionalScreen.includes(loggedInRoleName)">
+                                    <button [ngClass]="'nav-link'" id="subMenu.sub_menu_url-tab" data-bs-toggle="tab" [attr.data-bs-target]="'#'+ subMenu.sub_menu_url.trim()"
+                                        type="button" role="tab" aria-controls="subMenu.sub_menu_url" aria-selected="true">{{ subMenu.sub_menu_name
+                                    }}</button>
+                                </div>
+                            </li>
+                        </ul>-->
+
+        <!--<div class="tab-content card-tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                            </div>
+
+                            <div class="tab-pane fade" id="additionalfields" role="tabpanel" aria-labelledby="additionalfields-tab">
+
+
+
+
+                            </div>
+                        </div>-->
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- AddCoordinator Modal -->
+<div class="modal fade" id="addCoordinator" tabindex="-1" aria-labelledby="addCoordinator" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Coordinator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+            value="single" checked>
+          <label class="form-check-label" for="inlineRadio1">Single</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+            value="bulk">
+          <label class="form-check-label" for="inlineRadio2">Bulk</label>
+        </div>
+        <!-- single -->
+        <div class="row file-upload mt-3" id="show-single">
+          <div class="col-md-4 mb-4">
+            <input type="text" class="form-control" placeholder="First Name">
+          </div>
+          <div class="col-md-4 mb-4">
+            <input type="text" class="form-control" placeholder="Last Name">
+          </div>
+          <div class="col-md-4 mb-4">
+            <input type="email" class="form-control" placeholder="Email Id">
+          </div>
+          <div class="col-md-4 mb-4">
+            <input type="text" class="form-control" placeholder="Phone Number">
+          </div>
+          <div class="col-md-4 mb-4">
+            <input type="text" class="form-control" placeholder="Role">
+          </div>
+          <div class="col-md-4 mb-4">
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Status</option>
+              <option value="1">Active</option>
+              <option value="2">Inactive</option>
+              <option value="3"></option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Training Subjects</option>
+              <option value="1"></option>
+              <option value="2"></option>
+              <option value="3"></option>
+            </select>
+          </div>
+        </div>
+        <!--## single ##-->
+
+        <!-- bulk -->
+        <div class="row file-upload mt-3" id="show-bulk">
+          <div class="col-md-4 offset-md-4">
+            <div class="d-flex justify-content-end">
+              <label class="f-green">Download Template</label>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="drop-zone mb-4">
+              <div class="">
+                <i class="las la-download"></i>
+              </div>
+              <span class="drop-zone__prompt">Upload Excel or drag it here</span>
+              <input type="file" name="myFile" class="drop-zone__input">
+            </div>
+            <div class="file-drop-area">
+              <span class="choose-file-button">Upload</span>
+              <span class="file-message">Select file</span>
+              <input class="file-input" type="file" multiple>
+            </div>
+
+          </div>
+          <!--## bulk ##-->
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Assign Modal -->
+<div class="modal fade" id="assign" tabindex="-1" aria-labelledby="assign" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Assign</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Project 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project Manager</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Trainer</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Training coordinator</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Program</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Program 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Course & Batch</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Course & Batch 1</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal fade" id="view" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project</small>
+            <select class="form-select" disabled aria-label="Default select example">
+              <option selected>Project 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project Manager</small>
+            <select class="form-select" disabled aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Trainer</small>
+            <select class="form-select" disabled aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Training coordinator</small>
+            <select class="form-select" disabled aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Program</small>
+            <select class="form-select" disabled aria-label="Default select example">
+              <option selected>Program 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Course & Batch</small>
+            <select class="form-select" disabled aria-label="Default select example">
+              <option selected>Course & Batch 1</option>
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="edit" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Project 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project Manager</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Trainer</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Training coordinator</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Program</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Program 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Course & Batch</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Course & Batch 1</option>
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Project 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Project Manager</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Trainer</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Training coordinator</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Program</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Program 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <small class="mb-2">Course & Batch</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Course & Batch 1</option>
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-red">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Attendance Modal -->
+<div class="modal fade" id="view-attendance" tabindex="-1" aria-labelledby="view-attendance" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Attendance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <small class="mb-2">Student Name</small>
+            <select class="form-select" aria-label="Default select example" disabled>
+              <option selected>Name 1</option>
+              <option>Name 2</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-4">
+            <small class="mb-2">Select Date</small>
+            <input type="text" class="dateselect form-control" placeholder="Select Date" required="required" disabled />
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="viewinlineRadio1" name="viewattendance"
+                checked disabled>
+              <label class="form-check-label" for="viewinlineRadio1">Present</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="viewinlineRadio2" name="viewattendance"
+                disabled>
+              <label class="form-check-label" for="viewinlineRadio2">Absent</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Attendance Modal -->
+<div class="modal fade" id="edit-attendance" tabindex="-1" aria-labelledby="edit-attendance" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Attendance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <small class="mb-2">Student Name</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+              <option>Name 2</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-4">
+            <small class="mb-2">Select Date</small>
+            <input type="text" class="dateselect form-control" placeholder="Select Date" required="required" />
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="editinlineRadio1" name="editattendance"
+                checked>
+              <label class="form-check-label" for="editinlineRadio1">Present</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="editinlineRadio2"
+                name="editattendance">
+              <label class="form-check-label" for="editinlineRadio2">Absent</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Attendance Modal -->
+<div class="modal fade" id="delete-attendance" tabindex="-1" aria-labelledby="delete-attendance" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Attendance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <small class="mb-2">Student Name</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+              <option>Name 2</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-4">
+            <small class="mb-2">Select Date</small>
+            <input type="text" class="dateselect form-control" placeholder="Select Date" required="required" />
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="deleteinlineRadio1"
+                name="deleteattendance" checked>
+              <label class="form-check-label" for="deleteinlineRadio1">Present</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="deleteinlineRadio2"
+                name="deleteattendance">
+              <label class="form-check-label" for="deleteinlineRadio2">Absent</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-red">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change Status Modal -->
+<div class="modal fade" id="change-status" tabindex="-1" aria-labelledby="change-status" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 mb-4">
+            <small class="mb-2">Student Name</small>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+              <option>Name 2</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="statusinlineRadio1" name="status"
+                checked>
+              <label class="form-check-label" for="statusinlineRadio1">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="statusinlineRadio2" name="status">
+              <label class="form-check-label" for="statusinlineRadio2">Deactive</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Generate Link Modal -->
+<div class="modal fade" id="generate-link" tabindex="-1" aria-labelledby="generate-link" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Generate Link</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="mb-2">Project</label>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Project 1</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="mb-2">Project Manager</label>
+            <select class="form-select" aria-label="Default select example">
+              <option selected>Name 1</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-blue">Generate Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

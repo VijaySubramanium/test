@@ -1,0 +1,307 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+  <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+  <app-sidebar (listOfRightMenus)="onListOfRightMenus($event)"></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>Historical Data</h5>
+        <span *ngFor="let subMenu of rightSideMenus">
+          <div class="dropdown float-end header-links">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+                <div *ngIf="subMenuAction.action_url.trim() != 'changestatus'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#' + subMenuAction.action_url.trim()">{{ subMenuAction.action_name }}</a>
+                </div>
+                <div *ngIf="subMenuAction.action_url.trim() == 'changestatus' && loggedInRoleName == 'GTT_ADMIN'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#' + subMenuAction.action_url.trim()">{{ subMenuAction.action_name }}</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </span>
+      </div>
+    </div>
+
+
+    <p-tabView (onChange)="getHistoricalDetails($event)">
+      <!-- Project Tab -->
+      <p-tabPanel header="Historical Data">
+        <div class="row">
+          <div class="col-md-12">
+            <form #viewfile="ngForm" class="d-flex" name="viewForm" (ngSubmit)="(viewfile.form.valid)">
+              <div class="col-md-3 mb-3 p-2">
+                <label class="mb-1">Projects</label><span class="required"> *</span>
+                <select required type="text" class="form-select"
+                  (change)="getProjectViewFolders($any($event.target).value)" name="viewprojectname"
+                  #viewprojectname="ngModel" [(ngModel)]="viewData.projectId">
+                  <option value="" disabled selected hidden>
+                    Select Project
+                  </option>
+                  <option *ngFor="let x of listofProject" value="{{ x.project_id }}">
+                    {{ x.project_name }}
+                  </option>
+                </select>
+
+                <div *ngIf="(viewfile.submitted && viewprojectname.untouched) || viewprojectname.touched"
+                  style="font-size: 10pt; margin-top: 2pt; color: red">
+                  <div *ngIf="viewprojectname.errors?.['required']">
+                    Select the project field
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-2 mb-3 p-2">
+                <label class="mb-1">Folders</label><span class="required"> *</span>
+                <select required type="text" class="form-select"
+                  (change)="getFolderViewBatches($any($event.target).value)" name="viewyear" #viewyear="ngModel"
+                  [(ngModel)]="viewData.year">
+                  <option value="" disabled selected hidden>
+                    Select Folder
+                  </option>
+                  <option *ngFor="let x of listofViewYears" value="{{ x.year }}">
+                    {{ x.year }}
+                  </option>
+                </select>
+
+                <div *ngIf="(viewfile.submitted && viewyear.untouched) || viewyear.touched"
+                  style="font-size: 10pt; margin-top: 2pt; color: red">
+                  <div *ngIf="viewyear.errors?.['required']">
+                    Select the folder name field
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-2 mb-3 p-2">
+                <label class="mb-1">Batch</label><span class="required"> *</span>
+                <select required type="text" class="form-select" (change)="getBatchViewStudents(viewfile)"
+                  name="viewbatch" #viewbatch="ngModel" [(ngModel)]="viewData.batchId">
+                  <option value="" disabled selected hidden>
+                    Select Batch
+                  </option>
+                  <option *ngFor="let x of listofViewBatches" value="{{ x.batch_id }}">
+                    {{ x.batch_code }}
+                  </option>
+                </select>
+                <div *ngIf="(viewfile.submitted && viewbatch.untouched) || viewbatch.touched"
+                  style="font-size: 10pt; margin-top: 2pt; color: red">
+                  <div *ngIf="viewbatch.errors?.['required']">
+                    Select the batch field
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-3 mb-3 p-2">
+                <label class="form-check-label mb-1">Student:</label><span
+                  style="font-size: 10pt; margin-top: 2pt; color: red">
+                  *</span>
+                <p-multiSelect required="true" defaultLabel="Select students" #selectviewUsers="ngModel" [options]="selectViewListUsers" name="users"
+                  [(ngModel)]="selectedViewUsers" optionLabel="user_name" display="chip"></p-multiSelect>
+                <div *ngIf="(viewfile.submitted && selectviewUsers.untouched) || selectviewUsers.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="selectviewUsers.errors?.['required']">Select the user field</div>
+                </div>
+              </div>
+
+              <div class="col-md-2 mb-3 mt-4 p-2">
+                <button type="submit" class="btn btn-blue" (click)="getBatchViewStudentFiles(viewfile)">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row" *ngIf="historicalDataTable">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results Found</span></small>
+            </div>
+          </div>
+          <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+            <button class="btn btn-blue me-2 mb-3" (click)="downloadFiles()">Download</button>
+            <!-- <div class="search-input w-xs-100 me-2 mb-3">
+              <p-multiSelect [options]="cols" optionLabel="header" [(ngModel)]="_selectedProjectColumns"
+                (onChange)="columnFilter($event)" selectedItemsLabel="{0} columns selected"
+                [style]="{ minWidth: '180px' }" placeholder="Choose Columns"></p-multiSelect>
+            </div>
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <input type="text" class="form-control" placeholder="Search"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+            </div>
+            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+              <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Export<i class="las la-angle-down ms-2"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file" title="CSV"
+                    (click)="dt.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only"
+                    tooltipPosition="bottom"></button>
+                </li>
+              </ul>
+            </div> -->
+
+          </div>
+
+          <div class="col-12 scroll-table scrolling-table-div">
+            <p-table #dt class="p-table-grid" [columns]="selectedProjectColumns"
+              [(selection)]="selectedHistoricalDetails" [value]="studentFileDetails" [paginator]="true"
+              [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10" sortMode="multiple" [responsive]="true"
+              [globalFilterFields]="HistoricalSearchFilter" [exportFilename]="exportHistoricalName">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-fileDetail let-columns="columns">
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="fileDetail"></p-tableCheckbox>
+                  </td>
+                  <td *ngFor="let col of columns"
+                    [ngClass]="{'text-center': ((col.field != 'project_name'))  ? true : false}"
+                    style="text-align: left">
+                    <span *ngIf="col.field != 'filename'">
+                      {{ fileDetail[col.field] }}
+                    </span>
+                    <span *ngIf="col.field == 'filename'">
+                      <a href="{{ fileDetail['azureurl'] }}" class="none_underline" target="_blank">{{
+                        fileDetail[col.field]
+                        }}</a>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+
+
+<!-- Add Project Modal -->
+<div class="modal fade" id="addfolder" tabindex="-1" aria-labelledby="addfolder" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Folder</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="addFolderReset(addfolder, viewfile)"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row file-upload mt-3" id="show-single">
+          <form #addfolder="ngForm" name="form" (ngSubmit)="(addfolder.form.valid)">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="mb-1">Project Name</label><span class="required"> *</span>
+                <select required type="text" class="form-select" (change)="getBatchDetails($any($event.target).value)"
+                  name="projectid" #projectname="ngModel" [(ngModel)]="UserData.projectname">
+                  <option *ngFor="let x of listofProject" value="{{ x.project_id }}">
+                    {{ x.project_name }}
+                  </option>
+                </select>
+
+                <div *ngIf="(addfolder.submitted && projectname.untouched) || projectname.touched"
+                  style="font-size: 11pt; margin-top: 2pt; color: red">
+                  <div *ngIf="projectname.errors?.['required']">
+                    Select the project field
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="mb-1">Folder Name <span class="required">*</span></label>
+                <input pattern="^[a-zA-Z0-9\s!@#$%^&(),.-]+$" type="text" class="form-control" id="year" name="year"
+                  [(ngModel)]="UserData.foldername" #year="ngModel" required>
+                <div style="height: 4px; display: block;" class="invalid-feedback">
+                  <div *ngIf="(addfolder.submitted && year.untouched) || year.touched" class="error">
+                    <div *ngIf="year.errors?.['required']">Folder name is required</div>
+                  </div>
+                  <div *ngIf="year.touched && year.invalid" class="error">
+                    <div *ngIf="year.errors?.['pattern']">Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="mb-1">Batch Name</label><span class="required"> *</span>
+                <select required type="text" class="form-select" (change)="getUserDetails($any($event.target).value)"
+                  name="batchid" #batchname="ngModel" [(ngModel)]="UserData.batchname">
+                  <option *ngFor="let x of listofBatches" value="{{ x.batch_id }}">
+                    {{ x.batch_code }}
+                  </option>
+                </select>
+                <div *ngIf="(addfolder.submitted && batchname.untouched) || batchname.touched"
+                  style="font-size: 11pt; margin-top: 2pt; color: red">
+                  <div *ngIf="batchname.errors?.['required']">
+                    Select the batch field
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-check-label mb-1">Student:</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  *</span>
+                <p-multiSelect required="true" #users="ngModel" [options]="listofUsers" #selectedUser name="users"
+                  [(ngModel)]="selectedUsers" optionLabel="user_name" display="chip"></p-multiSelect>
+                <div *ngIf="(addfolder.submitted && users.untouched) || users.touched"
+                  style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="users.errors?.['required']">Select the user field</div>
+                </div>
+              </div>
+            </div>
+
+            <div [formGroup]="myGroup" class="col-md-6 mb-4">
+              <label for="file" class=" mb-1">Student File</label><span class="required"> *</span>
+              <input formControlName="file" id="file" type="file" class="form-control" #studentFile multiple
+                (change)="onAddUseFileChange($event)">
+              <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                <div>(Max file size should not exceed 10MB & file format should be pdf, jpg, xlsx, csv, doc, ppt, png)
+                </div>
+              </div>
+              <div
+                *ngIf="(addfolder.submitted && myGroup.untouched && userFileMessage == null) || (addfolder.submitted && myGroup.touched && UserData.termsandconditions == null && userFileMessage == null)"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Student pdf file is required</div>
+              </div>
+              <div *ngIf="userFileMessage != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                {{userFileMessage}}
+              </div>
+            </div>
+
+            <div class="modal-footer ps-0 pe-0">
+              <button type="button" class="btn btn-red" data-bs-dismiss="modal"
+                (click)="addFolderReset(addfolder, viewfile)">Close</button>
+              <button type="submit" class="btn btn-blue" (click)="addFolderSubmit(addfolder, viewfile)">Submit</button>
+            </div>
+            <!-- </div> -->
+          </form>
+        </div>
+
+        <!-- </form> -->
+        <!--## single ##-->
+
+      </div>
+    </div>
+  </div>
+</div>

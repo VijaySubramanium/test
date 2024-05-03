@@ -1,0 +1,1125 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+  <app-sidebar (listOfRightMenus)="onListOfRightMenus($event)"></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+
+  <p-toast [breakpoints]="{
+      '920px': { height: '200px', width: '100%', right: '0', left: '0' }
+    }"></p-toast>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>Project Management</h5>
+        <span *ngFor="let subMenu of rightSideMenus">
+          <div class="dropdown float-end header-links">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+                <div *ngIf="currentTab1 == 'Project' && subMenuAction.action_url.trim() != 'changestatus'">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#' + subMenuAction.action_url.trim()">{{ subMenuAction.action_name }}</a>
+                </div>
+                <div *ngIf="currentTab2 == 'Fields Mapping' && subMenuAction.action_url.trim() != 'changestatus'">
+                  <a class="dropdown-item" tabindex="-1" href="javascript:void(0);" data-bs-toggle="modal"
+                    data-bs-target="#addfieldnames">Add Fields</a>
+                </div>
+                <div
+                  *ngIf="subMenuAction.action_url.trim() == 'changestatus' && loggedInRoleName == 'GTT_ADMIN' && selectedProjectDetails.length > 0">
+                  <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                    [attr.data-bs-target]="'#' + subMenuAction.action_url.trim()">{{ subMenuAction.action_name }}</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </span>
+      </div>
+    </div>
+
+
+    <p-tabView (onChange)="getprojectDetails($event)">
+      <!-- Project Tab -->
+      <p-tabPanel header="Project">
+        <div class="row">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results Found</span></small>
+            </div>
+          </div>
+
+          <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <p-multiSelect [options]="cols" optionLabel="header" [(ngModel)]="_selectedProjectColumns"
+                (onChange)="columnFilter($event)" selectedItemsLabel="{0} columns selected"
+                [style]="{ minWidth: '180px' }" placeholder="Choose Columns"></p-multiSelect>
+            </div>
+            <!-- <div class="search-input w-xs-100 me-2 mb-3">
+              <input type="text" class="form-control" placeholder="Search"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+            </div> -->
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"
+                [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''" (click)="searchClose()"
+                data-bs-toggle="modal" [attr.data-bs-target]="'#projectSearch'" class="mr-2" title="Search"
+                tooltipPosition="bottom"></button>
+              <!-- <input type="text" class="form-control" placeholder="Search"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')" /> -->
+            </div>
+            <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+              <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Export<i class="las la-angle-down ms-2"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file" title="CSV" (click)="exportCSV()"
+                    class="p-button-info ml-auto" pTooltip="CSV" tooltipPosition="bottom"></button>
+                </li>
+                <li>
+                  <button type="button" pButton pRipple icon="pi pi-file-excel" title="XLSX" (click)="exportExcel(dt)"
+                    class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </li>
+                <!-- <li>
+                  <button type="button" pButton pRipple icon="pi pi-file-pdf" title="PDF" (click)="exportPdf(dt)"
+                    class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                </li> -->
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="p-table-grid" [columns]="selectedProjectColumns" [(selection)]="selectedProjectDetails"
+            [value]="projectDetails" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10"
+            sortMode="multiple" [responsive]="true" [globalFilterFields]="projectSearchFilter"
+            [exportFilename]="exportProjectName">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-userDetail let-columns="columns">
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="userDetail"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns"
+                  [ngClass]="{'text-center': ((col.field != 'project_name'))  ? true : false}" style="text-align: left">
+                  <span
+                    *ngIf="col.field != 'start_date' && col.field != 'end_date' && col.field != 'term_upload_filename'">
+                    {{ userDetail[col.field] }}
+                  </span>
+                  <!-- <span *ngIf="col.field == 'status'">
+                                                  {{(userDetail[col.field] == 'Active') ? "Active" :"Inactive" }}
+                                              </span> -->
+                  <span *ngIf="col.field == 'start_date'">
+                    {{ userDetail[col.field] | date:'yyyy-MM-dd' }}
+                  </span>
+                  <span *ngIf="col.field == 'end_date'">
+                    {{ userDetail[col.field] | date:'yyyy-MM-dd' }}
+                  </span>
+                  <span *ngIf="col.field == 'term_upload_filename'">
+                    <a href="{{ userDetail['terms_and_condition_url'] }}" target="_blank">{{ userDetail[col.field]
+                      }}</a>
+                  </span>
+                </td>
+
+                <td><a href="javascript:void(0);" title="Edit" data-bs-toggle="modal" data-bs-target="#edit"
+                    (click)="editProjectDetails(userDetail)"><i class="las la-pen"></i></a>
+                  <a href="javascript:void(0);" data-bs-toggle="modal" *ngIf="viewIconAccess.includes(loggedInRoleName)"
+                    (click)="viewProject(userDetail)" title="View"><i class="las la-eye"></i></a>
+                  <!-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete" (click)="deleteCurrentProject(userDetail)"  ><i class="las la-trash-alt"></i></a> -->
+                  <span *ngFor="let col of columns">
+                    <span
+                      *ngIf="col.field == 'status'&& userDetail[col.field] != null && userDetail[col.field].trim()  == 'Active'">
+                      <a href="javascript:void(0);" title="Generate link"
+                        *ngIf="generatedLinkAccess.includes(loggedInRoleName)" data-bs-toggle="modal"
+                        data-bs-target="#delete" (click)="generateLink(userDetail)"><i class="las la-link"></i></a>
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+
+      <!-- Field Mapping Tab -->
+      <p-tabPanel header="Fields Mapping">
+        <div class="row">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="show-entries d-flex mb-3">
+              <small><span class="result-found">
+                  <b>{{ kt.totalRecords }}</b> Results Found</span></small>
+            </div>
+          </div>
+          <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <p-multiSelect [options]="_registrationReportColumnHeader" [(ngModel)]="registrationReportColumns"
+                optionLabel="header" (onChange)="registrationFilter($event)" selectedItemsLabel="{0} columns selected"
+                [style]="{minWidth: '180px'}" placeholder="Choose Columns"></p-multiSelect>
+            </div>
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <select class="form-select project-name-list" (change)="getProjectField($any($event.target).value)"
+                name="projectnames" id="project_dropdown" [(ngModel)]="initialProjectId">
+                <option value="" hidden>Select Project</option>
+                <option *ngFor="let x of activeProjectList" value="{{ x.project_id }}">
+                  {{ x.project_name}}
+                </option>
+              </select>
+            </div>
+            <div class="search-input w-xs-100 me-2 mb-3">
+              <input type="text" class="form-control" placeholder="Search"
+                (input)="kt.filterGlobal($any($event.target).value, 'contains')">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #kt class="p-table-grid" [(first)]="first" [columns]="registrationReportColumns" [(selection)]="selectedUserDetails"
+            [value]="projectFieldDetails" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50,100,500]" [rows]="10"
+            sortMode="multiple" [responsive]="true" [globalFilterFields]="_registrationReportFilter"
+            [exportFilename]="exportField">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-projectFieldDetail let-columns="columns">
+              <tr>
+                <td>
+                  <p-tableCheckbox [value]="projectFieldDetail"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns">
+                  {{ projectFieldDetail[col.field] }}
+                </td>
+
+                <td>
+                  <a href="javascript:void(0);"  (click)="viewDocumentField(projectFieldDetail)"
+                    title="View"><i class="las la-eye"></i></a>
+                  <!-- <a href="javascript:void(0);" (click)="deleteDocumentField(projectFieldDetail)">
+                    <i class="las la-trash-alt"></i></a> -->
+                </td>
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  <!-- Project Table View -->
+
+</div>
+
+
+
+<div class="modal fade" id="viewActiveStatus" tabindex="-1" aria-labelledby="viewActiveStatus" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="StatusModal()"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Active"
+                [(ngModel)]="documentFieldStatus" type="radio" id="fieldstatusactive" name="fieldStatus" checked>
+              <label class="form-check-label" for="fieldstatusactive">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Inactive"
+                [(ngModel)]="documentFieldStatus" type="radio" id="fieldstatusinactive" name="fieldStatus">
+              <label class="form-check-label" for="fieldstatusinactive">Inactive</label>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-red" (click)="StatusModal()" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="updateDocStatus()" class="btn btn-blue">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="projectSearch" tabindex="-1" aria-labelledby="projectSearch" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="clearSearch()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)"
+              [selectionLimit]="5" optionLabel="header" [(ngModel)]="_selectedSearchColumns"
+              selectedItemsLabel="{0} columns selected" [style]="{minWidth: '180px'}" placeholder="Choose Columns"
+              [showToggleAll]="false"></p-multiSelect>
+          </div>
+        </div>
+
+        <div class="row p-2">
+          <table>
+            <tr *ngFor="let searchColumns of _selectedSearchColumns">
+              <td class="w-auto p-2 text-center">
+                {{searchColumns.header}}
+              </td>
+              <td class="w-auto p-2">
+                <input required type="text" [placeholder]="searchHolder(searchColumns.field)" class="form-control"
+                  name="subject" [(ngModel)]="searchColumns.search" #subject="ngModel">
+              </td>
+              <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1">
+                <select required class="form-select" aria-placeholder="Select" title="Condition"
+                  [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                  <option [ngValue]="undefined" disabled selected>Select</option>
+                  <option>AND</option>
+                  <option>OR</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row p-2" *ngIf="searchError">
+          <p style="color: red;">*Mandatory to fill all fields.</p>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal"
+            [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+          <button type="button" class="btn btn-blue" (click)="submitSearch()"
+            [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Project Modal -->
+<div class="modal fade" id="addproject" tabindex="-1" aria-labelledby="addproejct" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="bulkUplodClose(p)"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+            value="single" checked />
+          <label class="form-check-label" for="inlineRadio1">Single</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+            value="bulk" />
+          <label class="form-check-label" for="inlineRadio2">Bulk</label>
+        </div>
+        <!-- single -->
+        <!-- <form #p="ngForm" name="form" (ngSubmit)="p.form.valid"> -->
+        <div class="row file-upload mt-3" id="show-single">
+          <form #p="ngForm" name="form" (ngSubmit)="(p)">
+            <div class="">
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Project Name</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <!-- ^(?![0-9])[a-zA-Z0-9 _()-]*$ -->
+                  <input pattern="^[a-zA-Z0-9 _()-]*$" type="text"
+                    oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                    class="form-control" name="proname" [(ngModel)]="addProject.project_name" #projectname="ngModel"
+                    required />
+                  <div *ngIf="
+                      (p.submitted && projectname.untouched) ||
+                      projectname.touched
+                    " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="projectname.errors?.['required']">
+                      Project Name is required
+                    </div>
+                  </div>
+                  <div *ngIf="projectname.touched && projectname.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="projectname.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Project Manager Name</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <p-multiSelect required="true" name="users" #projectmanager="ngModel" [options]="projectmanagerddl"
+                    #selectedUser name="project_managers" [(ngModel)]="selectedProjectManagerLists"
+                    defaultLabel="Select a User" optionLabel="item_text" display="chip"></p-multiSelect>
+                  <div *ngIf="(p.submitted && projectmanager.untouched) || projectmanager.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="projectmanager.errors?.['required']"> Select the above(Project Manager) field</div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Start Date</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <p-calendar [(ngModel)]="addProject.start_date" [required]="true" placeholder="YYYY-MM-DD" type="date"
+                    title="Start Date" name="startdate" class="date-input" dateFormat="yy-mm-dd" #startdate="ngModel">
+                  </p-calendar>
+                  <div *ngIf="
+                      (p.submitted && startdate.untouched) || startdate.touched
+                    " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="startdate.errors?.['required']">
+                      Start Date is required
+                    </div>
+                  </div>
+                  <div *ngIf="startdate.touched && startdate.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="startdate.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">End Date</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <p-calendar [(ngModel)]="addProject.end_date" [required]="true" placeholder="YYYY-MM-DD" type="date"
+                    title="End Date" name="enddate" class="date-input" dateFormat="yy-mm-dd"
+                    [minDate]="addProject.start_date" #enddate="ngModel">
+                  </p-calendar>
+                  <div *ngIf="
+                      (p.submitted && enddate.untouched) || enddate.touched
+                    " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="enddate.errors?.['required']">
+                      End Date is required
+                    </div>
+                  </div>
+                  <div *ngIf="enddate.touched && enddate.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="enddate.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+                  <label class="mb-1">Term and Condition Status</label><span class="required"> *</span>
+                  <select required class="form-select" name="term_and_conditions"
+                    [(ngModel)]="addProject.term_and_conditions_status" #termFile="ngModel">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                  <div *ngIf="(p.submitted && termFile.untouched) || termFile.touched "
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div *ngIf="termFile.errors?.['required']">Select the above(Term and Condition Status) field</div>
+                  </div>
+                  <!-- <div *ngIf="vaccine.touched && vaccine.invalid" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                  <div *ngIf="vaccine.errors?.['pattern']">Select a valid data</div>
+                </div> -->
+                </div>
+
+
+                <div [formGroup]="myGroup" class="col-md-6 mb-4" *ngIf="addProject.term_and_conditions_status=='Yes'">
+                  <label for="file" class=" mb-1">Terms and Conditions</label><span class="required"> *</span>
+                  <input formControlName="file" id="file" type="file" class="form-control"
+                    (change)="onAddFileChange($event)" value="addProject.term_and_conditions">
+                  <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                    <div>(Max file size should not exceed 2MB & file format should be Pdf )</div>
+                  </div>
+                  <div *ngIf="(p.submitted && myGroup.untouched) || (p.submitted && myGroup.touched && message == null)"
+                    style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    <div>Terms & Conditions pdf file is required</div>
+                  </div>
+                  <div *ngIf="message != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                    {{message}}
+                  </div>
+                </div>
+
+
+                <div class="col-md-6 mb-4" *ngIf="addProject.term_and_conditions_status=='Yes'">
+                  <label class="form-check-label mb-1">Version</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <!-- ^[a-zA-Z]{1}\d{1,2}\.\d{1,3} -->
+                  <input pattern="^[a-zA-Z]{1}[0-9](\.[0-9]{1,2})?(\.[0-9])?$" type="text" class="form-control"
+                    name="version" [(ngModel)]="addProject.version" #version="ngModel" required />
+                    <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                      <div>(Example: V1, V1.0, V2.1)</div>
+                    </div>
+                  <div *ngIf="(p.submitted && version.untouched) ||
+                    version.touched
+                  " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="version.errors?.['required']">
+                      Version is required
+                    </div>
+                  </div>
+                  <div *ngIf="version.touched && version.invalid"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="version.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Status</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <select required class="form-select" title="status" [(ngModel)]="addProject.status" name="status"
+                    #status="ngModel" required>
+                    <!-- <option value="" disabled selected hidden>status</option> -->
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                  <div *ngIf="(p.submitted && status.untouched) || status.touched"
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="status.errors?.['required']">
+                      Select the above(Status) field
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="col-md-6 mb-4">
+                  <label class="form-check-label mb-1">Overall Status</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <select required class="form-select" title="Overall status" [(ngModel)]="addProject.overall_status"
+                    name="overallstatus" #overallstatus="ngModel" required>
+
+                    <option value="Completed">Completed</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Yet to start">Yet to start</option>
+                  </select>
+                  <div *ngIf="
+                      (p.submitted && overallstatus.untouched) ||
+                      overallstatus.touched
+                    " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    <div *ngIf="overallstatus.errors?.['required']">
+                      Select the above(Overall Status) field
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="modal-footer ps-0 pe-0">
+                  <!-- <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button> -->
+                  <button type="submit" [disabled]="disable" (click)="onAddProject(p.form,p)" class="btn btn-blue">
+                    Register
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- </form> -->
+        <!--## single ##-->
+
+        <!-- bulk -->
+        <div class="row file-upload mt-3" id="show-bulk">
+          <div class="col-md-6 offset-md-6">
+            <div class="d-flex justify-content-end">
+              <a target="_self" style="text-decoration:none;" class="f-green"
+                href="assets/template/Project Bulk Template.xlsx">Download
+                Template</a>
+              <!--<label class="f-green" style="cursor: pointer;" (click)="downloadTemplate()">Download
+                          Template</label>-->
+            </div>
+          </div>
+          <div class="col-md-12 mb-3">
+            <div class="modal-bulk">
+              <div class="bulkupload">
+                <input id="file" #projectFileBulkUpload (change)="onBulkUploadChange($event)" type="file"
+                  class="form-control">
+              </div>
+              <div *ngIf="projectBulkUploadMsg == true" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Please upload valid file</div>
+              </div>
+            </div>
+          </div>
+          <!--## bulk ##-->
+          <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal"
+              (click)="bulkUplodClose(p)">Close</button>
+            <button type="button" (click)="onBulkUplaod()" class="btn btn-blue">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Fields Modal -->
+<div class="modal fade" id="addfieldnames" tabindex="-1" aria-labelledby="addfieldnames" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create Fields</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="addFormFieldClose()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row file-upload mt-3" id="show-single">
+          <form class="form" [formGroup]="addFieldsForm" (ngSubmit)="submitFormAddField()">
+            <div class="row">
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Field Name</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  *</span>
+                <input type="text" class="form-control" formControlName="fieldName">
+                <div style="font-size: 10.5pt; margin-top: 2pt; color: red"
+                  *ngIf="(addFieldsFormControl['fieldName'].touched || addFieldsSubmitted) && addFieldsFormControl['fieldName'].errors?.['required']">
+                  Field Name is required
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Project</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  *</span>
+                <select class="form-select" formControlName="project" [(ngModel)]="addFieldsForm.value.project">
+                  <option value="" disabled selected hidden>
+                    Select Project
+                  </option>
+                  <option *ngFor="let x of activeProjectList" value="{{ x.project_id }}">
+                    {{ x.project_name}}
+                  </option>
+                </select>
+                <div style="font-size: 10.5pt; margin-top: 2pt; color: red"
+                  *ngIf="(addFieldsFormControl['project'].touched || addFieldsSubmitted) && addFieldsFormControl['project'].errors?.['required']">
+                  Select the above(Project) field
+                </div>
+              </div>
+
+
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Mandatory</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  *</span>
+                <select class="form-select" formControlName="mandatory" [(ngModel)]="addFieldsForm.value.mandatory">
+                  <option value="" disabled selected hidden>
+                    Select Mandatory
+                  </option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+                <div style="font-size: 10.5pt; margin-top: 2pt; color: red"
+                  *ngIf="(addFieldsFormControl['mandatory'].touched || addFieldsSubmitted) && addFieldsFormControl['mandatory'].errors?.['required']">
+                  Select the above(Mandatory) field
+                </div>
+              </div>
+
+
+              <div class="col-md-6 mb-4">
+                <label class="form-check-label mb-1">Field Type</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  *</span>
+                <select class="form-select" formControlName="fieldType" [(ngModel)]="addFieldsForm.value.fieldType"
+                  (change)="getValidationByFieldType($any($event.target).value)">
+                  <option value="" disabled selected hidden>
+                    Select Field Type
+                  </option>
+                  <option value="Text">Text Field</option>
+                  <option value="INT">Integer Field</option>
+                  <option value="Percentage">Percentage</option>
+                  <option value="File upload">File upload</option>
+                  <option value="DropDown">Dropdown</option>
+                  <option value="Multiple">Multiple option</option>
+                  <option value="Date">Date</option>
+                  <option value="Video">Video</option>
+                  <option value="Varchar 1">Letters, Numbers, Special Characters</option>
+                  <option value="Varchar 2">Letters, Special Characters</option>
+                  <option value="Varchar 3">Letters, Numbers</option>
+                </select>
+                <div style="font-size: 10.5pt; margin-top: 2pt; color: red"
+                  *ngIf="(addFieldsFormControl['fieldType'].touched || addFieldsSubmitted) && addFieldsFormControl['fieldType'].errors?.['required']">
+                  Select the above(Field Type) field
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-4" *ngIf="addFields.validation != ''">
+                <label class="form-check-label mb-1">Validation</label><span
+                  style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                  *</span>
+                <input readonly type="text" class="form-control" formControlName="validation"
+                  [(ngModel)]="addFields.validation" />
+              </div>
+
+
+              <div class="col-md-12 mb-4">
+
+                <ng-container formArrayName='dropDownOptions'
+                  *ngIf="addFieldsFormControl['fieldType'].value == 'DropDown' || addFieldsFormControl['fieldType'].value == 'Multiple'">
+                  <label class="form-check-label mb-1">{{ dynamicFieldName }} Options</label><span
+                    style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                    *</span>
+                  <div *ngFor="let doc of dropDownOptionControl.controls; let index = index" [formGroupName]='index'>
+                    <div class="col-lg-12 d-flex mb-3">
+                      <div class="card add-field-card d-flex justify-content-between w-100 p-2">
+                        <div class="input-group">
+                          <input type="text" class="form-control" formControlName="dropDownOptions"
+                            placeholder="Enter options" aria-describedby="basic-addon2">
+                          <span class="input-group-text" id="basic-addon2"><i class="las la-plus f-blue "
+                              (click)="addOptionField()"></i></span>
+                          <span class="input-group-text" id="basic-addon2" *ngIf="index != 0"><i
+                              class="las la-minus f-red" (click)="remove(index)"></i></span>
+                        </div>
+
+                        <!--show only after touched and invalid-->
+                        <div style="font-size: 10.5pt; margin-top: 2pt; color: red"
+                          *ngIf="addFieldsSubmitted && doc.get('dropDownOptions').invalid">
+                          Option is required
+                        </div>
+
+
+                        <!--show always when add a new formGroup to array-->
+                        <!-- <div *ngIf="doc.get('dropDownOptions').invalid">
+                        invalid
+                      </div> -->
+
+                        <!-- <div style="font-size: 10.5pt; margin-top: 2pt; color: red"
+                          *ngIf="(addFieldsFormControl['dropDownOptions'].touched || addFieldsSubmitted) && addFieldsFormControl['dropDownOptions'].errors?.['required']">
+                          Options is required
+                        </div> -->
+
+                        <!-- <div *ngIf="addOptions.submitted && c.get('options').errors?.['required']"
+                            style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                            Options is required
+                          </div> -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <button type="submit" class="btn btn-primary btn-small" id="submit_button">Submit</button> -->
+                </ng-container>
+
+              </div>
+            </div>
+            <div class="modal-footer ps-0 pe-0">
+              <button type="submit" [disabled]="disable" class="btn btn-blue">
+                Add
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal fade" id="view" tabindex="-1" aria-labelledby="view" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12 scroll-table scrolling-table-div">
+          <p-table #dt class="p-table-grid" [value]="names" [paginator]="true" [rowsPerPageOptions]="[5, 10]" [rows]="5"
+            sortMode="multiple" [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Student Name</th>
+                <th>Email Id</th>
+                <th>Mobile Number</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-userDetail>
+              <tr>
+                <td>
+                  {{ userDetail.studentName }}
+                </td>
+                <td>
+                  {{ userDetail.email }}
+                </td>
+                <td>
+                  {{ userDetail.mobile }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" (click)="downloadView()" class="btn btn-blue"> Download </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="edit" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form #update="ngForm" name="form" (ngSubmit)="(update.form.valid)">
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">Project Name</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <input name="pname" type="text" pattern="^[a-zA-Z0-9 _()-]*$" [(ngModel)]="getEditDetails.project_name"
+                class="form-control"
+                oninput="this.value = this.value[0].toUpperCase() + this.value.substr(1).toLowerCase()"
+                #Projectname="ngModel" required />
+              <div *ngIf="(update.submitted && Projectname.untouched) || Projectname.touched
+                " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="Projectname.errors?.['required']">
+                  Project Name is required
+                </div>
+              </div>
+              <div *ngIf="Projectname.touched && Projectname.invalid"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="Projectname.errors?.['pattern']">
+                  Enter a valid data
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">Project Manager Name</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <p-multiSelect required="true" #editProjectManager="ngModel" [options]="projectmanagerddl"
+                name="edit_project_managers" [(ngModel)]="editSelectedProjectManagerLists" defaultLabel="Select a User"
+                optionLabel="item_text" display="chip"></p-multiSelect>
+              <div *ngIf="(update.submitted && editProjectManager.untouched) || editProjectManager.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div *ngIf="editProjectManager.errors?.['required']"> Select the above(Project Manager) field</div>
+              </div>
+            </div>
+
+            <!-- <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">Project Manager Name</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <ng-multiselect-dropdown type="text" [settings]="projectdropdownSettings" [data]="projectmanagerddl"
+                class="form-multiselect" [(ngModel)]="getEditDetails.project_manager_id"
+                (onSelect)="onSelectProjects($event)" (onSelectAll)="onSelectAllProjects($event)"
+                (onDeSelect)="onDeSelectProjects($event)" (onDeSelectAll)="onDeSelectAllProjects($event)"
+                name="ProjectManager" #projectman="ngModel" required>
+              </ng-multiselect-dropdown>
+              <div *ngIf="
+                  (update.submitted && projectman.untouched) || projectman.touched
+                " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="projectman.errors?.['required']">
+                  Select the above(Project Manager) field
+                </div>
+              </div>
+            </div> -->
+
+            <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">Start Date</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <p-calendar name="sdate" type="text" [(ngModel)]="getEditDetails.start_date" class="date-input"
+                dateFormat="yy-mm-dd" #sdate="ngModel" [required]="true">
+              </p-calendar>
+              <!-- <div *ngIf="(update.submitted && sdate.untouched) || sdate.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="sdate.errors?.['required']">
+                  Start Date is required
+                </div>
+              </div> -->
+              <!-- <div *ngIf="sdate.touched && sdate.invalid" style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="sdate.errors?.['pattern']">Enter a valid data</div>
+              </div> -->
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">End Date</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <p-calendar name="edate" type="text" [(ngModel)]="getEditDetails.end_date" class="date-input"
+                dateFormat="yy-mm-dd" [minDate]="getEditDetails.start_date" #edate="ngModel" [required]="true">
+              </p-calendar>
+              <!-- <div *ngIf="(update.submitted && edate.untouched) || edate.touched"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="edate.errors?.['required']">
+                  End Date is required
+                </div>
+              </div> -->
+              <!-- <div *ngIf="edate.touched && edate.invalid" style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="edate.errors?.['pattern']">Enter a valid data</div>
+              </div> -->
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+              <label class="mb-1">Term and Condition Status</label><span class="required"> *</span>
+              <select required class="form-select graduated" [(ngModel)]="getEditDetails.terms_and_conditions_status"
+                name="edit_term_and_conditions" #editTermConditions="ngModel" (change)="changeTermStatus($event)">
+                <!-- <option value="" disabled selected hidden>Graduated *</option> -->
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div *ngIf="(update.submitted && editTermConditions.untouched) || editTermConditions.touched"
+                style="font-size: 13px; margin-top: 2pt; color:red;">
+                <div *ngIf="editTermConditions.errors?.['required']">Select the above(Terms and Conditions) field
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-4" *ngIf="getEditDetails.terms_and_conditions_status == 'Yes'">
+              <label class="mb-2">Terms and Conditions</label><span class="required">
+                *</span>
+              <div class="input-group file-group" *ngIf="uploadOption == true">
+                <input type="text" class="form-control" name="termUpload"
+                  [value]="(getEditDetails.terms_and_conditions != undefined && getEditDetails.terms_and_conditions != null) ? getEditDetails.terms_and_conditions : ''"
+                  disabled>
+                <button class="btn" type="button" (click)="UploadCerticate(false)"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+
+              <div class="input-group file-group" *ngIf="uploadOption == false">
+                <input type="file" class="form-control" name="upload" (change)="onEditFileChange($event)">
+                <button class="btn" type="button" [disabled]="uploadOption == false" (click)="UploadCerticate(true)"><i
+                    class="las la-times-circle"></i></button>
+              </div>
+
+              <div style="font-size: 9pt; margin-top: 2pt; color:#6b6969;">
+                <div>(Max file size should not exceed 2MB & file format should be PDF )
+                </div>
+              </div>
+              <div
+                *ngIf="(update.submitted && editMyGroup.untouched && editMessage == null && getEditDetails.terms_and_conditions == null) || (update.submitted && editMyGroup.touched && getEditDetails.terms_and_conditions == null && editMessage == null) || (update.submitted && editMessage == '' && uploadOption == false)"
+                style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                <div>Program outline file is required</div>
+              </div>
+              <div *ngIf="editMessage != null" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                {{editMessage}}
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6 mb-4" *ngIf="getEditDetails.terms_and_conditions_status == 'Yes'">
+              <label class="form-check-label mb-1">Version</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <input pattern="^[a-zA-Z]{1}[0-9](\.[0-9]{1,2})?(\.[0-9])?$" type="text" class="form-control"
+                name="edit_version" [(ngModel)]="getEditDetails.version" #edit_version="ngModel" required />
+              <div *ngIf="(update.submitted && edit_version.untouched) ||
+              edit_version.touched
+              " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="edit_version.errors?.['required']">
+                  Version is required
+                </div>
+              </div>
+              <div
+                *ngIf="(edit_version.touched && edit_version.invalid) || (edit_version.untouched&& edit_version.invalid)"
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="edit_version.errors?.['pattern']">
+                  Enter a valid data
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">Status</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <select name="editstatus" class="form-select" [(ngModel)]="getEditDetails.status" #editstatus="ngModel"
+                required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <div *ngIf="
+                  (update.submitted && editstatus.untouched) ||
+                  editstatus.touched
+                " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="editstatus.errors?.['required']">
+                  Select the above(Status) field
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="col-md-6 mb-4">
+              <label class="form-check-label mb-1">Overall Status</label><span
+                style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                *</span>
+              <select name="allstatus" class="form-select" [(ngModel)]="getEditDetails.overall_status"
+                #allstatus="ngModel" required>
+                <option value="Completed">Completed</option>
+                <option value="In progress">In progress</option>
+                <option value="Yet to start">Yet to start</option>
+              </select>
+              <div *ngIf="
+                  (update.submitted && allstatus.untouched) || allstatus.touched
+                " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                <div *ngIf="allstatus.errors?.['required']">
+                  Select the above(Overall Status) field
+                </div>
+              </div>
+            </div> -->
+          </div>
+          <div class="modal-footer ps-0 pe-0">
+            <button type="button" class="btn btn-red" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button type="submit" (click)="onUpdateProject(update.form)" class="btn btn-blue">
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content" style="width: 1000%;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Generated Link</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2 pb-2">
+        <p class="text-center mb-0"> <b>{{generatedLink}}</b></p>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-blue" (click)="copytoClipboard()">Copy Text</button>
+      </div>
+
+
+    </div>
+
+  </div>
+</div>
+
+<!-- View project Modal -->
+<div class="modal fade" id="view-project" tabindex="-1" aria-labelledby="view-project" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">View Project</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <small class="mb-2">Project Name</small>
+            <select class="form-select" aria-label="Default select example" disabled>
+              <option selected>Project Name 1</option>
+              <option>Project Name 2</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-4">
+            <small class="mb-2">Start Date</small>
+            <input type="text" class="dateselect form-control" placeholder="Select Date" value="11-02-2022"
+              required="required" disabled />
+          </div>
+          <div class="col-md-6 mb-4">
+            <small class="mb-2">End Date</small>
+            <input type="text" class="dateselect form-control" placeholder="Select Date" value="05-06-20022"
+              required="required" disabled />
+          </div>
+          <div class="col-md-6 mb-4">
+            <small class="mb-2">Project Manager</small>
+            <select class="form-select" aria-label="Default select example" disabled>
+              <option selected>Name 1</option>
+              <option>Name 2</option>
+            </select>
+          </div>
+
+          <div class="col-md-12">
+            <div class="">
+              <small class="mb-2">Status</small>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="viewinlineRadio1" name="viewattendance"
+                checked disabled />
+              <label class="form-check-label" for="viewinlineRadio1">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" type="radio" id="viewinlineRadio2" name="viewattendance"
+                disabled />
+              <label class="form-check-label" for="viewinlineRadio2">InActive</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change Status Modal -->
+<div class="modal fade" id="changestatus" tabindex="-1" aria-labelledby="change-status" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" [(ngModel)]="changeprojectStatus.status" type="radio"
+                id="statusinlineRadio1" name="status" value="Active" />
+              <label class="form-check-label" value="Active" for="statusinlineRadio1">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" value="Inactive"
+                [(ngModel)]="changeprojectStatus.status" type="radio" id="statusinlineRadio2" name="status" />
+              <label class="form-check-label" for="statusinlineRadio2">Inactive</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" data-bs-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-blue" [disabled]="updatedisabled" (click)="onchangeStatus(dt)">
+            Update
+          </button>
+          <!-- <pre>{{userDetails}}</pre> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

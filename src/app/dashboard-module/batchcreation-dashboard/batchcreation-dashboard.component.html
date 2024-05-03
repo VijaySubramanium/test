@@ -1,0 +1,81 @@
+<app-spinner></app-spinner>
+
+<div class="dashboard-card-wrapper">
+    <div class="dashboard-label">
+
+        <h2>Batches Conduct</h2>
+
+        <div class="d-flex">
+
+          <span [style]="{'width':'170px'}"><p-multiSelect name="projects" #projects="ngModel" [options]="projectddl"
+              name="projects" [(ngModel)]="selectedProjectLists" defaultLabel="Select a project" optionLabel="project_name"
+              [maxSelectedLabels]="1" (onChange)="projectSelect($event)"></p-multiSelect></span>
+
+
+          <!-- <p-multiSelect [options]="" [(ngModel)]="selectedProjectLists" optionLabel="project_name"></p-multiSelect> -->
+
+
+          &nbsp;&nbsp;&nbsp;
+
+          <select class="form-select me-2" [(ngModel)]="selectedList" #selectList (change)="setValue(selectList.value,'bat')">
+            <option value="last7days">Last 7days</option>
+            <option value="curmon">Current month</option>
+            <option value="curyear">Current year</option>
+            <option value="last5years">Last 5years</option>
+            <option value="cusdate">Custom date</option>
+          </select>
+          <!-- <button class="btn btn-blue" type="button">
+          Download
+        </button> -->
+          <span style="margin-right: 10px;">
+            <p-calendar *ngIf="isBatDate" title="Date Filter" [(ngModel)]="rangeBat"
+              placeholder="Date range" selectionMode="range" [readonlyInput]="true" inputId="range" [maxDate]="maxDateValue"
+              #regCalendar (onSelect)="onSelect($event.target,'bat')">
+              <!-- <p-footer>
+                <button class="p-2" pButton type="button" label="Close" (click)="regCalendar.hideOverlay()">
+                </button>
+              </p-footer> -->
+            </p-calendar>
+          </span>
+
+          <button *ngIf="isWithProjectChart == 'projectData'"class="download-btn" data-tooltip="Registration Download" type="button" (click)="downloadPDF('reg')">
+            <i class="las la-file-download"></i>
+          </button>
+
+          <button *ngIf="isWithOutProjectChart == 'withOutProjectData'" class="download-btn" data-tooltip="Registration Download" type="button" (click)="downloadPDF('reg')">
+            <i class="las la-file-download"></i>
+          </button>
+        </div>
+
+      </div>
+
+
+
+
+    <div class="canvas-inner-wrapper">
+        <!-- <div class="left-text">
+            <h4>Number of batches</h4>
+        </div> -->
+        <div class="canvas-wrapper mx-auto w-100">
+            <div class="canvas-inner" *ngIf="isWithProjectChart == 'projectData'">
+                <highcharts-chart id="lineChart" class="mychart" [Highcharts]="Highcharts"
+                    [options]="batWithProjectChart" style="width: 100%; height: 500; display: block;">
+                </highcharts-chart>
+                <!-- <canvas class="mychart" id="lineChart" width="1000" height="500"></canvas> -->
+            </div>
+
+            <div class="canvas-inner" *ngIf="isWithOutProjectChart == 'withOutProjectData'">
+              <highcharts-chart id="lineChart" class="mychart" [Highcharts]="Highcharts"
+                  [options]="batWithOutProjectChart" style="width: 100%; height: 500; display: block;">
+              </highcharts-chart>
+              <!-- <canvas class="mychart" id="lineChart" width="1000" height="500"></canvas> -->
+          </div>
+            <!-- <div class="bottom-text">
+                <h4>Batches conduct</h4>
+            </div> -->
+        </div>
+
+    </div>
+    <!-- <canvas class="mychart" id="myChart" width="1000" height="500"></canvas> -->
+
+</div>

@@ -1,0 +1,1066 @@
+<app-header></app-header>
+<app-spinner></app-spinner>
+<div class="main">
+
+  <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"></p-toast>
+  <app-sidebar (listOfRightMenus)="onListOfRightMenus($event)"></app-sidebar>
+  <div class="d-none mobile-sidebar-backdrop"></div>
+  <div class="content page-content">
+    <div class="card">
+      <div class="card-header">
+        <h5>College Management</h5>
+        <span *ngFor="let subMenu of rightSideMenus">
+          <div class="dropdown float-end header-links">
+            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="las la-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+              <li *ngFor="let subMenuAction of subMenu.sub_menu_action">
+                <div *ngIf="subMenuAction.action_url != 'assignproject'">
+                  <a class="dropdown-item" href="javascript:void(0);" (click)="resetUserForm(addcollege)"
+                    data-bs-toggle="modal" [attr.data-bs-target]="
+                      '#' + subMenuAction.action_url.trim()
+                    ">{{ subMenuAction.action_name }}</a>
+                </div>
+
+                <div *ngIf="
+                    subMenuAction.action_url == 'assignproject' &&
+                    loggedInRoleName == 'GTT_ADMIN' &&
+                    selectedrows.length > 0
+                  ">
+                  <a class="dropdown-item" href="javascript:void(0);" (click)="resetAssignProject(assignproject)"
+                    data-bs-target="#assignproject" data-bs-toggle="modal" [attr.data-bs-target]="
+                      '#' + subMenuAction.action_url.trim()
+                    ">{{ subMenuAction.action_name }}</a>
+                </div>
+              </li>
+
+              <!--<li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addCollege"
+                                    (click)="resetUserForm(f)">Add College</a></li>
+                            <li> <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assign"> Assign Project</a></li>-->
+              <!-- <li class="dropdown-submenu">
+                                <a class="dropdown-item submenu-a" tabindex="-1" href="#">Projects <i class="las la-angle-right"></i></a>
+                                <ul class="dropdown-menu submenu-left"> -->
+              <!-- <li><a class="dropdown-item" tabindex="-1" href="javascript:void(0);" data-bs-toggle="modal"
+                                            data-bs-target="#assign">Assign</a></li> -->
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view">View</a></li> -->
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit">Edit</a></li> -->
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete">Delete</a></li> -->
+              <!-- </ul>
+                            </li> -->
+
+              <!-- <li><a class="dropdown-item" href="#">Attendance <i class="las la-angle-right"></i></a>
+                                <ul class="submenu dropdown-menu submenu-left">
+                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view-attendance">View</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit-attendance">Edit</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete-attendance">Delete</a></li>
+                                </ul>
+                            </li> -->
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                  data-bs-target="#change-status" *ngIf="
+                    selectedrows.length > 0 && loggedInRoleName == 'GTT_ADMIN'
+                  " (click)="StatusModal()">Change Status</a>
+              </li>
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#generate-link">Generate Link</a></li> -->
+              <!-- <li><a class="dropdown-item" href="#">Reset</a></li> -->
+              <!-- <li><a class="dropdown-item" href="#">Download</a></li> -->
+              <!-- <li><a class="dropdown-item">Send Reset Password</a></li> -->
+            </ul>
+          </div>
+        </span>
+      </div>
+
+      <!--  Add college Modal-->
+      <div class="modal fade" id="addcollege" tabindex="-1" aria-labelledby="addcollege" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add College</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-scroll">
+              <div class="form-check form-check-inline">
+                <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions"
+                  id="inlineRadio1" value="single" checked />
+                <label class="form-check-label" for="inlineRadio1">Single</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="file-upload-radio form-check-input" type="radio" name="inlineRadioOptions"
+                  id="inlineRadio2" value="bulk" />
+                <label class="form-check-label" for="inlineRadio2">Bulk</label>
+              </div>
+              <!-- single -->
+              <div class="row file-upload mt-3" id="show-single">
+                <!--<app-collegescreen></app-collegescreen>-->
+                <form #addcollege="ngForm" name="form" (ngSubmit)="(addcollege)">
+                  <div class="">
+                    <div class="row">
+                      <!-- Academic Institute Name -->
+                      <div class="col-md-12 mb-2">
+                        <label class="mb-2">Academic Institution Name</label><span class="required"> *</span><br />
+                        <p-dropdown [options]="collegeNewDetails" [required]="true"
+                          (onChange)="changeCollege($event, addcollege)" (onClear)="clearEvent(addcollege)"
+                          [(ngModel)]="selectedCollege" name="collegename" #collegename="ngModel" optionLabel="academic_institution_name"
+                          [filter]="true" filterBy="academic_institution_name" [showClear]="true"
+                          placeholder="Select a College">
+                          <ng-template pTemplate="selectedItem">
+                            <div class="college-item college-item-value" *ngIf="selectedCollege">
+                              <div>{{selectedCollege.academic_institution_name}}</div>
+                            </div>
+                          </ng-template>
+                          <ng-template let-college pTemplate="item">
+                            <div [ngClass]="(college.tpo_status == true) ? 'college_item' : 'college-item' ">
+                              <div>{{college.academic_institution_name}}</div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="(addcollege.submitted && !selectedCollege)" class="error">
+                            <div *ngIf="collegename.errors?.['required']">
+                              Academic institution name is required
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <!-- Academic Institution name -->
+                      <div class="col-md-12 mb-3"
+                        *ngIf="selectedCollege != null && selectedCollege.academic_institution_id == 0">
+                        <label class="mb-2">Academic Institution Name</label><span class="required"> *</span>
+                        <input required pattern="^[a-zA-Z0-9.'\s&]+$" type="text"
+                          [(ngModel)]="userModel.otherAcademicInstitutionName" #othercollegename="ngModel"
+                          name="othercollegename" class="form-control" id="othercollegename" />
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="(addcollege.submitted && othercollegename.untouched) || othercollegename.touched"
+                            class="error">
+                            <div *ngIf="othercollegename.errors?.['required']">
+                              Academic institution name is required
+                            </div>
+                          </div>
+                          <div *ngIf="othercollegename.touched && othercollegename.invalid" class="error">
+                            <div *ngIf="othercollegename.errors?.['pattern']">
+                              Enter a valid data
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <!-- Address -->
+                      <div class="col-md-12 mb-2">
+                        <label class="mb-2">Address Line</label><span class="required"> *</span>
+                        <input required pattern="[a-zA-Z0-9-]*+" type="text" [readonly]="readonlyField"
+                          [(ngModel)]="userModel.address" #address="ngModel" name="address" class="form-control"
+                          id="" />
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted && address.untouched) ||
+                              address.touched
+                            " class="error">
+                            <div *ngIf="address.errors?.['required']">
+                              Address line is required
+                            </div>
+                          </div>
+                          <div *ngIf="address.touched && address.invalid" class="error">
+                            <div *ngIf="address.errors?.['pattern']">
+                              Enter a valid data
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- State -->
+                      <div class="col-md-6 mb-2">
+                        <label class="mb-2">State</label><span class="required"> *</span>
+                        <select required class="form-select" (change)="FilterCity($any($event.target).value, 'add')"
+                          [(ngModel)]="userModel.state" #state="ngModel" name="state" [disabled]="readonlyField">
+                          <option value="" disabled selected hidden>
+                            -- Select --
+                          </option>
+                          <option *ngFor="let x of stateDetails" value="{{ x.stateid }}_{{ x.state }}">
+                            {{ x.state }}
+                          </option>
+                        </select>
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted && state.untouched) ||
+                              state.touched
+                            " class="error">
+                            <div *ngIf="state.errors?.['required']">
+                              Select the state field
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+                      <!-- City -->
+                      <div class="col-md-6 mb-2">
+                        <label class="mb-2">City</label><span class="required"> *</span>
+                        <select required class="form-select" [(ngModel)]="userModel.city" #city="ngModel" name="city"
+                          [disabled]="readonlyField">
+                          <option value="" disabled selected hidden>
+                            -- Select --
+                          </option>
+                          <option *ngFor="let x of cityDetails" value="{{ x.cityid }}_{{ x.cityname }}">
+                            {{ x.cityname }}
+                          </option>
+                        </select>
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted && city.untouched) ||
+                              city.touched
+                            " class="error">
+                            <div *ngIf="city.errors?.['required']">
+                              Select the city field
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <!-- TPO Name -->
+                      <div class="col-md-6 mb-2" *ngIf="disabledTPOOption">
+                        <label class="mb-2">TPO Name</label><span class="required"> *</span>
+                        <input [readonly]="readonlyField" type="text" class="form-control" id=""
+                          [(ngModel)]="disabledTPOName" #tpomobile="ngModel" name="tpoDisableName" />
+                      </div>
+
+                      <!-- TOP Name -->
+                      <div class="col-md-6 mb-2" *ngIf="!disabledTPOOption">
+                        <label class="mb-2">TPO Name</label><span class="required"> *</span>
+                        <select required class="form-select" (change)="getTPODetails($any($event.target).value)"
+                          [(ngModel)]="userModel.tpoUserid" #tponame="ngModel" name="tponame">
+                          <option value="" disabled selected hidden>
+                            -- Select --
+                          </option>
+                          <option *ngFor="let x of topNameDetails"
+                            value="{{ x.userid }}_{{ x.firstname }} {{ x.lastname }}">
+                            {{ x.firstname }} {{ x.lastname }}
+                          </option>
+                        </select>
+
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted && tponame.untouched) ||
+                              tponame.touched
+                            " class="error">
+                            <div *ngIf="tponame.errors?.['required']">
+                              Select the TPO name field
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- TPO Mobile Number -->
+                      <div class="col-md-6 mb-2">
+                        <label class="mb-2">TPO Mobile Number</label><span class="required"> *</span>
+                        <input readonly required pattern="^[+0]{0,2}(91)?[0-9]{10}$" type="text" class="form-control"
+                          id="" [(ngModel)]="userModel.tpoContactNumber" #tpomobile="ngModel" name="tpomobile" />
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted && tpomobile.untouched) ||
+                              tpomobile.touched
+                            " class="error">
+                            <div *ngIf="tpomobile.errors?.['required']">
+                              TPO mobile is required
+                            </div>
+                          </div>
+                          <div *ngIf="tpomobile.touched && tpomobile.invalid" class="error">
+                            <div *ngIf="tpomobile.errors?.['pattern']">
+                              Enter a valid data
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- TPO Email -->
+                      <div class="col-md-6 mb-2">
+                        <label class="mb-2">TPO Email Id</label><span class="required"> *</span>
+                        <input readonly required type="text" pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$"
+                          class="form-control" id="" [(ngModel)]="userModel.tpoEmailId" #email="ngModel" name="email" />
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted && email.untouched) ||
+                              email.touched
+                            " class="error">
+                            <div *ngIf="email.errors?.['required']">
+                              TPO email id is required
+                            </div>
+                          </div>
+                          <div *ngIf="email.touched && email.invalid" class="error">
+                            <div *ngIf="email.errors?.['pattern']">
+                              Enter a valid data
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- KAM Name -->
+                      <div class="col-md-6 mb-2">
+                        <label class="mb-2">KAM Name</label><span class="required"> *</span>
+                        <select required class="form-select" (change)="getKAMDetails($any($event.target).value)"
+                          [(ngModel)]="userModel.kamUserId" #kamname="ngModel" name="kamname"
+                          [disabled]="readonlyField">
+                          <option value="" disabled selected hidden>
+                            -- Select --
+                          </option>
+                          <option *ngFor="let x of kamNameDetails"
+                            value="{{ x.userid }}_{{ x.firstname }} {{ x.lastname }}">
+                            {{ x.firstname }} {{ x.lastname}}
+                          </option>
+                        </select>
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                                (addcollege.submitted && kamname.untouched) ||
+                                kamname.touched
+                              " class="error">
+                            <div *ngIf="kamname.errors?.['required']">
+                              KAM name is required
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Instution Code -->
+                      <div class="col-md-6 mb-2">
+                        <label class="mb-2">Academic Institution Short Name</label><span class="required"> *</span>
+                        <input required type="text"    pattern="^[A-Z]{3,6} *$" class="form-control" id=""
+                          [(ngModel)]="userModel.academicInstitutionShortName" oninput="this.value = this.value.toUpperCase()" #collegeshortname="ngModel"
+                          name="collegeshortname" [disabled]="readonlyField" />
+                        <div style="display: block" class="invalid-feedback">
+                          <div *ngIf="
+                              (addcollege.submitted &&
+                                collegeshortname.untouched) ||
+                              collegeshortname.touched
+                            " class="error">
+                            <div *ngIf="collegeshortname.errors?.['required']">
+                              Institution short name is required
+                            </div>
+                          </div>
+                          <div *ngIf="collegeshortname.touched && collegeshortname.invalid" class="error">
+                            <div *ngIf="collegeshortname.errors?.['pattern']">
+                              Enter a valid data
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6 mb-4">
+                        <label class="mb-2">Status</label><span class="required">*</span>
+                        <select required class="form-select" title="statusvalue" name="statusvalue"
+                          [(ngModel)]="userModel.statusvalue" #statusvalue="ngModel" [disabled]="readonlyField">
+                          <!-- <option value="" disabled selected hidden>status</option> -->
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
+                        <div *ngIf="(addcollege.submitted && statusvalue.untouched) || statusvalue.touched"
+                          style="font-size: 10.5pt; margin-top: 2pt; color: #dc3545 !important">
+                          <div *ngIf="statusvalue.errors?.['required']">
+                            Select the Status field
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- <div class="col-md-12 mb-2">
+                        <div class="form-check">
+                          <input required class="form-check-input" title="Terms and Conditions" type="checkbox"
+                            [(ngModel)]="userModel.agree" value="" [disabled]="readonlyField" #agree="ngModel"
+                            id="agree" name="agree" />
+                          <label class="form-check-label" for="agree">
+                            I agree to terms and conditions
+                          </label>
+                          <div style="display: block" class="invalid-feedback">
+                            <div *ngIf="addcollege.submitted && agree.invalid" class="error">
+                              <div *ngIf="agree.errors?.['required']" style="
+                                  color: #dc3545 !important;
+                                  font-size: 13px !important;
+                                ">
+                                Check this box before submission
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div> -->
+
+                      <div class="col-md-12 mb-2 modal-footer">
+                        <button type="submit" class="btn btn-blue" [disabled]="readonlyField"
+                          (click)="onAddCollegeSubmit(addcollege)">
+                          Register
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!--## single ##-->
+
+              <!-- bulk -->
+              <div class="row file-upload mt-3" id="show-bulk">
+                <div class="col-md-6 offset-md-6">
+                  <div class="d-flex justify-content-end">
+                    <a target="_self" style="text-decoration:none;" class="f-green"
+                      href="assets/template/College Bulk Template.xlsx">Download Template</a>
+                    <!-- <label style="cursor: pointer" (click)="downloadTemplate()" class="f-green">Download
+                      Template</label> -->
+                  </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                  <div class="modal-bulk">
+                    <div class="bulkupload">
+                      <input id="file" #stuProFileInput (change)="onBulkUploadChange($event)" type="file"
+                        class="form-control">
+                    </div>
+                    <div *ngIf="stuProBulkUploadMsg" style="font-size: 10.5pt; margin-top: 2pt; color:red;">
+                      <div>Please upload valid file</div>
+                    </div>
+                  </div>
+                </div>
+                <!--## bulk ##-->
+                <div class="col-md-12 d-flex justify-content-end">
+                  <button type="button" class="btn btn-red me-2" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-blue" (click)="onBulkUplaod()">
+                    Upload
+                  </button>
+                </div>
+              </div>
+              <!-- <div class="modal-footer ps-0 pe-0" id="show-bulk">
+                                    <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-blue">Add</button>
+                                </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assign Modal -->
+      <div class="modal fade" id="assignproject" tabindex="-1" aria-labelledby="assignproject" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Assign Project</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form #assignproject="ngForm" name="form" (ngSubmit)="(assignproject.form.valid)">
+                <div class="row">
+                  <div class="col-md-12 mb-2">
+                    <label class="form-check-label mb-1">Project Name</label><span class="required"> *</span>
+                    <ng-multiselect-dropdown placeholder="- - Select - -" [settings]="projectdropdownSettings"
+                      [data]="projectddl" type="text" class="form-multiselect" [(ngModel)]="collegeAssign.projects"
+                      name="assign_project" #project_name="ngModel" required>
+                    </ng-multiselect-dropdown>
+                    <div *ngIf="
+                        (assignproject.submitted && project_name.untouched) ||
+                        project_name.touched
+                      " style="font-size: 10.5pt; margin-top: 2pt; color: red">
+                      <div *ngIf="project_name.errors?.['required']">
+                        Select the above(Project Name) field
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <pre>{{projectddl | json}}</pre> -->
+
+                <div class="modal-footer ps-0 pe-0">
+                  <button type="button" class="btn btn-red" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                  <button type="submit" (click)="onAssignProject(assignproject.form, dt)" class="btn btn-blue">
+                    Add
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Link Modal -->
+      <div class="modal fade" id="generate-link" tabindex="-1" aria-labelledby="generate-link" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Generate Link</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="mb-2">Project</label>
+                  <select class="form-select" aria-label="Default select example">
+                    <option selected>Project 1</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                  <label class="mb-2">Project Manager</label>
+                  <select class="form-select" aria-label="Default select example">
+                    <option selected>Name 1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer ps-0 pe-0">
+                <button type="button" class="btn btn-red" data-bs-dismiss="modal">
+                  Close
+                </button>
+                <button type="button" class="btn btn-blue">
+                  Generate Link
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <ul class="nav nav-tabs card-nav" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="userManagement-tab" data-bs-toggle="tab"
+              data-bs-target="#userManagement" type="button" role="tab" aria-controls="userManagement"
+              aria-selected="true">
+              College
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content card-tab-content" id="myTabContent">
+          <div class="tab-pane fade active show" id="userManagement" role="tabpanel"
+            aria-labelledby="userManagement-tab">
+            <div class="row">
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="show-entries d-flex mb-3">
+                  <small><span class="result-found"><b>{{ dt.totalRecords }}</b> Results Found</span></small>
+                </div>
+              </div>
+              <div class="col-md-8 d-block d-sm-inline-flex justify-content-end">
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns"  optionLabel="header"
+                    (onChange)="columnFilter($event)" selectedItemsLabel="{0} columns selected"
+                    [style]="{ minWidth: '180px' }" placeholder="Choose Columns"></p-multiSelect>
+                </div>
+                <!-- <div class="search-input w-xs-100 me-2 mb-3">
+                  <input type="text" class="form-control" placeholder="Search" (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+                </div> -->
+                <div class="search-input w-xs-100 me-2 mb-3">
+                  <button type="button" pButton pRipple icon="pi pi-search" href="javascript:void(0);"  [ngClass]="_searchedColumns?.length > 0 ? 'searched' : ''"
+                    (click)="searchClose()" data-bs-toggle="modal" [attr.data-bs-target]="'#collegeSearch'" class="mr-2"
+                    title="Search" tooltipPosition="bottom"></button>
+                  <!-- <input type="text" class="form-control" placeholder="Search" (input)="dt.filterGlobal($any($event.target).value, 'contains')" /> -->
+                </div>
+                <div class="dropdown float-end more-dropdown d-flex align-items-center mb-3">
+                  <button class="more-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Export<i class="las la-angle-down ms-2"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li>
+                      <button type="button" title="CSV" pButton pRipple icon="pi pi-file" class="mr-2"
+                        (click)="ExportToCsv()" pTooltip="CSV"
+                        tooltipPosition="bottom"></button>
+                    </li>
+                    <li>
+                      <button type="button" title="XLSX" pButton pRipple icon="pi pi-file-excel"
+                        (click)="exportExcel(dt)" class="p-button-success mr-2" pTooltip="XLS"
+                        tooltipPosition="bottom"></button>
+                    </li>
+                    <!-- <li>
+                      <button type="button" title="PDF" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf(dt)"
+                        class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                    </li> -->
+                    <!-- <li>
+                      <button type="button" title="Filter" pButton pRipple icon="pi pi-filter"
+                        (click)="dt.exportCSV({ selectionOnly: true })" class="p-button-info ml-auto"
+                        pTooltip="Selection Only" tooltipPosition="bottom"></button>
+                    </li> -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 scroll-table scrolling-table-div">
+              <p-table #dt class="p-table-grid" [columns]="selectedColumns" [(selection)]="selectedCollegeDetails"
+                [value]="collegeDetails" [paginator]="true" [rowsPerPageOptions]="[5, 10, 25, 50, 100, 500]" [rows]="10"
+                sortMode="multiple" [responsive]="true" [exportFilename]="exportCollege" [globalFilterFields]="[
+                  'academic_institution_name',
+                  'tPO_name',
+                  'tPO_mobile',
+                  'tPO_email',
+                  'kAM_name',
+                  'status',
+                ]" [(selection)]="selectedrows">
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+                    <th>
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                      {{ col.header }}
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th>Action</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-userDetail let-columns="columns">
+                  <tr>
+                    <td>
+                      <p-tableCheckbox [value]="userDetail"></p-tableCheckbox>
+                    </td>
+                    <td *ngFor="let col of columns"
+                      [ngClass]="{ 'text-center': col.field != 'academic_institution_name' ? true  : false }"
+                      style="text-align: left">
+                      {{ userDetail[col.field] }}
+                    </td>
+                    <td>
+                      <a href="javascript:void(0);" (click)="
+                          editCollegeDetails(userDetail, editCollegeForm)">
+                          <i class="las la-pen"></i></a>
+                          <a href="javascript:void(0);" (click)="Copy(userDetail)" title="Copy Academic Institution Name" ><i class="las la-copy"></i></a>
+                      <!-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete" (click)="deleteCurrentCollege(userDetail)"><i class="las la-trash-alt"></i></a> -->
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Search Modal -->
+<div class="modal fade" id="collegeSearch" tabindex="-1" aria-labelledby="collegeSearch" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="clearSearch()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <p-multiSelect [options]="searchCols" [resetFilterOnHide]="true" (onChange)="onChangeSearchKey($event)" [selectionLimit]="5" optionLabel="header"
+              [(ngModel)]="_selectedSearchColumns" selectedItemsLabel="{0} columns selected"
+              [style]="{minWidth: '180px'}" placeholder="Choose Columns" [showToggleAll]="false"></p-multiSelect>
+          </div>
+        </div>
+
+        <div class="row p-2">
+
+          <table>
+
+            <tr *ngFor="let searchColumns of _selectedSearchColumns">
+              <td class="w-auto p-2 text-center">
+                {{searchColumns.header}}
+              </td>
+              <td class="w-auto p-2">
+                <input required type="text" [placeholder]="searchHolder(searchColumns.field)" class="form-control" name="subject"
+                  [(ngModel)]="searchColumns.search" #subject="ngModel">
+              </td>
+              <td class="w-auto p-2" *ngIf="_selectedSearchColumns.length > 1">
+                <select required class="form-select" aria-placeholder="Select" title="Condition"
+                  [(ngModel)]="searchColumns.condition" name="condition" #condition="ngModel">
+                  <option [ngValue]="undefined" disabled selected>Select</option>
+                  <option>AND</option>
+                  <option>OR</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="row p-2" *ngIf="searchError">
+          <p style="color: red;">*Mandatory to fill all fields.</p>
+        </div>
+        <div class="modal-footer ps-0 pe-0">
+          <button type="button" class="btn btn-red" (click)="clearSearch()" data-bs-dismiss="modal" [disabled]="_selectedSearchColumns?.length==0">Clear</button>
+          <button type="button" class="btn btn-blue" (click)="submitSearch()" [disabled]="_selectedSearchColumns?.length==0">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit College Modal -->
+<div class="modal fade" id="edit_college_details" tabindex="-1" aria-labelledby="edit_college_details"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit College Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-scroll">
+        <form #editCollegeForm="ngForm" name="form" (ngSubmit)="(editCollegeForm)">
+          <div class="">
+            <div class="row">
+
+              <!-- Academic Institute Name -->
+              <div class="col-md-12 mb-2">
+                <label class="mb-2">Academic Institution Name</label><span class="required"> *</span><br />
+                <p-dropdown [options]="collegeNewDetails" [required]="true"
+                  (onChange)="changeCollege($event, editCollegeForm)" (onClear)="clearEvent(editCollegeForm)"
+                  [(ngModel)]="selectedCollege" name="collegename" optionLabel="academic_institution_name"
+                  [filter]="true" filterBy="academic_institution_name" [showClear]="true"
+                  placeholder="Select a College">
+                  <ng-template pTemplate="selectedItem">
+                    <div class="college-item college-item-value" *ngIf="selectedCollege">
+                      <div>{{selectedCollege.academic_institution_name}}</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-college pTemplate="item">
+                    <div [ngClass]="(college.tpo_status == true) ? 'college_item' : 'college-item' ">
+                      <div>{{college.academic_institution_name}}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && !selectedCollege)">
+                    Academic institution name is required
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Academic Institution name -->
+              <div class="col-md-12 mb-3"
+                *ngIf="selectedCollege != null && selectedCollege.academic_institution_id == 0">
+                <label class="mb-2">Academic Institution Name</label><span class="required"> *</span>
+                <input required pattern="^[a-zA-Z0-9.'\s&]+$" type="text"
+                  [(ngModel)]="userModel.otherAcademicInstitutionName" #othercollegename="ngModel"
+                  name="othercollegename" class="form-control" id="othercollegename" />
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && othercollegename.untouched) || othercollegename.touched"
+                    class="error">
+                    <div *ngIf="othercollegename.errors?.['required']">
+                      Academic institution name is required
+                    </div>
+                  </div>
+                  <div *ngIf="othercollegename.touched && othercollegename.invalid" class="error">
+                    <div *ngIf="othercollegename.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="col-md-12 mb-2">
+                <label class="mb-2">Academic Institution Name</label><span class="required"> *</span>
+                <input required list="college-name" pattern="^[a-zA-Z.\s&]+$" autocomplete="off" type="text"
+                  class="form-select webkit-none" [(ngModel)]="userModel.academicInstitutionName" #collegename="ngModel"
+                  name="college" />
+                <datalist id="college-name">
+                  <option *ngFor="let x of collegeDetails">
+                    {{ x.academic_institution_name}}
+                  </option>
+                </datalist>
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="
+                      (editCollegeForm.submitted && collegename.untouched) ||
+                      collegename.touched
+                    " class="error">
+                    <div *ngIf="collegename.errors?.['required']">
+                      Academic institution name is required
+                    </div>
+                  </div>
+                  <div *ngIf="collegename.touched && collegename.invalid" class="error">
+                    <div *ngIf="collegename.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+              <!-- Address -->
+              <div class="col-md-12 mb-2">
+                <label class="mb-2">Address Line</label><span class="required"> *</span>
+                <input required pattern="[a-zA-Z0-9-]*+" type="text" [(ngModel)]="userModel.address" #editaddress="ngModel"
+                  name="address" class="form-control" id="" />
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="
+                      (editCollegeForm.submitted && editaddress.untouched) || editaddress.touched" class="error">
+                    <div *ngIf="editaddress.errors?.['required']">
+                      Address line is required
+                    </div>
+                  </div>
+                  <div *ngIf="editaddress.touched && editaddress.invalid" class="error">
+                    <div *ngIf="editaddress.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- State -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">State</label><span class="required"> *</span>
+                <select required class="form-select" (change)="FilterCity($any($event.target).value, 'edit')"
+                  [(ngModel)]="userModel.state" #editstate="ngModel" name="state">
+                  <option value="" disabled selected hidden>
+                    -- Select --
+                  </option>
+                  <option *ngFor="let x of stateDetails" value="{{ x.stateid }}_{{ x.state }}">
+                    {{ x.state }}
+                  </option>
+                </select>
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && editstate.untouched) || editstate.touched" class="error">
+                    <div *ngIf="editstate.errors?.['required']">
+                      Select the state field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- City -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">City</label><span class="required"> *</span>
+                <select required class="form-select" [(ngModel)]="userModel.city" #editcity="ngModel" name="city">
+                  <option value="" disabled selected hidden>
+                    -- Select --
+                  </option>
+                  <option *ngFor="let x of cityDetails" value="{{ x.cityid }}_{{ x.cityname }}">
+                    {{ x.cityname }}
+                  </option>
+                </select>
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && editcity.untouched) || editcity.touched" class="error">
+                    <div *ngIf="editcity.errors?.['required']">
+                      Select the city field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- College Code -->
+              <!--<div class="col-md-6 mb-2">
+                                    <label class="mb-2">Academic Institution Code</label><span class="required"> *</span>
+                                    <input required pattern="^(?=.*\d)[a-zA-Z]{4,}\d*" type="text" title="College Code" class="form-control" id="" placeholder="Academic Institution Code"
+                                        [(ngModel)]="userModel.code" #collegecode="ngModel" name="collegecode">
+                                    <div style="display: block;" class="invalid-feedback">
+                                        <div *ngIf="(editCollegeForm.submitted && collegecode.untouched) ||  collegecode.touched" class="error">
+                                            <div *ngIf="collegecode.errors?.['required']">Academic institution code is required</div>
+                                        </div>
+                                        <div *ngIf="collegecode.touched && collegecode.invalid" class="error">
+                                            <div *ngIf="collegecode.errors?.['pattern']">Enter a valid data
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+
+              <!-- TOP Name -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">TPO Name</label><span class="required"> *</span>
+                <select required class="form-select" (change)="getTPODetails($any($event.target).value)"
+                  [(ngModel)]="userModel.tpoUserid" #edittponame="ngModel" name="tponame">
+                  <option value="" disabled selected hidden>
+                    -- Select --
+                  </option>
+                  <option *ngFor="let x of editTPONameDetails" value="{{ x.userid }}_{{ x.firstname }}">
+                    {{ x.firstname }}  {{ x.lastname }}
+                  </option>
+                </select>
+
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && edittponame.untouched) || edittponame.touched" class="error">
+                    <div *ngIf="edittponame.errors?.['required']">
+                      Select the TPO name field
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TPO Mobile Number -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">TPO Mobile Number</label><span class="required"> *</span>
+                <input [readonly]="readonlyField" required pattern="^[+0]{0,2}(91)?[0-9]{10}$" type="text"
+                  class="form-control" id="" [(ngModel)]="userModel.tpoContactNumber" #edittpomobile="ngModel"
+                  name="tpomobile" />
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="
+                      (editCollegeForm.submitted && edittpomobile.untouched) ||
+                      edittpomobile.touched
+                    " class="error">
+                    <div *ngIf="edittpomobile.errors?.['required']">
+                      TPO mobile is required
+                    </div>
+                  </div>
+                  <div *ngIf="edittpomobile.touched && edittpomobile.invalid" class="error">
+                    <div *ngIf="edittpomobile.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TPO Email -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">TPO Email Id</label><span class="required"> *</span>
+                <input required type="text" [readonly]="readonlyField"
+                  pattern="^([a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+)(@[a-zA-Z0-9]+)(.[a-zA-Z0-9]{2,4}){1,}$" class="form-control" id=""
+                  [(ngModel)]="userModel.tpoEmailId" #editemail="ngModel" name="email" />
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && editemail.untouched) || editemail.touched" class="error">
+                    <div *ngIf="email.errors?.['required']">
+                      TPO email id is required
+                    </div>
+                  </div>
+                  <div *ngIf="editemail.touched && editemail.invalid" class="error">
+                    <div *ngIf="editemail.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- KAM Name -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">KAM Name</label><span class="required"> *</span>
+                <select required class="form-select" (change)="getKAMDetails($any($event.target).value)"
+                  [(ngModel)]="userModel.kamUserId" #editkamname="ngModel" name="kamname">
+                  <option value="" disabled selected hidden>KAM Name</option>
+                  <option *ngFor="let x of kamNameDetails" value="{{ x.userid }}_{{ x.firstname }} {{ x.lastname }}">
+                    {{ x.firstname }}  {{ x.lastname }}
+                  </option>
+                </select>
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && editkamname.untouched) || editkamname.touched" class="error">
+                    <div *ngIf="editkamname.errors?.['required']">
+                      KAM name is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Instution Code -->
+              <div class="col-md-6 mb-2">
+                <label class="mb-2">Academic Institution Short Name</label><span class="required"> *</span>
+                <input required type="text" pattern="^[A-Z]{3,6} *$" class="form-control" id=""
+                  [(ngModel)]="userModel.academicInstitutionShortName" oninput="this.value = this.value.toUpperCase()" #editcollegeshortname="ngModel"
+                  name="collegeshortname" />
+                <div style="display: block" class="invalid-feedback">
+                  <div *ngIf="(editCollegeForm.submitted && editcollegeshortname.untouched) || editcollegeshortname.touched">
+                    <div *ngIf="editcollegeshortname.errors?.['required']">
+                      Institution short name is required
+                    </div>
+                  </div>
+                  <div *ngIf="editcollegeshortname.touched && editcollegeshortname.invalid">
+                    <div *ngIf="editcollegeshortname.errors?.['pattern']">
+                      Enter a valid data
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <!-- <div class="col-md-12 mb-1">
+                <div class="form-check">
+                  <input required class="form-check-input" type="checkbox" value="" name="edit_college_agree"
+                    [(ngModel)]="userModel.agree" #editagree="ngModel">
+                  <label class="form-check-label" for="agree">
+                    I agree to terms and conditions
+                  </label>
+                  <div style="display: block" class="invalid-feedback">
+                    <div *ngIf="editCollegeForm.submitted && editagree.invalid">
+                      <div *ngIf="editagree.errors?.['required']">Check this box before submission</div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+
+              <!-- <div class="col-md-12 mb-2">
+                <div class="form-check mb-2">
+                  <input required class="form-check-input" title="Terms and Conditions" type="checkbox"
+                    [(ngModel)]="userModel.agree" value="userModel.agree" #agree="ngModel" id="agree"
+                    name="agree" />
+                  <label class="form-check-label" for="agree">
+                    I agree to terms and conditions
+                  </label>
+                  <div style="display: block" class="invalid-feedback">
+                    <div *ngIf="editCollegeForm.submitted && agree.invalid">
+                      <div *ngIf="agree.errors?.['required']">
+                        Check this box before submission
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+              <div class="col-md-12 mb-2 modal-footer">
+                <button type="submit" class="btn btn-blue" (click)="onUpdateCollege(editCollegeForm.form)">
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change Status Modal -->
+<div class="modal fade" id="change-status" tabindex="-1" aria-labelledby="change-status" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="StatusModal()"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 d-flex justify-content-center mt-3">
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Active"
+                [(ngModel)]="status" type="radio" id="statusinlineRadio1" name="status" />
+              <label class="form-check-label" for="statusinlineRadio1">Active</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="file-upload-radio form-check-input" (click)="changeStatusCss()" value="Inactive"
+                [(ngModel)]="status" type="radio" id="statusinlineRadio2" name="status" />
+              <label class="form-check-label" for="statusinlineRadio2">Inactive</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-red" (click)="StatusModal()" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" (click)="changeStatus(dt)" class="btn btn-blue">
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2 pb-2">
+        <p class="text-center mb-0"><b>Are you sure want to delete?</b></p>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-blue" (click)="deleteCollege(currentCollegeId)">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

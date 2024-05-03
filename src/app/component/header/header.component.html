@@ -1,0 +1,80 @@
+<p-toast *ngIf="toastMsg" [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"></p-toast>
+<header>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <div class="">
+                <a href="javascript:void(0);" class="menubar"><i class="las la-bars"></i></a>
+                <a class="navbar-brand" href="#/studentprofile"><img src="assets/img/logo.png"></a>
+                <button type="button" *ngIf="isMigrate == 'Yes'" class="btn btn-outline-primary btn-sm" (click)="redirectToSkillsAlpha()">Skills Alpha</button>
+                <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button> -->
+            </div>
+            <div class="">
+                <ul class="navbar-nav dropdown-navbar-nav ms-auto">
+                    <li class="nav-item dropdown header-alert " *ngIf="notificationIconDis.includes(loggedInRoleName)">
+                        <a class="" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="las la-bell"></i> <span class="alert-dot"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end header-dropdown-menu p-0" aria-labelledby="navbarDropdownMenuLink">
+                            <div class="p-2 text-white bg-primary">
+                                Notification
+                            </div>
+                            <ul  style="width: 410px;" class="p-1 list-unstyled">
+                                <li *ngFor="let mock of data" style="border-bottom: 1px solid #f2f2f2;" >
+                                    <div class="row d-flex justify-content-between" style="padding: 5px 10px; width: -webkit-fill-available;">
+                                        <span class="w-auto" style="max-width: 60%;">
+                                            <b>{{mock.username}}</b>
+                                        </span>
+                                        <span class="w-auto text-muted" style="font-size: 12px;">
+                                            {{mock.createddate | date:'MMM dd,YYYY hh:mm a'}}
+                                        </span>
+                                    </div>
+                                    <div class="row d-flex justify-content-between" style="padding: 5px 10px; width: -webkit-fill-available;">
+                                        <span class="w-auto" style="max-width: 85%;">
+                                           {{mock.module}} - Requested {{mock.exporttype}} file ready to download.
+                                        </span>
+                                        <!-- <div style="width: 30px"> -->
+                                            <a href="javascript:void(0);" href="{{mock.s3path}}" target="_blank"
+                                                class="mr-5 w-auto"><i class="las la-file-download"></i></a>
+                                        <!-- </div> -->
+                                    </div>
+                                </li>
+
+                            </ul>
+                            <div class="text-center p-1" *ngIf="data?.length>0">
+                                <a href="javascript:void(0);" (click)="notificationNavigation()"
+                                class="mr-5">View More</a>
+                            </div>
+                            <div class="text-center p-1" *ngIf="data?.length == 0">
+                              <p>No Records Found</p>
+                          </div>
+                        </div>
+
+                    </li>
+                    <li class="nav-item dropdown user-dd">
+                        <a class="" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <div class="user-img"><img src="assets/img/user.jpg"></div>
+                            <span class="profile-name">Hi {{ profileName }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end header-dropdown-menu"
+                            aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" (click)="profileOnSubmit()"><i
+                                        class="las la-user-circle f-green"></i>
+                                    Profile</a>
+                            </li>
+                            <li><a class="dropdown-item" href="#" (click)="logout()"><i
+                                        class="las la-sign-out-alt f-red"></i>
+                                    Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+</header>

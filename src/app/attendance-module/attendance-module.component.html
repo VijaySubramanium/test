@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<div class="main">
+    <!-- <app-spinner></app-spinner> -->
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <div class="content page-content">
+        <div class="card">
+            <div class="card-header">
+                <h5>Attendance</h5>
+            </div>
+            <!-- <div *ngIf="loggedInRoleName == 'STUDENT'">
+                <app-attendance-student></app-attendance-student>
+            </div> -->
+            <div *ngIf="loggedInRoleName == 'TRAINER'|| loggedInRoleName == 'TRAINING_COORDINATOR'">
+                <app-attendance-trainer></app-attendance-trainer>
+            </div>
+            <div *ngIf="loggedInRoleName == 'GTT_ADMIN' || loggedInRoleName == 'PROJECT_MANAGER' || loggedInRoleName == 'PROGRAM_LEAD' || loggedInRoleName == 'L&D'">
+                <app-attendance-admin></app-attendance-admin>
+            </div>
+        </div>
+    </div>
+</div>

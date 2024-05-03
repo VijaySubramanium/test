@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "http://skillsalpha.mobiusservices.co.in:8080",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

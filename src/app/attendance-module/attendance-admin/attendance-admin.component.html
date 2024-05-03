@@ -1,0 +1,309 @@
+<app-spinner></app-spinner>
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trainer-batch-duration">
+                <!-- Header -->
+                <div class="d-flex">
+                    <div class="row w-100">
+                        <div class="col-lg-2 mb-3">
+                            <select required class="form-select w-100" title="Select Project" style="cursor:pointer ;"
+                                (change)="getAdminProgramLists($any($event.target).value)"
+                                aria-label="Default select example">
+                                <option value="" disabled selected hidden>
+                                    -- Select Project --
+                                </option>
+                                <option *ngFor="let x of projectDetails" value="{{ x.projectid }}_{{x.projectname}}">
+                                    {{ x.projectname}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 mb-3">
+                            <select required class="form-select w-100" title="Select Program" style="cursor:pointer ;" id="programList"
+                                (change)="getAdminCourseLists($any($event.target).value)"
+                                aria-label="Default select example">
+                                <option value="" disabled selected hidden>
+                                    -- Select Program--
+                                </option>
+                                <option *ngFor="let x of programDetails" value="{{ x.programid }}_{{ x.programname}}">
+                                    {{ x.programname}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 mb-3">
+                            <select required class="form-select w-100" title="Select Course" style="cursor:pointer ;" id="courseList"
+                                (change)="getAdminBatchLists($any($event.target).value)"
+                                aria-label="Default select example">
+                                <option value="" disabled selected hidden>
+                                    -- Select Course--
+                                </option>
+                                <option *ngFor="let x of courseDetails" value="{{ x.course_id }}__{{ x.coursename}}">
+                                    {{ x.coursename}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 mb-3">
+                            <select required class="form-select w-100" title="Select Batch" style="cursor:pointer ;" id="batchList"
+                                aria-label="Default select example" (change)="getUserBatch($any($event.target).value)">
+                                <option value="" disabled selected hidden>
+                                    -- Select Batch--
+                                </option>
+                                <option *ngFor="let x of batchDetails" value="{{ x.batchid }}_{{ x.batchcode}}">
+                                    {{ x.batchcode}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="dropdown float-end header-links" *ngIf="attendenceData && attendenceData.length > 0">
+                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="las la-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu nested-dropdown" aria-labelledby="dropdownMenuButton1">
+                            <li>
+                                <div (click)="multiSelectPopup()">
+                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal">Bulk
+                                        Attendance</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div (click)="exportRegistrationExcel()">
+                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal">Export
+                                        Attendance</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card p-3 mb-3" *ngIf="attendenceData && attendenceData.length > 0">
+                <div id="my_calendar">
+                    <!-- Sub-header-->
+                    <div class="row">
+                        <div class="col-md-6 d-flex">
+                            <h2 class="trainer-batch">{{attendenceData[0].batchName}} <span
+                                    class="trainer-startdate">Start Date -
+                                    {{attendenceData[0].batchStartDate}}</span>
+                                &nbsp;<span class="trainer-enddate">End Date -
+                                    {{attendenceData[0].batchEndDate}}</span>
+                            </h2>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end">
+                            <button type="submit" (click)="todayPagenation()" class="btn btn-blue today-position">
+                                Today
+                            </button>
+                            <button type="submit" (click)="pagenation(0)" class=" btn btn-blue
+                                    today-position-prev">
+                                Prev
+                            </button>
+                            <button type="submit" (click)="pagenation(1)" class="btn btn-blue today-position-next">
+                                Next
+                            </button>
+                        </div>
+
+                    </div>
+                    <!-- Child-->
+                    <div class="overflow-card-body slim-scroll" *ngIf="attendenceData">
+                        <div class="row">
+                            <table class="table">
+                                <colgroup>
+                                    <col>
+                                    <col *ngFor="let items of viewdates" [ngClass]="{'highlight': items === today}">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="tablehead">{{name_Program}}</th>
+                                        <th *ngFor="let items of viewdates" class="tablehead">{{items}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let attend of attendenceData">
+                                        <td class="stud"><b>{{attend.studentName}}</b></td>
+                                        <td class="pt-3" (click)="openPopup(item,attend.studentId)"
+                                            *ngFor="let item of viewdates" id="item">
+                                            <div *ngFor="let data of attend.attendance">
+                                                <h5 *ngIf="item == data.attendanceDate"><span
+                                                        [ngClass]="(data.attendanceValue == 'Present') ? 'present' : 'absent' ">{{data.attendanceValue}}</span>
+                                                </h5>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance marking modal -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':attendPopup? 'block' : 'none'}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <p class="head-cont text-primary">ATTENDANCE</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closePopup()"
+                    aria-label="Close"></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="submitPopup()">
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-3">
+                        <div class="form-check mt-4">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="attend" formControlName="attend"
+                                    value="Present" id="attendPres" checked>
+                                <i>Present</i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-3">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="attend" formControlName="attend"
+                                    value="Absent" id="attendAbs">
+                                <i>Absent</i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-2 ml-2 cls-btn">
+                        <button type="submit" class="btn btn-primary subbtn mb-3 mt-3 " [disabled]="!form.valid">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Multiple attendance marking modal -->
+<div class="modal multiple-attendance" tabindex="-1" role="dialog" *ngIf="multiSelectAttend" [ngStyle]="{'display':multiSelectAttend? 'block' : 'none'}">
+    <!-- [ngStyle]="{'display':multiSelectAttend? 'block' : 'none'}" -->
+    <div class="modal-dialog top-0" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <p class="head-cont text-primary">ATTENDANCE</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closePopup()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="d-flex justify-content-around mt-1">
+                <div class="col-md-4 mb-3 align-self-center">
+                    <label>Start Date<span class="text-danger">*</span></label>
+                    <p-calendar [(ngModel)]="multiSelectAttend.startDay" placeholder="YYYY-MM-DD" [required]="true"
+                        type="date" name="add_start_date" class="date-input" dateFormat="yy-mm-dd" [minDate]="multiSelectAttend?.enableFromDate"
+                        [maxDate]="multiSelectAttend?.enableToDate" #batchstartdate="ngModel" (onSelect)="onSelect()">
+                    </p-calendar>
+                    <!-- <div style="display: block;" class="invalid-feedback">
+                        <div
+                            *ngIf="(addBatchForm.submitted && batchstartdate.untouched) || batchstartdate.touched">
+                            <div *ngIf="batchstartdate.errors?.['required']">Start date is required </div>
+                        </div>
+                        <div *ngIf="batchstartdate.touched && batchstartdate.invalid">
+                            <div *ngIf="batchstartdate.errors?.['pattern']">Enter a valid data
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+
+
+                <div class="col-md-4 mb-3 align-self-center">
+                    <label>End Date<span class="text-danger">*</span></label>
+                    <p-calendar [(ngModel)]="multiSelectAttend.endDay" placeholder="YYYY-MM-DD" [required]="true"
+                        type="date" name="add_end_date" class="date-input" dateFormat="yy-mm-dd"
+                    [maxDate]="multiSelectAttend?.enableToDate" [minDate]="multiSelectAttend.startDay" #batchenddate="ngModel">
+                    </p-calendar>
+                    <!-- <div style="display: block;" class="invalid-feedback">
+                        <div
+                            *ngIf="(addBatchForm.submitted && batchenddate.untouched) || batchenddate.touched">
+                            <div *ngIf="batchenddate.errors?.['required']">End date is required </div>
+                        </div>
+                        <div *ngIf="batchenddate.touched && batchenddate.invalid">
+                            <div *ngIf="batchenddate.errors?.['pattern']">Enter a valid data
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+
+
+
+            <!-- <div class="search-input w-xs-100 me-3 mt-2 align-self-end">
+                <p-calendar [(ngModel)]="rangeDates" placeholder="Date range" selectionMode="range"
+                    [readonlyInput]="true" inputId="range" [minDate]="multiSelectAttend?.enableFromDate"
+                    [maxDate]="multiSelectAttend?.enableToDate" (onSelect)="onSelect()"></p-calendar>
+            </div> -->
+            <div class="overflow-card-body slim-scroll">
+                <div class="row p-3">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="tablehead">Student Id</th>
+                                <th class="tablehead">Students</th>
+                                <th class="tablehead"><input type="checkbox" name="all" [checked]="isAllChecked()"
+                                        (change)="checkAll($event)" /></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let attend of multiSelectAttend?.studentLists">
+                                <td class="stud"><b>{{attend.studentGttId}}</b></td>
+                                <td class="stud"><b>{{attend.studentName}}</b></td>
+                                <td class="pt-3" id="attend.studentId">
+                                    <input type="checkbox" name="sizecb[]" value="{{attend.id}}"
+                                        [(ngModel)]="attend.state" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <form [formGroup]="form" (ngSubmit)="submitMultiPopup()">
+                <div class="row justify-content-around">
+                    <div class="col-lg-3">
+                        <div class="form-check mt-4">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="attend" formControlName="attend"
+                                    value="Present" id="attendPres" checked>
+                                <i>Present</i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-check mt-4">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="attend" formControlName="attend"
+                                    value="Absent" id="attendAbs">
+                                <i>Absent</i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-2 ml-2 cls-btn">
+                        <button type="submit" class="btn btn-primary subbtn mb-3 mt-3 "
+                            [disabled]="!isMultiFormValid()">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

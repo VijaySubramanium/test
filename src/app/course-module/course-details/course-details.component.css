@@ -1,0 +1,347 @@
+/* content side wrapper */
+.attendance-icon {
+  color: #278ce8;
+  font-size: 22px;
+  border: none;
+  padding: 0 2px;
+  line-height: 20px;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+.overflow-course-body {
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+}
+.stud-attendance-model {
+  max-width: 75%;
+}
+.sidemenu {
+  background: linear-gradient(to top, #6041d3 8%, #33c0f0 100%) !important;
+}
+.sidemenu.hide {
+  width: 0px;
+  display: none !important;
+}
+.content-sidebar .content-header {
+  padding-bottom: 1rem;
+
+  color: #ffffff;
+}
+.content-sidebar .content-header h3 {
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.content-sidebar .content-header h4 {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+::ng-deep .content-sidebar-wrapper {
+  /* background-color: #278ce8; */
+  position: fixed;
+  top: 0;
+  left: 0%;
+  width: 400px;
+  height: 100vh;
+  transition: transform 0.4s ease-in;
+  transform: translateX(0px);
+}
+::ng-deep .content-sidebar-close {
+  transform: translateX(-400px);
+}
+
+::ng-deep .content-sidebar-wrapper .content-sidebar-inner {
+  padding: 20px;
+  color: #ffffff;
+}
+
+::ng-deep .content-sidebar-wrapper .content-close i {
+  transition: transform 0.4s ease-in;
+}
+
+::ng-deep .content-sidebar-wrapper.content-sidebar-close .content-close i {
+  transform: rotate(180deg);
+}
+
+::ng-deep .content-sidebar-wrapper .content-header .content-close {
+  /* background: #278ce8; */
+  border-radius: 0 50% 50% 0;
+  height: 40px;
+  margin-right: -45px;
+  padding: 9px 0;
+  text-align: center;
+  width: 35px;
+  margin-top: 10px;
+  float: right;
+  cursor: pointer;
+}
+
+.content-sidebar-wrapper .content-header {
+  padding-bottom: 1rem;
+}
+
+.main-content-full {
+  padding-left: 0 !important;
+}
+
+.main-content-wrapper {
+  /* padding-left: 400px; */
+  /* padding-right: 80px; */
+  transition: padding 0.4s ease-in;
+}
+
+.contnent-right-fixed {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+.content-icon-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.content-icon-container i {
+  font-size: 26px;
+}
+
+.content-body .accordion .accordion-item {
+  /* color: #6b6969; */
+  background-color: transparent;
+  border: none;
+}
+
+.parent-accordion-header button {
+  border-top: 1px solid linear-gradient(to top, #6041d3 8%, #33c0f0 100%) !important;
+  border-bottom: 1px solid linear-gradient(to top, #6041d3 8%, #33c0f0 100%) !important;
+}
+
+.content-body .accordion .accordion-button {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  padding-right: 0;
+  width: 90%;
+}
+
+.content-body .accordion .accordion-button::after {
+  background-image: none;
+  content: "\f067";
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 16px;
+  margin-left: auto;
+  color: #fff;
+}
+
+.content-body .accordion .accordion-button:not(.collapsed)::after {
+  content: "\f068";
+  transform: none;
+}
+
+.content-body .accordion .accordion-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.child-parent-wrapper {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.child-wrapper {
+  padding: 0 10px !important;
+}
+
+.child-parent-wrapper .accordion .accordion-button,
+.child-parent-wrapper .accordion {
+  color: #ffffff;
+}
+
+.child-parent-wrapper .accordion-header button {
+  font-size: 14px;
+  padding: 10px 0px;
+}
+
+.content-list ul {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.content-list ul li {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  color: #fff;
+  padding-left: 0;
+  padding-right: 0;
+  width: 90%;
+}
+
+.content-list ul li::before {
+  content: "\f1c1";
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+@media (max-width: 567px) {
+  .w-xs-100 {
+    width: 100%;
+  }
+  .swiper .swiper-button {
+    display: none;
+  }
+  .content-sidebar-close {
+    transform: translateX(-250px) !important;
+  }
+  .content-sidebar-wrapper {
+    width: 250px;
+  }
+  .main-content-wrapper {
+    padding-left: 2500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .overflow-card-body {
+    max-height: 100%;
+  }
+  .feedback-single-qes textarea {
+    max-width: 100%;
+  }
+  .course-card .course-card-right .assessments {
+    margin-bottom: 10px;
+  }
+  /* .swiper .swiper-wrapper .swiper-slide {
+            padding: 0;
+        } */
+  .sm-overflow-hidden {
+    overflow: hidden;
+  }
+  .navbar-brand img {
+    height: 35px;
+  }
+  .card-nav .nav-link {
+    margin: 0 0.5rem;
+  }
+  .sidemenu.hide {
+    /* width: 55px; */
+    width: 280px;
+    height: 100vh;
+    display: block;
+  }
+  .sidemenu {
+    padding: 0.5rem 0 0.5rem 0.5rem;
+    position: absolute;
+    z-index: 99;
+    display: none;
+  }
+  .sidemenu > ul li a {
+    padding: 0.5rem 0.5rem;
+  }
+  .sidemenu > ul li a span {
+    display: inline-block;
+  }
+  .content.hide {
+    width: 100%;
+  }
+  .page-content {
+    width: 100%;
+    padding: 0.5rem;
+  }
+  .mobile-sidebar-backdrop {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 98;
+  }
+  .backdrop-opened {
+    display: block !important;
+  }
+}
+/* -------------------------- */
+.float-menu.open {
+  right: 75px;
+  transition: all 0.6s ease-in-out 0s;
+  background: #a1a1a1;
+}
+
+.float-menu {
+  position: absolute;
+  bottom: 50%;
+  width: 80px;
+  z-index: -1;
+  right: 20px !important;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  cursor: pointer;
+  transition: all 0.6s ease-in-out 0s;
+  background: #614cd1;
+}
+
+.float-menu.open .arrow {
+  background-position: 5px center;
+}
+.float-menu .arrow {
+  width: 16px;
+  height: 16px;
+  display: block;
+  float: left;
+  padding: 25px 10px;
+}
+.skill-btn {
+  background: #a1a1a1 !important;
+  border: transparent;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: #fff;
+  font-size: 16px;
+}
+
+object[type="application/pdf"] {
+  pointer-events: none; /* Disable click events on the object */
+  user-select: none;    /* Disable text selection within the object */
+}
+
+/* Optionally, hide the border around the PDF viewer */
+object[type="application/pdf"] {
+  border: none;
+}
+
+#end{
+  display: none !important;
+}
+
+
+
+
+
+
+
+

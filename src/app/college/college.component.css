@@ -1,0 +1,32 @@
+.invalid-feedback {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 13px !important;
+    color: #dc3545;
+}
+.modal-scroll {
+    height: 70vh;
+    overflow-y: auto;
+}
+
+p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
+    border-color: none !important;
+}
+
+
+.p-button {
+  color: #9f9f9f !important;
+  background: #ffffff !important;
+  border: 1px solid #cccccc !important;
+}
+
+.searched {
+  color: #ffffff !important;
+  background: #278ce8 !important;
+  border: 1px solid #278ce8 !important;
+}
+
+
+
+
+

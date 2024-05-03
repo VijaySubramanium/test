@@ -1,0 +1,124 @@
+<app-spinner></app-spinner>
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-3 mb-3" *ngIf="attendenceData">
+                <div id="my_calendar">
+                    <!-- <div>
+                        <h6 class="trainer-batch">Batch1 <span class="trainer-startdate">Start Date-01June</span>
+                            &nbsp;<span class="trainer-enddate">End Date-14Jun</span> </h6>
+                    </div> -->
+                    <div class="row">
+                        <div class="col-md-6 d-flex">
+                            <!-- <h2>Jun 01 - Jun 07,2022</h2> -->
+                            <h2 class="trainer-batch">{{attendenceData.batch_name}} <span
+                                    class="trainer-startdate">Start Date - {{attendenceData.batch_start_date}}
+                                </span>
+                                &nbsp;<span class="trainer-enddate">End Date - {{attendenceData.batch_end_date}}</span>
+                            </h2>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end">
+                            <button type="submit" (click)="todayPagenation()" class="btn btn-blue today-position">
+                                Today
+                            </button>
+                            <button type="submit" (click)="pagenation(0)" class=" btn btn-blue
+                            today-position-prev">
+                                Prev
+                            </button>
+                            <button type="submit" (click)="pagenation(1)" class="btn btn-blue today-position-next">
+                                Next
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <table class="table">
+                            <colgroup>
+                                <col>
+                                <col *ngFor="let items of viewdates"  [ngClass]="{'highlight': items === today}">
+                              </colgroup>
+                            
+                            <thead>
+                                <tr>
+                                    <th class="tablehead">{{name_Program}}</th>
+                                    <th *ngFor="let items of viewdates" class="tablehead">{{items}}</th>
+                                </tr>
+                                <!-- <tr>
+                                    <td></td>
+                                    <th colspan="4" class="course1">Course-1(2Hrs)</th>
+                                    <th colspan="3" class="course2">Course-2(2Hrs)</th>
+
+                                </tr> -->
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="attendenceData">
+                                    <td class="stud"><b>{{attendenceData.username}}</b></td>
+                                    <td class="pt-3" (click)="openPopup(item)" *ngFor="let item of viewdates" id="item">
+                                        <!-- .slice(this.index,this.index + 7) -->
+                                        <div *ngFor="let data of attendenceData.attendance_details">
+                                            <h5 *ngIf="item == data.attendance_date"><span
+                                                    [ngClass]="(data.attendance_value == 'Present') ? 'present' : 'absent' ">{{data.attendance_value}}</span>
+                                            </h5>
+                                            <!-- <h5 *ngIf="item.status == 2"><span class="absent">Absent</span></h5> -->
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':attendPopup? 'block' : 'none'}">
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <p class="head-cont text-primary">ATTENDANCE</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closePopup()" aria-label="Close"></button>
+                </div>
+                <form [formGroup]="form" (ngSubmit)="submitPopup()">
+                    <div class="row">
+                        <div class="col-lg-4"></div>
+                        <div class="col-lg-3">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="radio" name="attend" formControlName="attend"
+                                    value="Present" id="attendPres" checked>
+                                <label class="form-check-label " for="attendPres">
+                                    Present
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-5"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"></div>
+                        <div class="col-lg-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="attend" formControlName="attend"
+                                    value="Absent" id="attendAbs">
+                                <label class="form-check-label " for="attendAbs">
+                                    Absent
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-5"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"></div>
+                        <div class="col-lg-2 ml-2 cls-btn">
+                            <button type="submit" class="btn btn-primary subbtn mb-3 mt-3 " [disabled]="!form.valid">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

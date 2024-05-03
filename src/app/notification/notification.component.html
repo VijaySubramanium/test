@@ -1,0 +1,49 @@
+<app-header></app-header>
+
+<div class="main">
+    <app-spinner></app-spinner>
+    <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+    <app-sidebar></app-sidebar>
+    <div class="d-none mobile-sidebar-backdrop"></div>
+    <!-- <div class="container-fluid"> -->
+    <div class="content page-content">
+        <div class="card">
+            <div class="card-header">
+                <h5>Notification</h5>
+            </div>
+            <div *ngIf="data.length > 0">
+                <ul class="p-0 list-unstyled sidemenu-slim-scroll">
+                    <li *ngFor="let mock of data" style="border-bottom: 1px solid #f2f2f2;" class="p-2">
+                        <div class="row d-flex justify-content-between" style="padding: 5px 10px; width: -webkit-fill-available;">
+                            <span class="w-auto" style="max-width: 60%;">
+                                <b>{{mock.username}}</b>
+                            </span>
+                            <span class="w-auto text-muted" style="font-size: 12px;">
+                                {{mock.createddate | date:'MMM dd,YYYY hh:mm a'}}
+                            </span>
+                        </div>
+                        <div class="row d-flex justify-content-between" style="padding: 5px 10px; width: -webkit-fill-available;">
+                            <span class="w-auto" style="max-width: 85%;">
+                               {{mock.module}} - Requested {{mock.exporttype}} file ready to download.
+                            </span>
+                            <!-- <div style="width: 30px"> -->
+                                <a href="javascript:void(0);" href="{{mock.s3path}}" target="_blank"
+                                    class="mr-5 w-auto"><i class="las la-file-download"></i></a>
+                            <!-- </div> -->
+                        </div>
+                    </li>
+
+
+                </ul>
+            </div>
+            <div *ngIf="data.length == 0">
+              <div class="text-center p-2 mt-2">
+                <p> No Records Found</p>
+              </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
