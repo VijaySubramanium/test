@@ -34,7 +34,7 @@
     "moment": "^2.29.3",
     "ng-multiselect-dropdown": "^0.3.8",
     "ngx-clipboard": "^15.1.0",
-    "ngx-cookie-service": "^15.0.0",
+    "ngx-cookie-service": "^11.0.0",
     "ngx-extended-pdf-viewer": "^18.1.14",
     "ngx-toastr": "^14.2.2",
     "primeicons": "^5.0.0",
